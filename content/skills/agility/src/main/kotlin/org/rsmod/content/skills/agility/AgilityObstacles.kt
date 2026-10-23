@@ -61,8 +61,10 @@ constructor(private val objRepo: ObjRepository, private val xpMods: XpModifiers)
         loc: String,
         action: suspend ProtectedAccess.(BoundLocInfo) -> Unit,
     ) {
-        val type = ServerCacheManager.getObject(locId(loc) ?: return) ?: return
+        val id = locId(loc) ?: return
+        val type = ServerCacheManager.getObject(id) ?: return
         val slot = (1..5).firstOrNull { !type.actions.getOpOrNull(it - 1).isNullOrBlank() } ?: return
+        if (locOpTaken(id, slot)) return
         when (slot) {
             1 -> onOpLoc1(loc) { action(it.loc) }
             2 -> onOpLoc2(loc) { action(it.loc) }

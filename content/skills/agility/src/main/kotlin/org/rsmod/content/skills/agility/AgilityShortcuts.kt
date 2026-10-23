@@ -9,6 +9,7 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import kotlin.math.abs
 import kotlin.math.sign
+import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
@@ -256,11 +257,16 @@ constructor(private val collision: CollisionFlagMap, private val xpMods: XpModif
     override fun ScriptContext.startup() {
         for (shortcut in AgilityShortcutData.all + AgilityShortcutTable.rows) {
             for (loc in shortcut.locs) {
-                val type = ServerCacheManager.getObject(locId(loc) ?: continue) ?: continue
+                val id = locId(loc) ?: continue
+                val type = ServerCacheManager.getObject(id) ?: continue
                 val slot =
                     (1..5).firstOrNull {
                         type.actions.getOpOrNull(it - 1).equals(shortcut.option, ignoreCase = true)
                     } ?: continue
+                if (locOpTaken(id, slot)) {
+                    logger.info { "Agility: '$loc' op $slot is handled by another script, skipping it." }
+                    continue
+                }
                 when (slot) {
                     1 -> onOpLoc1(loc) { cross(it.loc, shortcut) }
                     2 -> onOpLoc2(loc) { cross(it.loc, shortcut) }
@@ -400,6 +406,19 @@ private const val MITH_GRAPPLE = "obj.xbows_grapple_tip_bolt_mithril_rope"
  * reason to take the server down: `asRSCM` throws, and thrown out of `startup` it aborts the whole
  * plugin load. One mistyped name cost three corrupted rows a boot before this was here.
  */
+/**
+ * Whether another script already handles op [slot] on [locId]. Area scripts that hand-wrote a
+ * shortcut load before this module, and the event bus refuses a second handler for the same op.
+ */
+internal fun ScriptContext.locOpTaken(locId: Int, slot: Int): Boolean =
+    when (slot) {
+        1 -> eventBus.contains(LocEvents.Op1::class.java, locId)
+        2 -> eventBus.contains(LocEvents.Op2::class.java, locId)
+        3 -> eventBus.contains(LocEvents.Op3::class.java, locId)
+        4 -> eventBus.contains(LocEvents.Op4::class.java, locId)
+        else -> eventBus.contains(LocEvents.Op5::class.java, locId)
+    }
+
 internal fun locId(loc: String): Int? {
     val id = runCatching { loc.asRSCM(RSCMType.LOC) }.getOrNull()
     if (id == null) {
