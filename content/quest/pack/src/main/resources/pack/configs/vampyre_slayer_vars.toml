@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.vampyre_slayer_progress"
+varp = "varp.vampire"
+startBit = 0
+endBit = 1

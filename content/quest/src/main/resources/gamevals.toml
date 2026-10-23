@@ -16,3 +16,8 @@ prince_ali_met_leela = 63622
 prince_ali_progress = 63623
 prince_ali_key_obtained = 63624
 prince_ali_joe_beer = 63625
+vampyre_slayer_progress = 62810
+black_knights_fortress_progress = 62820
+
+[gamevals.queue]
+vampyre_slayer_stake = 62800
