@@ -8,6 +8,8 @@ cots_tail = 430
 
 [gamevals.varp]
 prince_ali_state = 63620
+demon_slayer_state = 62801
+quest_arena_return = 62802
 
 [gamevals.varbit]
 prince_ali_keli_asked = 63620
@@ -18,6 +20,14 @@ prince_ali_key_obtained = 63624
 prince_ali_joe_beer = 63625
 vampyre_slayer_progress = 62810
 black_knights_fortress_progress = 62820
+demon_slayer_traiborn_bones = 62830
+bim_quest_pillars = 62831
+dragon_slayer_progress = 62840
+dragon_slayer_ship_purchased = 62841
+dragon_slayer_ship_repairs = 62842
 
 [gamevals.queue]
+bim_quest_finish = 62801
+corsair_quest_defeated = 62802
+dragon_slayer_elvarg_defeated = 62803
 vampyre_slayer_stake = 62800

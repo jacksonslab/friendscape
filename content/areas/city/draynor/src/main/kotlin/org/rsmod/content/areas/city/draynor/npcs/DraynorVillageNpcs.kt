@@ -13,6 +13,7 @@ import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.openHolidayItems
 import org.rsmod.content.interfaces.omnishop.openOmnishop
 import org.rsmod.content.quest.area.alkharid.princealirescue.DisguiseMakers
+import org.rsmod.content.quest.area.crandor.DragonSlayerQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
@@ -21,7 +22,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DraynorVillageNpcs
 @Inject
-constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers) :
+constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers, private val dragonSlayer: DragonSlayerQuest) :
     PluginScript() {
     private var Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
     private var Player.bankJob by intVarBit("varbit.wom_bankjob")
@@ -240,6 +241,7 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
     }
 
     private suspend fun Dialogue.ned() {
+        if (with(dragonSlayer) { nedQuest() }) return
         if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
             chatNpc(
                 neutral,

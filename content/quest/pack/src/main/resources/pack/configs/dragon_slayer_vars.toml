@@ -1,0 +1,20 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.dragon_slayer_progress"
+varp = "varp.dragonquest"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.dragon_slayer_ship_purchased"
+varp = "varp.demon_slayer_state"
+startBit = 9
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.dragon_slayer_ship_repairs"
+varp = "varp.demon_slayer_state"
+startBit = 10
+endBit = 11

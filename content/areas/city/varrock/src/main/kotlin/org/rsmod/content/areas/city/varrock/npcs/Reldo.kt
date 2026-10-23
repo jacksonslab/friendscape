@@ -4,13 +4,14 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
+import org.rsmod.content.quest.area.varrock.shieldofarrav.ShieldOfArravQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest) : PluginScript() {
+class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest, private val shieldOfArrav: ShieldOfArravQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.reldo") { startDialogue(it.npc) { reldo() } }
     }
@@ -22,8 +23,8 @@ class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest) : P
     // TODO(content): [system:treasure_trails] beginner hot and cold clue
     private suspend fun Dialogue.reldo() {
         val soaStarted =
-            !QuestRequirements.hasNotCompleted(player, SHIELD_OF_ARRAV) ||
-                QuestRequirements.isOnQuest(player, SHIELD_OF_ARRAV)
+            shieldOfArrav.quest.isQuestInProgress(player) ||
+                shieldOfArrav.quest.isQuestCompleted(player)
         if (vars[RELDO_MET] == 0 && !soaStarted) {
             chatNpc(neutral, "Hello, stranger.")
             chatPlayer(
@@ -66,7 +67,7 @@ class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest) : P
                     happy,
                     "Ah, yes. I think I have something, if you're definitely interested?",
                 )
-                // TODO(content): [quest:shield_of_arrav] start offer and the combat level warning
+                with(shieldOfArrav) { offerQuest() }
             }
             2 -> {
                 chatPlayer(quiz, "Do you have anything to trade?")

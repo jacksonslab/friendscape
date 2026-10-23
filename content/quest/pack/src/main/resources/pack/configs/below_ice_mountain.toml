@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.bim_quest_pillars"
+varp = "varp.demon_slayer_state"
+startBit = 5
+endBit = 8
