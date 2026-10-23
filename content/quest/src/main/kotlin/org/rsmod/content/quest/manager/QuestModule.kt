@@ -6,6 +6,8 @@ import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
 import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
+import org.rsmod.content.quest.area.alkharid.princealirescue.DisguiseMakers
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
@@ -19,6 +21,8 @@ public class QuestModule : PluginModule() {
         bindInstance<RuneMysteriesQuest>()
         bindInstance<GertrudesCatQuest>()
         bindInstance<DaddysHomeQuest>()
+        bindInstance<PrinceAliRescueQuest>()
+        bindInstance<DisguiseMakers>()
         bindInstance<XMarksTheSpotQuest>()
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
