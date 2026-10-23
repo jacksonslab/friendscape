@@ -1663,7 +1663,8 @@ constructor(
 
         const val POTION_JINGLE = "jingle.juliet_dies_jingle"
         const val CRYPT_JINGLE = "jingle.romeo_cutscene"
-        const val DRINK_SYNTH = "synth.romeo_juliet_drink"
+        // Synth 2401 is named bucket_pour in the rev 241 cache; aliases must be unique.
+        const val DRINK_SYNTH = "synth.bucket_pour"
         const val COLLAPSE_SYNTH = "synth.romeo_juliet_collapse"
         const val CRYPT_ENTER_SYNTH = "synth.romeo_juliet_crypt_enter"
         const val CRYPT_DOOR_SYNTH = "synth.romeo_juliet_crypt_door"
