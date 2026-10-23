@@ -1,0 +1,159 @@
+[[varp]]
+id = "varp.farming_patch_01"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_02"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_03"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_04"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_05"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_06"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_07"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_08"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_09"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_10"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_11"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_12"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_13"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_14"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_15"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_16"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_17"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_18"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_19"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_20"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_21"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_22"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_23"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_24"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_25"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_26"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_27"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_28"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_29"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_patch_30"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_tick"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_area_sent"
+scope = "Temp"
+transmit = "Never"
