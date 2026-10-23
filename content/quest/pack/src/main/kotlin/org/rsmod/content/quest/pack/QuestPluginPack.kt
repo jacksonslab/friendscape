@@ -10,5 +10,6 @@ class QuestPluginPack : PluginPack() {
             DaddysHomeCrateTable.daddysHomeCrate(),
             GlarialRestrictionsTable.restrictions(),
             WaterfallPillarRunesTable.runes(),
+            ApothecaryPotionsTable.potions(),
         )
 }

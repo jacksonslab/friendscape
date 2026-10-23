@@ -74,6 +74,10 @@ chest_open = 52
 chest_close = 51
 irondoor_locked = 72
 gobdip_dye_goblin_mail = 2392
+romeo_juliet_collapse = 505
+romeo_juliet_crypt_door = 1816
+romeo_juliet_crypt_enter = 1815
+romeo_juliet_drink = 2401
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
@@ -110,6 +114,7 @@ waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 sheep_shearer_progress = 65449
 sheep_shearer_saw_thing = 65448
+romeo_juliet_progress = 63730
 
 [gamevals.bas]
 waterfall_wading = 1
@@ -134,6 +139,7 @@ daddys_home_furniture = 65472
 daddys_home_crate = 65473
 glarial_restrictions = 65495
 waterfall_pillar_runes = 65494
+apothecary_potions = 65496
 
 [gamevals.dbrow]
 daddys_home_furniture_kitchen_stool = 63420
@@ -156,6 +162,9 @@ glarial_allowed_parts = 63679
 waterfall_rune_air = 63678
 waterfall_rune_water = 63677
 waterfall_rune_earth = 63676
+apothecary_strength = 63688
+apothecary_energy = 63687
+apothecary_antipoison = 63686
 
 [gamevals.enum]
 daddys_home_hammers = 65460
