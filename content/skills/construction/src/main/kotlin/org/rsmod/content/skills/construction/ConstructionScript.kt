@@ -604,6 +604,9 @@ constructor(
 
     private suspend fun ProtectedAccess.chooseRoom(): RoomDef? {
         ifOpenMainModal(INTERFACE_ADD_ROOM)
+        for (button in catalogue.all().mapNotNullTo(LinkedHashSet()) { componentName(it.row.button.id) }) {
+            ifSetEvents(button, -1..-1, IfEvent.Op1)
+        }
         ifSetEvents(COMPONENT_ADD_ROOM_LIST, 0 until ADD_ROOM_ENTRIES, IfEvent.PauseButton)
         val input = pauseButton()
         ifClose()
@@ -724,6 +727,9 @@ constructor(
     }
 
     private fun locName(locId: Int): String = RSCM.getReverseMapping(RSCMType.LOC, locId)
+
+    private fun componentName(id: Int): String? =
+        runCatching { RSCM.getReverseMapping(RSCMType.COMPONENT, id) }.getOrNull()
 
     private fun ProtectedAccess.enterPortal(destination: CoordGrid) {
         telejump(destination)
