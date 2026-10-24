@@ -1,0 +1,41 @@
+package org.rsmod.content.raids.tob
+
+internal object TobNpcs {
+    val ALL: List<String> =
+        listOf(
+            "npc.tob_maiden_100",
+            "npc.tob_maiden_70",
+            "npc.tob_maiden_50",
+            "npc.tob_maiden_30",
+            "npc.tob_maiden_dying_a",
+            "npc.maiden_elemental",
+            "npc.maiden_blood_slug",
+            "npc.tob_bloat",
+            "npc.tob_nylocas_fighting_melee",
+            "npc.tob_nylocas_fighting_ranged",
+            "npc.tob_nylocas_fighting_magic",
+            "npc.tob_nylocas_big_fighting_melee",
+            "npc.tob_nylocas_big_fighting_ranged",
+            "npc.tob_nylocas_big_fighting_magic",
+            "npc.tob_nylocas_support",
+            "npc.nylocas_boss_spawning",
+            "npc.nylocas_boss_melee",
+            "npc.nylocas_boss_ranged",
+            "npc.nylocas_boss_magic",
+            "npc.tob_sotetseg_noncombat",
+            "npc.tob_sotetseg_combat",
+            "npc.tob_xarpus_static",
+            "npc.tob_xarpus_feeding",
+            "npc.tob_xarpus_combat",
+            "npc.verzik_initial",
+            "npc.verzik_phase1",
+            "npc.verzik_phase2",
+            "npc.verzik_phase3",
+            "npc.verzik_pillar_npc",
+            "npc.tob_verzik_phase2_bloodnylocas",
+            "npc.verzik_nylocas_melee",
+            "npc.verzik_nylocas_ranged",
+            "npc.verzik_nylocas_magic",
+            "npc.tob_verzik_creeper",
+        )
+}
