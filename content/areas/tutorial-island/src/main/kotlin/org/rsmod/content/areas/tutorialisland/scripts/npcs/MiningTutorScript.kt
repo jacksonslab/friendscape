@@ -174,7 +174,7 @@ class MiningTutorScript @Inject constructor(private val progression: TutorialPro
             }
             4 -> chatNpc(happy, "Okay then.")
         }
-        if (progression.current(player).varValue >= TutorialStep.MineGate.varValue) {
+        if (progression.current(player) == TutorialStep.MineGate) {
             progression.setStep(player, TutorialStep.MineGate, npc)
         }
     }

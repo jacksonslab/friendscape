@@ -143,13 +143,15 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
         stepThrough(door)
     }
 
-    private fun ProtectedAccess.questLadder() {
+    private suspend fun ProtectedAccess.questLadder() {
         if (!progression.requireAtLeast(player, TutorialStep.QuestLadder)) {
             progression.deny(player, "I don't think you're ready to go down there yet.")
             return
         }
-        progression.advance(player, TutorialStep.MineTalk)
         telejump(CoordGrid(0, 26, 195, 16, 47), TeleportType.Exempt)
+        // The hint arrow searches around the player, so it has to wait for the arrival.
+        delay(1)
+        progression.advance(player, TutorialStep.MineTalk)
     }
 
     private fun ProtectedAccess.miningLadderUp() {
@@ -204,7 +206,7 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
         }
     }
 
-    private fun ProtectedAccess.combatLadder() {
+    private suspend fun ProtectedAccess.combatLadder() {
         if (!progression.requireAtLeast(player, TutorialStep.CombatLadder)) {
             progression.deny(
                 player,
@@ -212,8 +214,9 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             )
             return
         }
-        progression.advance(player, TutorialStep.PrayerTalk)
         telejump(COMBAT_LADDER_TOP, TeleportType.Exempt)
+        delay(1)
+        progression.advance(player, TutorialStep.PrayerTalk)
     }
 
     private fun ProtectedAccess.bankLadder() {

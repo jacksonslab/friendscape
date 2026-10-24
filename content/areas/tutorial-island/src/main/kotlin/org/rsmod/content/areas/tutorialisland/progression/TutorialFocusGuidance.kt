@@ -18,6 +18,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_components
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_interfaces
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
+import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_varbits
 import org.rsmod.content.areas.tutorialisland.progression.HintArrows
@@ -54,6 +55,7 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
         applyHint(player, step, hintNpc)
         applyUiFlash(player, step)
         applyOutlines(player, step)
+        applyOreGuide(player, step)
     }
 
     fun clear(player: Player) {
@@ -246,10 +248,33 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
             TutorialClientScripts.highlightNpcTypeOn(player, npcType.asRSCM())
         }
 
-        val locType = outlineLocType(step)
+        val locType = if (step == TutorialStep.MineOres) nextOreRock(player) else outlineLocType(step)
         if (locType != null) {
             TutorialClientScripts.highlightLocTypeOn(player, locType.asRSCM())
         }
+    }
+
+    /**
+     * Both ores are one step, so without this the tin outline stays up after the tin is mined and
+     * the player keeps mining tin, never told that the step is waiting on copper.
+     */
+    private fun nextOreRock(player: Player): String {
+        val hasTin = player.inv.count(tutorial_objs.TIN_ORE) > 0
+        val hasCopper = player.inv.count(tutorial_objs.COPPER_ORE) > 0
+        return if (hasTin && !hasCopper) tutorial_locs.COPPER_ROCK else tutorial_locs.TIN_ROCK
+    }
+
+    private fun applyOreGuide(player: Player, step: TutorialStep) {
+        if (step != TutorialStep.MineOres) return
+        val hasTin = player.inv.count(tutorial_objs.TIN_ORE) > 0
+        val hasCopper = player.inv.count(tutorial_objs.COPPER_ORE) > 0
+        val text =
+            when {
+                hasTin && !hasCopper -> "Now mine one of the copper rocks to get some copper ore."
+                hasCopper && !hasTin -> "Now mine one of the tin rocks to get some tin ore."
+                else -> return
+            }
+        TutorialClientScripts.mesOverlay(player, "<col=0000ff>Mining</col><br>$text")
     }
 
     /**

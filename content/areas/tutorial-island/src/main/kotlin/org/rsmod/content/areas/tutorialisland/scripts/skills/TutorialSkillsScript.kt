@@ -254,6 +254,8 @@ constructor(
         val hasCopper = invTotal(inv, tutorial_objs.COPPER_ORE) > 0
         if (hasTin && hasCopper) {
             progression.advance(player, TutorialStep.MineSmelt)
+        } else {
+            progression.resume(player)
         }
     }
 
