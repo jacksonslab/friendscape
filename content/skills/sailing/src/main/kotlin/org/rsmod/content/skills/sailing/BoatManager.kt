@@ -1,6 +1,8 @@
 package org.rsmod.content.skills.sailing
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.player.output.InteractionModes
@@ -29,6 +31,7 @@ constructor(
     private val worldEntityRegistry: WorldEntityRegistry,
     private val playerList: PlayerList,
     private val collision: CollisionFlagMap,
+    private val sea: SeaMap,
 ) {
     private val logger = InlineLogger()
 
@@ -37,7 +40,7 @@ constructor(
     val all: Collection<Boat>
         get() = boats.values
 
-    fun spawn(type: BoatType, level: Int, fineX: Int, fineZ: Int, angle: Int = 0): Boat? {
+    fun spawn(type: BoatType, level: Int, fineX: Int, fineZ: Int, angle: Int = 0, owner: Player? = null): Boat? {
         val template =
             RegionTemplate.create {
                 copyAllLevels(type.templateZoneX, type.templateZoneZ) {
@@ -73,71 +76,119 @@ constructor(
             return null
         }
         val boat = Boat(type, entity, region)
-        furnish(boat)
+        boat.targetAngle = angle
+        if (owner != null) {
+            boat.owner = owner.uuid
+            boat.ownerWorld = owner.worldType
+            boat.ownerName = owner.displayName
+        }
+        furnish(boat, owner)
         boats[entity.slotId] = boat
         return boat
     }
 
-    private fun furnish(boat: Boat) {
-        val southWest = boat.region.southWest
+    private fun furnish(boat: Boat, owner: Player?) {
+        val hookInstead = boat.type.hookReplacesCargoHold && owner?.sailingRaftFacility == RAFT_FACILITY_HOOK
         for (deckLoc in boat.type.deckLocs) {
+            if (hookInstead && deckLoc == boat.type.cargoHold) {
+                continue
+            }
+            addDeckLoc(boat, deckLoc.loc, deckLoc.dx, deckLoc.dz, deckLoc)
+        }
+        if (!boat.type.hookReplacesCargoHold || hookInstead) {
+            val hook = boat.type
             locRepo.add(
-                CoordGrid(southWest.x + deckLoc.dx, southWest.z + deckLoc.dz, deckLoc.level),
-                deckLoc.loc,
+                boat.deckCoord(hook.hookDx, hook.hookDz),
+                RSCM.getReverseMapping(RSCMType.LOC, hook.hook),
                 Int.MAX_VALUE,
                 LocAngle.West,
-                deckLoc.shape,
+                LocShape.CentrepieceStraight,
             )
         }
     }
 
-    fun spawnAtDock(type: BoatType, dock: Dock): Boat? {
+    private fun addDeckLoc(boat: Boat, loc: String, dx: Int, dz: Int, template: DeckLoc) {
+        locRepo.add(boat.deckCoord(dx, dz, template.level), loc, Int.MAX_VALUE, LocAngle.West, template.shape)
+    }
+
+    /** Swaps the raft's single facility slot between its cargo hold and its salvaging hook. */
+    fun swapRaftFacility(boat: Boat, owner: Player): Boolean {
+        val type = boat.type
+        val hold = type.cargoHold ?: return false
+        if (!type.hookReplacesCargoHold) {
+            return false
+        }
+        val coords = boat.deckCoord(hold.dx, hold.dz, hold.level)
+        val hookName = RSCM.getReverseMapping(RSCMType.LOC, type.hook)
+        if (owner.sailingRaftFacility == RAFT_FACILITY_HOOK) {
+            owner.sailingRaftFacility = 0
+            locRepo.add(coords, hold.loc, Int.MAX_VALUE, LocAngle.West, hold.shape)
+        } else {
+            owner.sailingRaftFacility = RAFT_FACILITY_HOOK
+            locRepo.add(coords, hookName, Int.MAX_VALUE, LocAngle.West, hold.shape)
+        }
+        boat.hookDeployed = false
+        return true
+    }
+
+    fun navigableAt(level: Int): (Int, Int) -> Boolean = { x, z ->
+        level == SEA_LEVEL && sea.isWater(x, z) && Navigation.isClear(collision[x, z, level])
+    }
+
+    internal fun findMooring(type: BoatType, plank: CoordGrid): Mooring? =
+        Navigation.findMooring(navigableAt(plank.level), plank.x, plank.z, type.hullWidth, type.hullLength)
+
+    fun ownedBy(player: Player): Boat? = boats.values.firstOrNull { it.isOwnedBy(player) }
+
+    /**
+     * Brings [player]'s boat alongside [plank]. A boat already moored at [port] is reused; any other
+     * boat they own is removed first.
+     */
+    fun moorFor(player: Player, type: BoatType, port: Port, plank: CoordGrid): Boat? {
+        val existing = ownedBy(player)
+        if (existing != null && existing.port == port && existing.type == type) {
+            return existing
+        }
+        val mooring = findMooring(type, plank) ?: return null
+        if (existing != null) {
+            despawn(existing)
+        }
         val boat =
             spawn(
                 type = type,
-                level = dock.boatTile.level,
-                fineX = WorldEntity.tileToFine(dock.boatTile.x) + type.dockFineDx,
-                fineZ = WorldEntity.tileToFine(dock.boatTile.z) + type.dockFineDz,
-                angle = dock.angle,
-            )
-        boat?.dock = dock
+                level = plank.level,
+                fineX = mooring.fineX + type.dockFineDx,
+                fineZ = mooring.fineZ + type.dockFineDz,
+                angle = mooring.angle,
+                owner = player,
+            ) ?: return null
+        boat.port = port
         return boat
     }
 
-    fun mooredAt(dock: Dock): Boat? = boats.values.firstOrNull { it.dock == dock }
-
-    fun retrieve(player: Player, type: BoatType, dock: Dock): Boat? {
-        val existing = boats.values.firstOrNull { it.isOwnedBy(player) }
-        if (existing != null && existing.dock == dock) return existing
-        if (existing != null) despawn(existing)
-        return spawnAtDock(type, dock)?.apply {
-            owner = player.uuid
-            ownerWorld = player.worldType
+    /** Snaps a stopped [boat] alongside [plank] if it is within [MOORING_RANGE] tiles of it. */
+    fun moorAt(boat: Boat, port: Port, plank: CoordGrid): Boolean {
+        if (!boat.isStopped) {
+            return false
         }
-    }
-
-    fun removeOwnedBy(player: Player) {
-        boats.values.filter { it.isOwnedBy(player) }.toList().forEach(::despawn)
-    }
-
-    fun moorNearby(boat: Boat): Dock? {
-        if (boat.speed != 0 || boat.targetSpeed != 0) return null
-        boat.dock?.let { return it }
+        if (boat.port == port) {
+            return true
+        }
         val coords = boat.entity.coords
-        val dock = Docks.ALL.filter { it.boatTile.level == coords.level }
-            .minByOrNull { it.boatTile.chebyshevDistance(coords) } ?: return null
-        if (dock.boatTile.chebyshevDistance(coords) > 3) return null
-        boat.entity.teleport(dock.boatTile.level,
-            WorldEntity.tileToFine(dock.boatTile.x) + boat.type.dockFineDx,
-            WorldEntity.tileToFine(dock.boatTile.z) + boat.type.dockFineDz)
-        boat.entity.updateAngle(dock.angle)
-        boat.targetAngle = dock.angle
-        boat.dock = dock
-        return dock
+        if (coords.level != plank.level || coords.chebyshevDistance(plank) > MOORING_RANGE) {
+            return false
+        }
+        val mooring = findMooring(boat.type, plank) ?: return false
+        boat.entity.teleport(plank.level, mooring.fineX + boat.type.dockFineDx, mooring.fineZ + boat.type.dockFineDz)
+        boat.entity.updateAngle(mooring.angle)
+        boat.targetAngle = mooring.angle
+        boat.port = port
+        return true
     }
 
     fun returnToShore(player: Player) {
-        val destination = if (player.sailingShore != 0) CoordGrid(player.sailingShore) else player.lastKnownNormalCoord
+        val destination =
+            if (player.sailingShore != 0) CoordGrid(player.sailingShore) else player.lastKnownNormalCoord
         releaseHelm(player)
         PathingEntityCommon.telejump(player, collision, destination)
         player.lastKnownNormalCoord = destination
@@ -158,9 +209,15 @@ constructor(
         return result
     }
 
+    fun removeOwnedBy(player: Player) {
+        boats.values.filter { it.isOwnedBy(player) }.toList().forEach(::despawn)
+    }
+
     fun boatAt(coords: CoordGrid): Boat? = boats.values.firstOrNull { it.entity.contains(coords) }
 
     fun boatOf(player: Player): Boat? = boatAt(player.coords)
+
+    fun passengers(boat: Boat): List<Player> = playerList.filter { boat.entity.contains(it.coords) }
 
     fun releaseHelm(player: Player) {
         val boat = boatOf(player) ?: return
@@ -181,12 +238,14 @@ constructor(
     }
 
     private fun evacuate(boat: Boat) {
-        for (player in playerList) {
-            if (!boat.entity.contains(player.coords)) {
-                continue
-            }
+        for (player in passengers(boat)) {
             returnToShore(player)
             player.mes("You are returned to shore.")
         }
+    }
+
+    companion object {
+        const val MOORING_RANGE = 10
+        private const val SEA_LEVEL = 0
     }
 }

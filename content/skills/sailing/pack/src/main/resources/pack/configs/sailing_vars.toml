@@ -3,3 +3,99 @@ id = "varp.friendscape_sailing_shore"
 isServerOnly = true
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_boat_dock"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_boats_owned"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_active_boat"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_raft_facility"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_0"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_1"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_2"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_3"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_4"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_5"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_6"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_7"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_8"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_9"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_10"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_charted_11"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"

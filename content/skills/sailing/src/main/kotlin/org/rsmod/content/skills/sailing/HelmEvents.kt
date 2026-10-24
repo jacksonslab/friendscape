@@ -73,7 +73,7 @@ constructor(private val boats: BoatManager) : PluginScript() {
         if (boat.moveMode == SailingMoveModes.HELM_IDLE) {
             boat.moveMode = SailingMoveModes.FULL
             boat.targetSpeed = boat.type.baseSpeed
-            boat.dock = null
+            boat.port = null
         }
         boat.targetAngle = heading * HEADING_TO_ANGLE
     }

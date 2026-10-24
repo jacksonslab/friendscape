@@ -77,14 +77,13 @@ constructor(
                     level = player.level,
                     fineX = WorldEntity.tileToFine(player.x + SPAWN_OFFSET_TILES),
                     fineZ = WorldEntity.tileToFine(player.z),
+                    owner = player,
                 )
             if (boat == null) {
                 player.mes("Could not spawn ${type.key} world entity.")
                 return@with
             }
             lastSpawned = boat
-            boat.owner = player.uuid
-            boat.ownerWorld = player.worldType
             player.mes(
                 "Spawned ${type.key} world entity: " +
                     "slot=${boat.entity.slotId}, coords=${boat.entity.coords}"
