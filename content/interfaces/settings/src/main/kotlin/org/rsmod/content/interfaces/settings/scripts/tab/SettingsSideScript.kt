@@ -26,7 +26,10 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
         onIfOverlayButton("component.settings_side:audio_tab") { player.panel = Panel.Audio }
         onIfOverlayButton("component.settings_side:display_tab") { player.panel = Panel.Display }
 
-        onIfOverlayButton("component.toplevel_osrs_stretch:stone11") { player.selectStoneOp(it.op) }
+        onIfOverlayButton("component.toplevel_osrs_stretch:stone11") {
+            eventBus.publish(org.rsmod.api.player.events.SideTabClicked(player, 11))
+            player.selectStoneOp(it.op)
+        }
     }
 
     private fun Player.updateIfEvents() {

@@ -17,7 +17,10 @@ class PrayerTabFilterScript : PluginScript() {
     override fun ScriptContext.startup() {
         onIfOpen("interface.prayerbook") { player.onTabOpen() }
         onIfOverlayButton("component.prayerbook:filtermenu") { player.toggleFilter(it.comsub) }
-        onIfOverlayButton("component.toplevel_osrs_stretch:stone5") { player.selectStoneOp(it.op) }
+        onIfOverlayButton("component.toplevel_osrs_stretch:stone5") {
+            eventBus.publish(org.rsmod.api.player.events.SideTabClicked(player, 5))
+            player.selectStoneOp(it.op)
+        }
     }
 
     private fun Player.onTabOpen() {

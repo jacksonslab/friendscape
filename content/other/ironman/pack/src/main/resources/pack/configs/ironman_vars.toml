@@ -1,0 +1,17 @@
+[[varp]]
+id = "varp.friendscape_ironman_group"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_ironman_invite"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_ironman_invite_expiry"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"

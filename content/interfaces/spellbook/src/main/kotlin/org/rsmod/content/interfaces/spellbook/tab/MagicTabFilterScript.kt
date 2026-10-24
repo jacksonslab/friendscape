@@ -21,7 +21,10 @@ class MagicTabFilterScript : PluginScript() {
             player.toggleFilter(it.comsub)
         }
 
-        onIfOverlayButton("component.toplevel_osrs_stretch:stone6") { player.selectStoneOp(it.op) }
+        onIfOverlayButton("component.toplevel_osrs_stretch:stone6") {
+            eventBus.publish(org.rsmod.api.player.events.SideTabClicked(player, 6))
+            player.selectStoneOp(it.op)
+        }
     }
 
     private fun Player.onTabOpen() {

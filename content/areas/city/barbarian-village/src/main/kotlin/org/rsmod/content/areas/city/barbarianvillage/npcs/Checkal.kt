@@ -2,10 +2,11 @@ package org.rsmod.content.areas.city.barbarianvillage.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.icemountain.BelowIceMountainQuest
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class Checkal : PluginScript() {
+class Checkal @jakarta.inject.Inject constructor(private val belowIce: BelowIceMountainQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.bim_checkal_barb") { startDialogue(it.npc) { preQuest() } }
         onOpNpc1("npc.bim_checkal_temple_outside") { startDialogue(it.npc) { preQuest() } }
@@ -13,6 +14,7 @@ class Checkal : PluginScript() {
     }
 
     private suspend fun Dialogue.preQuest() {
+        if (with(belowIce) { checkalQuest() }) return
         val title = if (access.isBodyTypeA()) "sir" else "miss"
         mesbox("Checkal stares at you intensely.")
         chatNpc(angry, "You best not be here to start any trouble $title.")

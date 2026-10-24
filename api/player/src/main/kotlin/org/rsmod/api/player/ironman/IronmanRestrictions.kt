@@ -27,6 +27,10 @@ public object IronmanRestrictions {
 
     public fun blockTrade(source: Player, target: Player): Boolean {
         when {
+            (source.isGroupIronman || target.isGroupIronman) && !source.sameIronmanGroup(target) -> {
+                source.mes("Group Ironmen can only trade with members of their own group.")
+                return true
+            }
             source.isSoloIronman -> {
                 source.mes("You are an Ironman. You stand alone.")
                 return true
@@ -79,7 +83,7 @@ public enum class IronmanActivity(
     MINIGAME(null),
     ACCEPT_AID("Ironmen do not accept aid.", Scope.Any),
     POH("As an Ironman, you cannot enter another player's house."),
-    GRAND_EXCHANGE("As an Ironman, you cannot use the Grand Exchange."),
+    GRAND_EXCHANGE("As an Ironman, you cannot use the Grand Exchange.", Scope.Any),
 
     UIM_GE_ITEM_SETS("As an Ultimate Ironman, you cannot create item sets.", Scope.Ultimate),
     UIM_MISCELLANIA(

@@ -7,7 +7,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
-import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.area.crandor.DragonSlayerQuest
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -18,7 +18,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DwarvenMineLocScript
 @Inject
-constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepository) : PluginScript() {
+constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepository, private val dragonSlayer: DragonSlayerQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1("loc.stairs_falador") { useStairs(FALADOR_HOUSE) }
         onOpLoc1("loc.stairs_cellar") {
@@ -31,8 +31,8 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
 
         onOpLoc1("loc.dragon_slayer_qip_magic_door") { openMagicDoor(it.loc) }
 
-        onOpLoc1("loc.oraclechestshut") { openOracleChest(it.loc) }
-        onOpLoc1("loc.oraclechestopen") { mes("You search the chest but find nothing.") }
+        onOpLoc1("loc.oraclechestshut") { openOracleChest(it.loc); with(dragonSlayer) { oracleChest() } }
+        onOpLoc1("loc.oraclechestopen") { with(dragonSlayer) { oracleChest() } }
         onOpLoc2("loc.oraclechestopen") { locRepo.change(it.loc, "loc.oraclechestshut", CHEST_OPEN_CYCLES) }
     }
 
@@ -72,7 +72,7 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
 
     private suspend fun ProtectedAccess.openMagicDoor(door: BoundLocInfo) {
         arriveDelay()
-        if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
+        if (coords.x < door.coords.x && !dragonSlayer.canOpenMagicDoor(player)) {
             mes("There is something in this door for me to put objects in.")
             return
         }

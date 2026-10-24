@@ -1,0 +1,12 @@
+[[varp]]
+isServerOnly = true
+id = "varp.demon_slayer_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.demon_slayer_traiborn_bones"
+varp = "varp.demon_slayer_state"
+startBit = 0
+endBit = 4

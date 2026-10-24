@@ -39,6 +39,7 @@ constructor(
     private val teleportValidator: PlayerTeleportValidator,
     private val areaChecker: AreaChecker,
     private val config: ServerConfig,
+    private val eventBus: org.rsmod.events.EventBus = org.rsmod.events.EventBus(),
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (teleport in SpellTeleport.entries) {
@@ -65,6 +66,12 @@ constructor(
     ) {
         if (actionDelay > mapClock) {
             return
+        }
+
+        if (teleport.homeTeleport) {
+            val request = org.rsmod.api.player.hook.HomeTeleportRequest(this)
+            eventBus.publish(request)
+            if (request.handled) return
         }
 
         if (!teleport.canCast(this)) {

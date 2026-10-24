@@ -3,12 +3,13 @@ package org.rsmod.content.areas.city.edgeville.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.icemountain.BelowIceMountainQuest
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Marley loitering by the graveyard, and Doris, Evil Dave's mum, in the house north of the bank. */
-class EdgevilleLocals : PluginScript() {
+class EdgevilleLocals @jakarta.inject.Inject constructor(private val belowIce: BelowIceMountainQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.bim_marley_edge") { marley(it.npc) }
         onOpNpc1("npc.bim_marley") { marley(it.npc) }
@@ -17,6 +18,7 @@ class EdgevilleLocals : PluginScript() {
 
     private suspend fun ProtectedAccess.marley(npc: Npc) {
         startDialogue(npc) {
+            if (with(belowIce) { marleyQuest() }) return@startDialogue
             chatPlayer(happy, "Hello there!")
             mesbox("He doesn't seem too interested in talking to you.")
         }

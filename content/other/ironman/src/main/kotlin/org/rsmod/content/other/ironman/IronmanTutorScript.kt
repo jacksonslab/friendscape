@@ -2,11 +2,9 @@ package org.rsmod.content.other.ironman
 
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.isAnyIronman
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
@@ -224,11 +222,9 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
             chatNpc(happy, "I think you've already got some. Wear it with pride.")
             return
         }
-        for (piece in pieces) {
-            if (!player.invAdd(player.inv, piece).success) {
-                chatNpc(sad, "I'd give you some armour but you don't have enough room in your inventory.")
-                return
-            }
+        if (!player.giveIronmanArmour(pieces)) {
+            chatNpc(sad, "I'd give you some armour but you don't have enough room in your inventory.")
+            return
         }
         chatNpc(happy, "There you go. Wear it with pride.")
     }

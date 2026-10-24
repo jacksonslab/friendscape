@@ -55,13 +55,29 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
     }
 
     private suspend fun Dialogue.wydin() {
+        if (player.wydinEmployed) {
+            wydinEmployee { player.openShop(PortSarimShop.Food) }
+            return
+        }
         chatNpc(happy, "Welcome to my food store! Would you like to buy anything?")
-        when (choice3("Yes please.", 1, "No, thank you.", 2, "What can you recommend?", 3)) {
+        val topic =
+            choice4(
+                "Yes please.",
+                1,
+                "No, thank you.",
+                2,
+                "What can you recommend?",
+                3,
+                "Can I get a job here?",
+                4,
+            )
+        when (topic) {
             1 -> {
                 chatPlayer(happy, "Yes please.")
                 player.openShop(PortSarimShop.Food)
             }
             2 -> chatPlayer(neutral, "No, thank you.")
+            4 -> askWydinForJob()
             else -> {
                 chatPlayer(quiz, "What can you recommend?")
                 chatNpc(

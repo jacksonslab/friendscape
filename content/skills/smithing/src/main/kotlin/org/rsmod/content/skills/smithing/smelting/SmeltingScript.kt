@@ -71,6 +71,10 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
         }
     }
 
+    suspend fun openTutorialSmelt(access: ProtectedAccess) {
+        with(access) { openStandardSmeltMenu("loc.tut2_furnace", player.coords) }
+    }
+
     private fun ProtectedAccess.hasBarSmeltMaterials(): Boolean =
         normalBars.any { hasItemsForBar(it) }
 
