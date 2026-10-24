@@ -18,7 +18,7 @@ import org.rsmod.map.CoordGrid
 
 class TutorialDoorTest {
     @Test
-    fun GameTestState.`starting house door opens crosses and closes back to the tutorial door`() =
+    fun GameTestState.`starting house door swings open while crossing and closes again`() =
         runInjectedGameTest(DoorDependencies::class, null, TutorialGatesScript::class, DoorScript::class) { deps ->
             val tile = CoordGrid(1690, 6115, 0)
             allocZoneCollision(tile)
@@ -27,15 +27,14 @@ class TutorialDoorTest {
             deps.progression.setStep(player, TutorialStep.GielinorDoor)
             val door = placeMapLoc(tile, "loc.tut2_survival_entry", LocShape.WallStraight, LocAngle.West)
             player.opLoc1(door)
-            advance(ticks = 4)
+            advance(ticks = 1)
             assertEquals(tile, player.coords)
             assertEquals(TutorialStep.SurvivalTalk, deps.progression.current(player))
-            val opened = deps.locs.findAll(tile.translateX(-1)).firstOrNull { ServerCacheManager.getObject(it.id)?.internalName == "loc.poordooropen" }
-            assertNotNull(opened)
-            player.opLoc1(BoundLocInfo(opened!!, ServerCacheManager.getObject(opened.id)!!))
-            advance(ticks = 6)
+            assertFalse(deps.locs.findLoc(tile, "loc.tut2_survival_entry"))
+            assertTrue(deps.locs.findLoc(tile.translateX(-1), "loc.tut2_survival_entry"))
+            advance(ticks = 4)
             assertTrue(deps.locs.findLoc(tile, "loc.tut2_survival_entry"))
-            assertFalse(deps.locs.findLoc(tile.translateX(-1), "loc.poordooropen"))
+            assertFalse(deps.locs.findLoc(tile.translateX(-1), "loc.tut2_survival_entry"))
         }
 
     @Test

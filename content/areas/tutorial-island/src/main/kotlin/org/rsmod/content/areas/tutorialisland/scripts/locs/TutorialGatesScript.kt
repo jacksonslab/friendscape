@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.tutorialisland.scripts.locs
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.hook.TeleportType
@@ -60,7 +61,20 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
                 LocAngle.East -> door.coords.translateX(1)
                 LocAngle.South -> door.coords.translateZ(-1)
             }
+        swingOpen(door)
         teleport(if (coords == door.coords) beyond else door.coords, TeleportType.Exempt)
+    }
+
+    /**
+     * The tutorial doors have no open variant in the cache, so the closed loc itself is drawn
+     * swung open on the neighbouring edge until both copies expire and the map restores the door.
+     */
+    private fun ProtectedAccess.swingOpen(door: BoundLocInfo) {
+        val type = ServerCacheManager.getObject(door.id) ?: return
+        if (!locRepo.del(door, DOOR_OPEN_TICKS)) return
+        val openedCoords = DoorTranslations.translateOpen(door.coords, door.shape, door.angle)
+        locRepo.add(openedCoords, type, DOOR_OPEN_TICKS, door.turnAngle(rotations = 1), door.shape)
+        soundSynth("synth.nicedoor_open")
     }
 
     /**
@@ -87,10 +101,6 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             return
         }
         progression.advance(player, TutorialStep.SurvivalTalk)
-        val openedCoords = DoorTranslations.translateOpen(door.coords, door.shape, door.angle)
-        locRepo.del(door, 500)
-        locRepo.add(openedCoords, "loc.poordooropen", 500, door.turnAngle(rotations = 1), door.shape)
-        soundSynth("synth.nicedoor_open")
         stepThrough(door)
     }
 
@@ -292,6 +302,8 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
     }
 
     private companion object {
+        private const val DOOR_OPEN_TICKS = 3
+
         /**
          * `tut2_combat_ladder` sits at local (39, 54) on the dungeon square and `tut2_bank_ladder`
          * at local (39, 54) on the surface square - the map already pairs them directly above one
