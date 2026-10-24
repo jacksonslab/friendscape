@@ -9,6 +9,11 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpcU
+import org.rsmod.api.script.onOpNpcU
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.ItemServerType
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
@@ -41,6 +46,9 @@ constructor(
         onApNpc1(tutorial_npcs.FISHING_SPOT) {
             if (isWithinApRange(it.npc, 1)) fish()
         }
+        onOpNpcU(tutorial_npcs.FISHING_SPOT) { fishWith(it.objType) }
+        val spotType = ServerCacheManager.getNpc(tutorial_npcs.FISHING_SPOT.asRSCM())!!
+        onApNpcU(spotType) { if (isWithinApRange(it.npc, 1)) fishWith(it.objType) }
         onOpLoc1(tutorial_locs.TREE) { chop() }
         onOpLoc1(tutorial_locs.TREE2) { chop() }
         onOpLoc1(tutorial_locs.OAK) { oakDeny() }
@@ -63,6 +71,14 @@ constructor(
         // wins over a content-level one everywhere - so binding it here would put the tutorial's
         // one-recipe script on every anvil in the game. The smithing module's content handler
         // serves it instead; `advanceOnSmithing` below is what keeps progression moving.
+    }
+
+    private fun ProtectedAccess.fishWith(obj: ItemServerType) {
+        if (obj.id != tutorial_objs.NET.asRSCM()) {
+            mes("Nothing interesting happens.")
+            return
+        }
+        fish()
     }
 
     private fun ProtectedAccess.fish() {

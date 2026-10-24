@@ -19,6 +19,28 @@ import org.rsmod.routefinder.flag.CollisionFlag
 
 class TutorialFishingTest {
     @Test
+    fun GameTestState.`all actual pond spots work from Jackson's shoreline position`() {
+        val failed = mutableListOf<String>()
+        for (water in listOf(CoordGrid(1691, 6098, 0), CoordGrid(1693, 6100, 0), CoordGrid(1695, 6100, 0))) {
+            runInjectedGameTest(FishingDependencies::class, null, TutorialSkillsScript::class) { deps ->
+                allocZoneCollision(water)
+                player.teleport(CoordGrid(1693, 6101, 0))
+                player.clearInv()
+                player.inv[0] = InvObj("obj.net")
+                VarPlayerIntMapSetter.set(player, "varp.friendscape_tutorial_started", 1)
+                deps.progression.setStep(player, TutorialStep.SurvivalFish)
+                val spot = spawnNpc(water, ServerCacheManager.getNpc("npc.0_26_95_tut2_fishing".asRSCM())!!)
+                player.opNpc1(spot)
+                advance(ticks = 15)
+                if (player.inv.count("obj.tut2_raw_shrimp") != 1) {
+                    failed += "target=$water player=${player.coords} playerFlags=${deps.flags[player.coords.x, player.coords.z, 0].toString(16)} targetFlags=${deps.flags[water.x, water.z, 0].toString(16)}"
+                }
+            }
+        }
+        org.junit.jupiter.api.Assertions.assertTrue(failed.isEmpty(), failed.joinToString("; "))
+    }
+
+    @Test
     fun GameTestState.`fishing works across the blocked shoreline without moving into water`() =
         runInjectedGameTest(FishingDependencies::class, null, TutorialSkillsScript::class) { deps ->
             val spot = prepare(deps)
