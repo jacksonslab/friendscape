@@ -6,6 +6,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.boolVarp
 import org.rsmod.api.player.vars.enumVarp
+import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_varps
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -58,7 +59,27 @@ class TutorialProgression @Inject constructor(private val focus: TutorialFocusGu
 
     fun resume(player: Player) {
         if (!isActive(player)) return
+        if (catchUpSmithing(player)) return
         focus.apply(player, player.step)
+    }
+
+    /**
+     * The bar and dagger steps can't rely on a stat event: `onAdvanceStat` only fires on a level-up,
+     * and neither a bronze bar nor a bronze dagger gives enough xp for one. Anything that reads the
+     * step during the mining section calls this first, so holding the item is what counts.
+     */
+    fun catchUpSmithing(player: Player): Boolean {
+        if (!isActive(player)) return false
+        val next =
+            when {
+                player.step == TutorialStep.MineSmelt &&
+                    player.inv.count(tutorial_objs.BRONZE_BAR) > 0 -> TutorialStep.MineHammer
+                player.step == TutorialStep.MineDagger &&
+                    player.inv.count(tutorial_objs.BRONZE_DAGGER) > 0 -> TutorialStep.MineGate
+                else -> return false
+            }
+        setStep(player, next)
+        return true
     }
 
     fun completeQuest(player: Player) {

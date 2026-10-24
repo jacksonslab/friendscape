@@ -164,6 +164,7 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
     }
 
     private fun ProtectedAccess.miningExit(door: BoundLocInfo) {
+        progression.catchUpSmithing(player)
         if (!progression.requireAtLeast(player, TutorialStep.MineGate)) {
             progression.deny(player, "You need to finish with Mining and Smithing first.")
             return

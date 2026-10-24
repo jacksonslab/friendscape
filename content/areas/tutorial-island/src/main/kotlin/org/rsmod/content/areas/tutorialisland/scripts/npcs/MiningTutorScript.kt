@@ -19,6 +19,7 @@ class MiningTutorScript @Inject constructor(private val progression: TutorialPro
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
+        progression.catchUpSmithing(player)
         val step = progression.current(player)
         startDialogue(npc) {
             when {

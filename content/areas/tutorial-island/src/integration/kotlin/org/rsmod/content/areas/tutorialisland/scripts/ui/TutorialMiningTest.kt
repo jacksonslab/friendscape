@@ -35,6 +35,43 @@ class TutorialMiningTest {
         }
 
     @Test
+    fun GameTestState.`the furnace swaps one tin and one copper for a bar and moves on to the hammer`() =
+        runInjectedGameTest(MiningDependencies::class, null, TutorialSkillsScript::class) { deps ->
+            val furnace = CoordGrid(1680, 12450, 0)
+            allocZoneCollision(furnace)
+            player.teleport(furnace.translateZ(-1))
+            player.clearInv()
+            player.inv[0] = InvObj("obj.tin_ore")
+            player.inv[1] = InvObj("obj.copper_ore")
+            player.inv[2] = InvObj("obj.tin_ore")
+            VarPlayerIntMapSetter.set(player, "varp.friendscape_tutorial_started", 1)
+            deps.progression.setStep(player, TutorialStep.MineSmelt)
+
+            player.opLoc1(placeMapLoc(furnace, "loc.tut2_furnace"))
+            advance(ticks = 6)
+            assertEquals(1, player.inv.count("obj.bronze_bar"))
+            assertEquals(1, player.inv.count("obj.tin_ore"))
+            assertEquals(0, player.inv.count("obj.copper_ore"))
+            assertEquals(TutorialStep.MineHammer, deps.progression.current(player))
+
+            player.opLoc1(placeMapLoc(furnace, "loc.tut2_furnace"))
+            advance(ticks = 6)
+            assertEquals(1, player.inv.count("obj.bronze_bar"))
+            assertEquals(1, player.inv.count("obj.tin_ore"))
+        }
+
+    @Test
+    fun GameTestState.`a player stuck on smelting with a bar in hand is moved on`() =
+        runInjectedGameTest(MiningDependencies::class, null, TutorialSkillsScript::class) { deps ->
+            player.clearInv()
+            player.inv[0] = InvObj("obj.bronze_bar")
+            VarPlayerIntMapSetter.set(player, "varp.friendscape_tutorial_started", 1)
+            deps.progression.setStep(player, TutorialStep.MineSmelt)
+            deps.progression.resume(player)
+            assertEquals(TutorialStep.MineHammer, deps.progression.current(player))
+        }
+
+    @Test
     fun GameTestState.`a wielded pickaxe mines too`() =
         runInjectedGameTest(MiningDependencies::class, null, TutorialSkillsScript::class) { deps ->
             val tin = CoordGrid(1680, 12450, 0)

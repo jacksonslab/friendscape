@@ -22,7 +22,6 @@ import org.rsmod.content.areas.tutorialisland.progression.TutorialProgression
 import org.rsmod.content.areas.tutorialisland.progression.TutorialStep
 import org.rsmod.content.areas.tutorialisland.progression.tutorialExchange
 import org.rsmod.content.skills.cooking.DoughMakingRequest
-import org.rsmod.content.skills.smithing.smelting.SmeltingScript
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.plugin.scripts.PluginScript
@@ -39,7 +38,6 @@ class TutorialSkillsScript
 constructor(
     private val progression: TutorialProgression,
     private val locRepo: LocRepository,
-    private val smithing: SmeltingScript,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(tutorial_npcs.FISHING_SPOT) { fish() }
@@ -260,9 +258,9 @@ constructor(
     }
 
     /**
-     * The island's furnace is `tut2_furnace`, a tutorial-only loc, so gating it here is safe and
-     * only the smelting itself is delegated. The real dialog offers every bar, but the player is
-     * carrying one tin and one copper, so bronze is the only row that can produce anything.
+     * The island's furnace is `tut2_furnace`, a tutorial-only loc. Like the live tutorial it smelts
+     * bronze straight away: the shared smelt menu sits in the chatbox slot the tutorial guide
+     * occupies, and its xp is too small to raise the level-up event the step would wait on.
      */
     private suspend fun ProtectedAccess.smelt() {
         if (!progression.requireAtLeast(player, TutorialStep.MineSmelt)) {
@@ -272,7 +270,22 @@ constructor(
             )
             return
         }
-        smithing.openTutorialSmelt(this)
+        if (!inv.contains(tutorial_objs.TIN_ORE) || !inv.contains(tutorial_objs.COPPER_ORE)) {
+            if (!progression.catchUpSmithing(player)) {
+                mes("You need one tin ore and one copper ore to make bronze.")
+            }
+            return
+        }
+        anim("seq.human_furnace")
+        soundSynth("synth.furnace")
+        delay(2)
+        val take = listOf(tutorial_objs.TIN_ORE to 1, tutorial_objs.COPPER_ORE to 1)
+        if (!tutorialExchange(take, listOf(tutorial_objs.BRONZE_BAR to 1))) {
+            return
+        }
+        statAdvance("stat.smithing", SMELT_BRONZE_XP)
+        mes("You retrieve a bar of bronze.")
+        progression.catchUpSmithing(player)
     }
 
     private companion object {
@@ -289,5 +302,6 @@ constructor(
         private const val COOK_SHRIMP_XP = 30.0
         private const val COOK_BREAD_XP = 40.0
         private const val MINING_XP = 17.5
+        private const val SMELT_BRONZE_XP = 6.25
     }
 }
