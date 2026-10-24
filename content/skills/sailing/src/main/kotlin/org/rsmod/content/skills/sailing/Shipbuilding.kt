@@ -47,7 +47,7 @@ class Shipbuilding {
             }
             val cost = materials(type)
             val list = cost.entries.joinToString(", ") { "${it.value} x ${it.key.name}" }
-            val missing = cost.filter { (obj, count) -> invTotal(inv, obj.internalName) < count }
+            val missing = cost.filter { (obj, count) -> held(access, obj) < count }
             if (missing.isNotEmpty()) {
                 mesbox("A ${type.name.lowercase()} needs: $list.")
                 return@with
@@ -64,13 +64,28 @@ class Shipbuilding {
             mesbox("The shipwright builds your new ${type.name.lowercase()}. Board it from any dock gangplank.")
         }
 
+    /** Counts [obj] in the inventory, noted copies included, since a hull needs more than 28 slots. */
+    fun held(access: ProtectedAccess, obj: ItemServerType): Int {
+        val noted = if (obj.canCert) access.invTotal(access.inv, access.ocCert(obj.internalName).internalName) else 0
+        return access.invTotal(access.inv, obj.internalName) + noted
+    }
+
     fun build(access: ProtectedAccess, type: BoatType): Boolean {
         val cost = materials(type)
+        if (cost.any { (obj, count) -> held(access, obj) < count }) {
+            return false
+        }
         val result =
             access.player.invTransaction(access.inv) {
                 val target = select(access.inv)
                 for ((obj, count) in cost) {
-                    delete(target, obj.id, count)
+                    val plain = minOf(count, access.invTotal(access.inv, obj.internalName))
+                    if (plain > 0) {
+                        delete(target, obj.id, plain)
+                    }
+                    if (count > plain) {
+                        delete(target, access.ocCert(obj.internalName).id, count - plain)
+                    }
                 }
             }
         if (!result.success) {

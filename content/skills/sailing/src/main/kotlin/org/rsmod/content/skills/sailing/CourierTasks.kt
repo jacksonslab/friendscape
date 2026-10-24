@@ -46,13 +46,13 @@ object CourierTasks {
     private const val COURIER = 0
 }
 
-internal data class TaskSlot(val index: Int, val taskId: Int, val taken: Int, val delivered: Int) {
+data class TaskSlot(val index: Int, val taskId: Int, val taken: Int, val delivered: Int) {
     val task: CourierTask?
         get() = CourierTasks[taskId]
 }
 
 /** Courier progress kept in Jagex's own `port_task_slot_*` varbits. */
-internal object TaskSlots {
+object TaskSlots {
     const val COUNT = 5
 
     private val UNLOCK_LEVELS = intArrayOf(1, 7, 28, 56, 84)

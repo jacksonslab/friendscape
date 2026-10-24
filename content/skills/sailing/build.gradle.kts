@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
     id("game-cache-test-conventions")
 }
 
@@ -10,6 +11,6 @@ dependencies {
     implementation(libs.or2.all.cache)
     implementation(libs.netty.buffer)
     testImplementation(libs.fastutil)
-    testImplementation(libs.netty.buffer)
-    testImplementation(libs.or2.all.cache)
+    integrationImplementation(projects.api.pluginCommons)
+    integrationImplementation(projects.api.registry)
 }

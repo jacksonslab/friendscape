@@ -2,7 +2,7 @@ package org.rsmod.content.skills.sailing
 
 import org.rsmod.api.player.protect.ProtectedAccess
 
-internal const val STAT_SAILING: String = "stat.sailing"
+const val STAT_SAILING: String = "stat.sailing"
 
 /**
  * Lets the player pick one of [values] from a chat menu, three at a time with a "More..." option
