@@ -1,0 +1,55 @@
+[gamevals.dbtable]
+hunter_trap = 61700
+hunter_trap_creature = 61701
+hunter_trap_loot = 61702
+hunter_net_creature = 61703
+
+[gamevals.dbrow]
+hunter_trap_bird_snare = 61700
+hunter_trap_box_trap = 61701
+hunter_crimson_swift = 61702
+hunter_golden_warbler = 61703
+hunter_copper_longtail = 61704
+hunter_cerulean_twitch = 61705
+hunter_tropical_wagtail = 61706
+hunter_ferret = 61707
+hunter_chinchompa = 61708
+hunter_carnivorous_chinchompa = 61709
+hunter_black_chinchompa = 61710
+hunter_loot_crimson_swift_bones = 61711
+hunter_loot_crimson_swift_meat = 61712
+hunter_loot_crimson_swift_feather = 61713
+hunter_loot_golden_warbler_bones = 61714
+hunter_loot_golden_warbler_meat = 61715
+hunter_loot_golden_warbler_feather = 61716
+hunter_loot_copper_longtail_bones = 61717
+hunter_loot_copper_longtail_meat = 61718
+hunter_loot_copper_longtail_feather = 61719
+hunter_loot_cerulean_twitch_bones = 61720
+hunter_loot_cerulean_twitch_meat = 61721
+hunter_loot_cerulean_twitch_feather = 61722
+hunter_loot_tropical_wagtail_bones = 61723
+hunter_loot_tropical_wagtail_meat = 61724
+hunter_loot_tropical_wagtail_feather = 61725
+hunter_loot_ferret = 61726
+hunter_loot_chinchompa = 61727
+hunter_loot_carnivorous_chinchompa = 61728
+hunter_loot_black_chinchompa = 61729
+hunter_net_ruby_harvest = 61730
+hunter_net_sapphire_glacialis = 61731
+hunter_net_snowy_knight = 61732
+hunter_net_black_warlock = 61733
+hunter_net_baby_impling = 61734
+hunter_net_young_impling = 61735
+hunter_net_gourmet_impling = 61736
+hunter_net_earth_impling = 61737
+hunter_net_essence_impling = 61738
+hunter_net_eclectic_impling = 61739
+hunter_net_nature_impling = 61740
+hunter_net_magpie_impling = 61741
+hunter_net_ninja_impling = 61742
+hunter_net_dragon_impling = 61743
+hunter_net_lucky_impling = 61744
+
+[gamevals.timer]
+hunter_traps = 61700
