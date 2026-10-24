@@ -254,6 +254,17 @@ public interface DbColumnCodec<T, R> {
         }
     }
 
+    public object NamedItemServerTypeCodec : BaseIntCodec<ItemServerType> {
+        override val types: List<CacheVarLiteral> = listOf(CacheVarLiteral.NAMEDOBJ)
+
+        override fun decode(iterator: Iterator<Int, ItemServerType>): ItemServerType {
+            val id = iterator.next()
+            return ServerCacheManager.getItem(id) ?: error("Unable to find item: $id")
+        }
+
+        override fun encode(value: ItemServerType): List<Int> = listOf(value.id)
+    }
+
     public object StatReqCodec : DbColumnCodec<Int, StatRequirement> {
         override val types: List<CacheVarLiteral> =
             listOf(CacheVarLiteral.STAT, CacheVarLiteral.INT)

@@ -199,6 +199,14 @@ public class Player(
     public var buildArea: CoordGrid = CoordGrid.NULL
     public val visibleZoneKeys: IntList = IntArrayList()
     public var regionRebuildPending: Boolean = false
+
+    /**
+     * The zone the player's root-world *view* was last processed at. Normally the player's own
+     * zone; while aboard a world entity it is the entity's root-world zone. Tracked separately
+     * from `lastProcessedZone`, which other systems rely on for real zone occupancy.
+     */
+    public var lastProcessedViewZone: ZoneKey = ZoneKey.NULL
+
     public var lastMapBuildComplete: Int = Int.MIN_VALUE
     public var npcViewDistance: Int? = null
 
