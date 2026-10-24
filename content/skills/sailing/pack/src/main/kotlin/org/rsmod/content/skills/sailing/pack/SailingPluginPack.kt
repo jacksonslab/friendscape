@@ -10,5 +10,6 @@ class SailingPluginPack : PluginPack() {
             SailingTables.fixtures(),
             SailingPortsTable.ports(),
             SailingShipwrecksTable.shipwrecks(),
+            SailingPartsTable.parts(),
         )
 }

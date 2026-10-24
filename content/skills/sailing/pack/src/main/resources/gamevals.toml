@@ -24,6 +24,7 @@ friendscape_port_coin_bag_min = 62702
 friendscape_port_coin_bag_max = 62703
 
 [gamevals.dbtable]
+friendscape_sailing_parts = 62704
 friendscape_sailing_templates = 62700
 friendscape_sailing_fixtures = 62701
 friendscape_sailing_ports = 62702
@@ -116,3 +117,25 @@ friendscape_sailing_shipwreck_pirate = 62784
 friendscape_sailing_shipwreck_mercenary = 62785
 friendscape_sailing_shipwreck_fremennik = 62786
 friendscape_sailing_shipwreck_merchant = 62787
+
+friendscape_sailing_hull_wooden = 59300
+friendscape_sailing_large_hull_wooden = 59301
+friendscape_sailing_hull_oak = 59302
+friendscape_sailing_large_hull_oak = 59303
+friendscape_sailing_hull_teak = 59304
+friendscape_sailing_large_hull_teak = 59305
+friendscape_sailing_hull_mahogany = 59306
+friendscape_sailing_large_hull_mahogany = 59307
+friendscape_sailing_hull_camphor = 59308
+friendscape_sailing_large_hull_camphor = 59309
+friendscape_sailing_hull_ironwood = 59310
+friendscape_sailing_large_hull_ironwood = 59311
+friendscape_sailing_hull_rosewood = 59312
+friendscape_sailing_large_hull_rosewood = 59313
+
+friendscape_sailing_large_keel_bronze = 59314
+friendscape_sailing_large_keel_iron = 59315
+friendscape_sailing_large_keel_steel = 59316
+friendscape_sailing_large_keel_mithril = 59317
+friendscape_sailing_large_keel_adamant = 59318
+friendscape_sailing_large_keel_rune = 59319

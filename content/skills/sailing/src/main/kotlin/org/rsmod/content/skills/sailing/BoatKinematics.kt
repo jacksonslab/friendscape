@@ -33,7 +33,7 @@ class BoatKinematics @Inject constructor(private val boats: BoatManager) {
         }
         val nextX = entity.fineX + motion.dx
         val nextZ = entity.fineZ + motion.dz
-        if (!Navigation.fits(sailable, nextX, nextZ, entity.angle, type.hullWidth, type.hullLength)) {
+        if (!Navigation.passageClear(sailable, entity.fineX, entity.fineZ, motion.dx, motion.dz, entity.angle, type.hullWidth, type.hullLength)) {
             runAground(boat)
             return
         }

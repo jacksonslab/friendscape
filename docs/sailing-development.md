@@ -20,15 +20,23 @@ Branch `sailing-stage-1` (revision 241). Built on the world-entity boat engine f
   its cargo hold for a hook (Modify); skiff and sloop carry both. Deploy the hook next to a wreck.
   Sort salvage at port salvaging stations using the wiki loot tables.
 - **Charting**: the 92 generic "Chart" landmarks give 35 XP each, tracked in server varps.
-- **Shipbuilding**: notice board, then "Commission a boat". A skiff or sloop costs the base
-  hull/keel/sail/helm materials from the cache; noted materials count.
+- **Boat purchases**: shipwright Buy-boat or notice board > Commission a boat. Skiffs cost 15,000 coins at level 15; sloops cost 200,000 coins at level 50. Payment and ownership are rechecked atomically.
+- **Boat parts**: Make-X at shipwright workbenches makes all seven hull tiers and large hull parts. Anvils make bronze through rune keel parts; use five ordinary parts on an anvil for a large part.
 
 ## Not done / deviations
 
-- Hull and keel parts (`sailing_boat_hull_part_*`, `sailing_boat_keel_part_*`) can't be crafted
-  yet, so commissioning is only possible with spawned parts.
 - No bounty tasks, boat combat, trawling, crew, sea charting beyond generic landmarks, sail
   trimming, Barracuda Trials, facility upgrades, or the Pandemonium quest; everyone owns a raft.
 - Task choice uses chat menus rather than Jagex's port_task_board interface.
 - Salvage success uses a flat 64/192 curve. Wreck duration is the wiki's average.
 - Dock quest requirements are ignored.
+
+## Part recipe references
+
+- https://oldschool.runescape.wiki/w/Construction_training (Hull parts)
+- https://oldschool.runescape.wiki/w/Wooden_hull_parts
+- https://oldschool.runescape.wiki/w/Rune_keel_parts
+- https://oldschool.runescape.wiki/w/Skiff
+- https://oldschool.runescape.wiki/w/Sloop
+
+The pre-Pandemonium anvil menu exposes keel crafting because Friendscape permits Sailing before the quest; it does not mark the quest complete. Dragon keel recipes already exist at the Ancient Forge and have not been changed or verified in this milestone.

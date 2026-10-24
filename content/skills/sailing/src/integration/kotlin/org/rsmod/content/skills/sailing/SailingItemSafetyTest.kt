@@ -17,7 +17,7 @@ import org.rsmod.map.CoordGrid
 
 class SailingTestDeps
 @Inject
-constructor(val shipbuilding: Shipbuilding, val cargo: CargoService, val held: HeldInteractions)
+constructor(val shipbuilding: Shipbuilding, val cargo: CargoService, val held: HeldInteractions, val parts: ShipwrightParts)
 
 private val TILE = CoordGrid(0, 50, 50, 20, 20)
 private val LEDGER_TILE = TILE.translateX(1)
@@ -199,5 +199,115 @@ class SailingItemSafetyTest {
             for ((material, _) in cost) {
                 assertEquals(1, held(material))
             }
+            player.withProtectedAccess { built = deps.shipbuilding.build(this, skiff) }
+            assertFalse(built)
+            for ((material, _) in cost) assertEquals(1, held(material))
+        }
+
+    @Test
+    fun GameTestState.`hull crafting consumes five planks once and keeps tools`() =
+        runInjectedGameTest(SailingTestDeps::class, null) { deps ->
+            prepare()
+            player.setCurrentLevel("stat.construction", 99)
+            val recipe = org.rsmod.api.table.sailing.FriendscapeSailingPartsRow.all().first { it.output.internalName == "obj.sailing_boat_hull_part_wooden" }
+            player.inv[0] = InvObj("obj.hammer")
+            player.inv[1] = InvObj("obj.poh_saw")
+            for (i in 2..6) player.inv[i] = InvObj(recipe.input.internalName)
+            var made = false
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertTrue(made)
+            assertEquals(0, player.inv.count(recipe.input))
+            assertEquals(1, player.inv.count(recipe.output))
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertFalse(made)
+            assertEquals(1, player.inv.count(recipe.output))
+            assertEquals(1, player.inv.count("obj.hammer"))
+            assertEquals(1, player.inv.count("obj.poh_saw"))
+        }
+
+    @Test
+    fun GameTestState.`hull crafting missing plank or tool preserves every item`() =
+        runInjectedGameTest(SailingTestDeps::class, null) { deps ->
+            prepare()
+            player.setCurrentLevel("stat.construction", 99)
+            val recipe = org.rsmod.api.table.sailing.FriendscapeSailingPartsRow.all().first()
+            player.inv[0] = InvObj("obj.hammer")
+            for (i in 1..5) player.inv[i] = InvObj(recipe.input.internalName)
+            var made = true
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertFalse(made)
+            assertEquals(5, player.inv.count(recipe.input))
+            player.inv[5] = InvObj("obj.poh_saw")
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertFalse(made)
+            assertEquals(4, player.inv.count(recipe.input))
+            assertEquals(0, player.inv.count(recipe.output))
+        }
+
+    @Test
+    fun GameTestState.`hull crafting uses freed slots in a full inventory and respects levels`() =
+        runInjectedGameTest(SailingTestDeps::class, null) { deps ->
+            prepare()
+            val recipe = org.rsmod.api.table.sailing.FriendscapeSailingPartsRow.all().first { it.output.internalName == "obj.sailing_boat_hull_part_oak" }
+            player.fillInv()
+            player.inv[0] = InvObj("obj.hammer")
+            player.inv[1] = InvObj("obj.poh_saw")
+            for (i in 2..6) player.inv[i] = InvObj(recipe.input.internalName)
+            player.setCurrentLevel("stat.construction", 1)
+            var made = true
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertFalse(made)
+            assertEquals(5, player.inv.count(recipe.input))
+            player.setCurrentLevel("stat.construction", 99)
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertTrue(made)
+            assertEquals(0, player.inv.count(recipe.input))
+            assertEquals(1, player.inv.count(recipe.output))
+        }
+
+    @Test
+    fun GameTestState.`anvil keel forging consumes five bars once`() =
+        runInjectedGameTest(SailingTestDeps::class, null) {
+            prepare()
+            val meta = org.rsmod.content.skills.smithing.util.SmithingData.productMeta.first { it.product.internalName == "obj.sailing_boat_keel_part_bronze" }
+            for (i in 0 until meta.barCount) player.inv[i] = InvObj(meta.bar.output.internalName)
+            var made = false
+            player.withProtectedAccess { made = org.rsmod.content.skills.smithing.util.SmithingUtils.forge(this, meta) }
+            assertTrue(made)
+            assertEquals(0, player.inv.count(meta.bar.output))
+            assertEquals(1, player.inv.count(meta.product))
+            player.withProtectedAccess { made = org.rsmod.content.skills.smithing.util.SmithingUtils.forge(this, meta) }
+            assertFalse(made)
+            assertEquals(1, player.inv.count(meta.product))
+        }
+
+    @Test
+    fun GameTestState.`anvil product overflow rolls back bars`() =
+        runInjectedGameTest(SailingTestDeps::class, null) {
+            prepare()
+            val meta = org.rsmod.content.skills.smithing.util.SmithingData.productMeta.first { it.product.internalName == "obj.bronze_arrowheads" }
+            player.inv[0] = InvObj(meta.product.internalName, Int.MAX_VALUE)
+            for (i in 1..meta.barCount) player.inv[i] = InvObj(meta.bar.output.internalName)
+            var made = true
+            player.withProtectedAccess { made = org.rsmod.content.skills.smithing.util.SmithingUtils.forge(this, meta) }
+            assertFalse(made)
+            assertEquals(meta.barCount, player.inv.count(meta.bar.output))
+            assertEquals(Int.MAX_VALUE, player.inv.count(meta.product))
+        }
+
+    @Test
+    fun GameTestState.`large keel conversion keeps hammer and consumes exactly five parts`() =
+        runInjectedGameTest(SailingTestDeps::class, null) { deps ->
+            prepare()
+            player.setCurrentLevel("stat.smithing", 99)
+            val recipe = org.rsmod.api.table.sailing.FriendscapeSailingPartsRow.all().first { it.anvil }
+            player.inv[0] = InvObj("obj.hammer")
+            for (i in 1..5) player.inv[i] = InvObj(recipe.input.internalName)
+            var made = false
+            player.withProtectedAccess { made = deps.parts.make(this, recipe) }
+            assertTrue(made)
+            assertEquals(0, player.inv.count(recipe.input))
+            assertEquals(1, player.inv.count(recipe.output))
+            assertEquals(1, player.inv.count("obj.hammer"))
         }
 }

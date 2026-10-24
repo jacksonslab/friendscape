@@ -44,6 +44,22 @@ internal object Navigation {
         length: Int,
     ): Boolean = hullTiles(fineX, fineZ, angle, width, length).all { sailable(unpackX(it), unpackZ(it)) }
 
+    fun passageClear(
+        sailable: (x: Int, z: Int) -> Boolean,
+        fineX: Int,
+        fineZ: Int,
+        dx: Int,
+        dz: Int,
+        angle: Int,
+        width: Int,
+        length: Int,
+    ): Boolean {
+        val steps = maxOf(1, (maxOf(kotlin.math.abs(dx), kotlin.math.abs(dz)) + 31) / 32)
+        return (0..steps).all { step ->
+            fits(sailable, fineX + (dx.toLong() * step / steps).toInt(), fineZ + (dz.toLong() * step / steps).toInt(), angle, width, length)
+        }
+    }
+
     /**
      * Searches outward from a gangplank for the closest spot a hull can lie alongside it, with the
      * hull's long side facing the gangplank.
