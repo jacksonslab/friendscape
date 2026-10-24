@@ -5286,3 +5286,16 @@ vertices = [
     [3328, 10240],
     [3264, 10240],
 ]
+
+[[area]]
+name = "Theatre of Blood Multiway"
+area_id = "area.multiway"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3136, 4224],
+    [3392, 4224],
+    [3392, 4480],
+    [3136, 4480],
+]
