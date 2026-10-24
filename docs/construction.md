@@ -106,16 +106,35 @@ Attributes are stored as JSON in `character_attrs`, so no schema work was needed
 `HouseLayoutTest` covers the round trip, malformed input, and the rule that furniture pointing at a
 room that is no longer placed gets dropped.
 
-Entering a house also sets `instance_exit_coord`, the attribute the login path already honours, so a
-player who logs out inside their house comes back outside it rather than in dead region space.
+Owning a house is `varbit.poh_house_location` (0 = none), numbered like the client's `enum_252`.
+Daddy's Home sets it too.
+
+## Owning and visiting a house
+
+`EstateAgent` (`npc.poh_estate_agent`, `npc.prif_estate_agent`) sells a first house in Rimmington
+for 1,000 coins and, on Talk-to or op-3 Relocate, moves it to any town in
+`dbtable.construction_house_location` for that town's fee once the base Construction level is met.
+That table also gives each town's portal loc and the tile in front of it.
+
+`HouseManager` keeps one protected dynamic region per open house, keyed by owner. The owner opens it
+and guests join it; it is unprotected (and later swept) once the last occupant leaves, and the owner
+leaving sends any guests to the portal. Leaving by the exit portal, logging out, or teleporting out
+of the region all go through the same exit, which also clears `instance_exit_coord` and building
+mode. A player who logs out inside is put at the portal before the save, and
+`instance_exit_coord` covers a crash.
+
+Building mode belongs to the house, not the player: guests cannot enter a house in building mode,
+and switching it on sends them out. Outside building mode empty hotspots and doorway hotspots are
+removed from the region, so nothing ghostly shows.
 
 ## Entry points
 
-- Any of the nine town portals (`loc.poh_rimmington_portal` and friends): op-1 enters, op-2 enters in
-  building mode.
+- The town portals: op-1 Enter (menu), op-2 Home, op-3 Build mode, op-4 Friend's house (asks for a
+  name; the friend must be home, at that portal's town, and not in building mode). The owner can only
+  go in through the portal of the town their house is in.
 - `loc.poh_exit_portal` in the garden leaves.
-- `::house` and `::buildmode` do the same thing without walking to a portal.
-- `::pohrooms` dumps the catalogue.
+- `::house` and `::buildmode` enter your own house from anywhere (and switch mode when inside).
+- `::pohrooms` dumps the catalogue, `::pohwhere` explains the tile you stand on.
 
 In building mode, clicking a furniture hotspot opens `interface.poh_furniture_creation` (458). The
 client builds each row itself: the server opens the interface, calls
@@ -124,12 +143,27 @@ through `enum_1461`) with the slot index, furniture dbrow, level requirement, ma
 whether the player can afford it, then suspends on `pauseButton()`. Clicking **Build** runs
 `[clientscript,poh_furniture_creation_op]`, which resumes that pause button with the slot index.
 
-Op-5 on a built hotspot removes the furniture after a confirmation.
+An empty hotspot lists only pieces that stand on their own. Pieces with
+`upgrade_source_relative`/`_absolute` (tool stores 2-5, crafting tables 2-4, the vice and lathe
+benches, costume room upgrades) are built through op-4 Upgrade on the piece they upgrade.
 
-Op-5 on a doorway builds a room through it, or, when a room is already on the other side, offers to
-remove that room along with everything built in it. A room cannot be removed while the player
-stands in it, while a room sits directly above it, or when it is the last room on the ground floor.
-Like a new room, the change shows on re-entry.
+Materials are paid by `MaterialPayment` in a single inventory transaction (nails from any tier,
+cheapest first) after the build animation, and only if the hotspot still holds what the menu was
+opened on, so a repeated click or a plank dropped mid-build costs nothing.
+`ConstructionItemSafetyTest` covers those paths.
+
+Op-5 on a built hotspot removes the furniture after a confirmation. Removal refunds nothing, as on
+live.
+
+Op-5 on a doorway opens `interface.poh_add_room` (212). Its onload builds the room list from
+`dbcol.poh_room:button`, and choosing a room resumes the pause button on `poh_add_room:list` with the
+room type as the subcomponent. The room is then placed for real and the house rebuilt around the
+player, with a Rotate clockwise / Rotate anticlockwise / Build / Cancel menu cycling through the
+rotations that join the room to that doorway; coins are taken on Build, and Cancel takes it back out.
+`floor_restriction` keeps dungeon rooms underground and gardens on the ground floor. When a room is
+already on the other side, the doorway offers to remove it with everything built in it; that is
+refused while anyone stands in it, while a room sits above it, or when it is the last ground-floor
+room.
 
 Built furniture that does something beyond standing there:
 
@@ -144,15 +178,15 @@ Built furniture that does something beyond standing there:
 
 - **Hotspot coverage is incomplete** — see above. Both naming conventions are handled, but some
   individual slots still match neither.
-- **Room creation uses a chat menu, not `interface.poh_add_room` (212).** That window's room grid is
-  driven by `varcs.poh_roompos_01`-`_38`, which the server does not set; the room buttons in
-  `dbcol.poh_room:button` all point into it. Until that contract is worked out, clicking a doorway
-  hotspot in building mode offers the buildable rooms as a dialogue menu instead.
-- **New rooms appear on re-entry.** Placing a room writes the layout but does not patch the live
-  region; leaving and re-entering rebuilds it. `RegionRegistry.registerZone` can add a single zone to
-  a live region, which is the upgrade path.
-- **Construction xp is derived from materials.** `dbtable.furniture` carries no xp column, so
-  `MATERIAL_XP` maps the standard per-plank values (29 / 60 / 90 / 140) plus gold leaf, marble,
-  magic stones, cloth and limestone. Furniture built from anything else awards no xp yet.
-- Not implemented at all: the estate agent and buying/moving a house, house styles, servants,
-  the house options window, dungeons as a separate build flow, the menagerie, and guests.
+- **Only the ground floor is reachable.** Doorways lead to rooms on the same level; staircases can
+  be built but do not climb, so upper floors and the dungeon cannot be reached or built yet.
+- **One house style.** Room templates exist per style (a block of template grids at zones
+  232/240/248 x 881, one style per level), but only the basic one is used and Redecorate is not
+  offered.
+- **Doorways that lead nowhere are open gaps** outside building mode rather than walls; the tiles
+  beyond are unallocated, so nobody can walk out.
+- **Relocation only checks the level**: Hosidius and Aldarin's "visit first" and Prifddinas' Song of
+  the Elves requirements are not checked.
+- **Room count and house size limits are not enforced** beyond the 8x8 grid.
+- Not implemented at all: servants, the house options window, house locking, the menagerie, and
+  tablets/teleports to the house.
