@@ -21,7 +21,6 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops, private
         onOpNpc1("npc.vc_face") { startDialogue(it.npc) { theFace() } }
 
         onTalkAcross(SHIPWRIGHT) { startDialogue(it) { shipwrightSam() } }
-        onOpNpc3(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
         onOpNpc4(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
         onOpNpc5(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
 
@@ -110,11 +109,10 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops, private
         chatPlayer(happy, "Interesting... Would I be able to buy one?")
         chatNpc(
             neutral,
-            "Sorry, but I don't have any ready for sale right now. I'm sure I will soon, so keep " +
-                "checking back.",
+            "Of course! Use my Buy-boat option. I sell skiffs and sloops to sailors with the " +
+                "experience to handle them.",
         )
         chatPlayer(happy, "Okay, fair enough.")
-        mesbox(SAILING_LOCKED)
     }
 
     private suspend fun Dialogue.sailingRecruiters() {

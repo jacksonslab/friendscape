@@ -29,6 +29,7 @@ object SailingTables {
         column("hook_dx", 21, VarType.INT)
         column("hook_dz", 22, VarType.INT)
         column("hook_replaces_cargo_hold", 23, VarType.BOOLEAN)
+        column("purchase_cost", 24, VarType.INT)
 
         fun template(
             row: String,
@@ -48,6 +49,7 @@ object SailingTables {
             hookDx: Int,
             hookDz: Int,
             hookReplacesCargoHold: Boolean,
+            purchaseCost: Int = 0,
         ) {
             row(row) {
                 column(0, key)
@@ -74,6 +76,7 @@ object SailingTables {
                 column(21, hookDx)
                 column(22, hookDz)
                 column(23, hookReplacesCargoHold)
+                column(24, purchaseCost)
             }
         }
 
@@ -88,12 +91,14 @@ object SailingTables {
             "seq.human_sailing_alpha_helm_small01_active01", 10807, 10808,
             hullWidth = 2, hullLength = 5, hook = "loc.salvaging_hook_bronze",
             hookDx = 4, hookDz = 3, hookReplacesCargoHold = false,
+            purchaseCost = 15000,
         )
         template(
             "dbrow.friendscape_sailing_template_sloop", "sloop", 3, 804, 2, 10, 192, 448,
             "seq.human_sailing_helm_3x8_active01", 10807, 10808,
             hullWidth = 3, hullLength = 8, hook = "loc.salvaging_hook_large_bronze",
             hookDx = 4, hookDz = 7, hookReplacesCargoHold = false,
+            purchaseCost = 200000,
         )
     }
 

@@ -8,6 +8,21 @@ import org.junit.jupiter.api.Test
 
 class NavigationTest {
     @Test
+    fun `fast boats cannot jump a narrow strip of land`() {
+        val water: (Int, Int) -> Boolean = { x, _ -> x != 11 }
+        assertTrue(Navigation.fits(water, fine(10), fine(10), 0, 1, 1))
+        assertTrue(Navigation.fits(water, fine(13), fine(10), 0, 1, 1))
+        assertFalse(Navigation.passageClear(water, fine(10), fine(10), 384, 0, 0, 1, 1))
+        assertFalse(Navigation.passageClear(water, fine(13), fine(10), -384, 0, 0, 1, 1))
+    }
+
+    @Test
+    fun `open water allows movement in both directions`() {
+        assertTrue(Navigation.passageClear({ _, _ -> true }, fine(10), fine(10), 384, -128, 0, 2, 5))
+        assertTrue(Navigation.passageClear({ _, _ -> true }, fine(10), fine(10), -384, 128, 0, 2, 5))
+    }
+
+    @Test
     fun `a raft heading south covers three tiles along the z axis`() {
         val tiles = Navigation.hullTiles(fine(10), fine(10), angle = 0, width = 1, length = 3)
         assertEquals(setOf(tile(10, 9), tile(10, 10), tile(10, 11)), tiles)

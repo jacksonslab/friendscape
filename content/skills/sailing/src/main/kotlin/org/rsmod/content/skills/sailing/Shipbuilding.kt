@@ -7,29 +7,13 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 
-/**
- * Commissions new hulls. A boat costs the base materials of its first hull, keel, sail and helm
- * options straight out of the cache's `sailing_boat_*` tables.
- */
+/** Purchases a boat with its base fittings; component materials are for subsequent upgrades. */
 @Singleton
 class Shipbuilding {
     fun materials(type: BoatType): Map<ItemServerType, Int> {
-        val boat = type.boat
-        val parts =
-            listOfNotNull(
-                boat.hullOption.firstOrNull()?.material,
-                boat.keelOption.firstOrNull()?.material,
-                boat.sailOption.firstOrNull()?.material,
-                boat.steeringOption.firstOrNull()?.material,
-            )
-        val totals = LinkedHashMap<Int, Pair<ItemServerType, Int>>()
-        for (part in parts) {
-            for ((obj, count) in part) {
-                val previous = totals[obj.id]?.second ?: 0
-                totals[obj.id] = obj to previous + count
-            }
-        }
-        return totals.values.associate { it.first to it.second }
+        if (type.purchaseCost <= 0) return emptyMap()
+        val coins = dev.openrune.ServerCacheManager.getItem(dev.openrune.rscm.RSCM.getRSCM("obj.coins"))!!
+        return mapOf(coins to type.purchaseCost)
     }
 
     suspend fun commission(access: ProtectedAccess) =
@@ -67,10 +51,13 @@ class Shipbuilding {
     /** Counts [obj] in the inventory, noted copies included, since a hull needs more than 28 slots. */
     fun held(access: ProtectedAccess, obj: ItemServerType): Int {
         val noted = if (obj.canCert) access.invTotal(access.inv, access.ocCert(obj.internalName).internalName) else 0
-        return access.invTotal(access.inv, obj.internalName) + noted
+        return (access.invTotal(access.inv, obj.internalName).toLong() + noted).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
     }
 
     fun build(access: ProtectedAccess, type: BoatType): Boolean {
+        if (type.purchaseCost <= 0 || access.player.ownsBoat(type) || access.statBase(STAT_SAILING) < type.levelRequired) {
+            return false
+        }
         val cost = materials(type)
         if (cost.any { (obj, count) -> held(access, obj) < count }) {
             return false

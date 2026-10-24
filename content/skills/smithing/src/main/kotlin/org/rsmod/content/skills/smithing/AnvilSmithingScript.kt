@@ -22,6 +22,10 @@ import org.rsmod.content.skills.smithing.util.SmithingData
 import org.rsmod.content.skills.smithing.util.SmithingProductMeta
 import org.rsmod.content.skills.smithing.util.SmithingUtils
 import org.rsmod.content.skills.smithing.util.SmithingUtils.hasHammer
+import org.rsmod.content.skills.Material
+import org.rsmod.content.skills.SkillMultiConfig
+import org.rsmod.content.skills.SkillMultiEntry
+import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -95,6 +99,17 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
     private suspend fun ProtectedAccess.openAnvilSmithing(barInternal: String) {
         val bar = SmithingData.barsByOutput[barInternal] ?: return
         if (!canSmithBar(bar)) {
+            return
+        }
+        val keel = SmithingData.productMeta.firstOrNull {
+            it.bar.output.id == bar.output.id && it.product.internalName.startsWith("obj.sailing_boat_keel_part_")
+        }
+        // Friendscape permits Sailing before Pandemonium; the native interface hides this slot.
+        if (keel != null && player.vars["varp.sailing_intro"] < 50 &&
+            choice2("Smith other items.", false, "Make keel parts.", true)) {
+            openSkillMulti(SkillMultiConfig(verb = "make", entries = listOf(
+                SkillMultiEntry(keel.product.internalName, listOf(Material(bar.output.internalName, keel.barCount))),
+            ))) { startSmithing(keel, it.amount) }
             return
         }
         openSmithingInterface(bar)
@@ -208,18 +223,14 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
     }
 
     private fun ProtectedAccess.performSmith(meta: SmithingProductMeta) {
-        val barRemoved =
-            invDel(inv, meta.bar.output.internalName, meta.barCount, strict = true).success
-        if (!barRemoved) {
+        if (!SmithingUtils.forge(this, meta)) {
             resetAnim()
             return
         }
 
-        if (invAdd(inv, meta.product.internalName, meta.numProduced).success) {
-            spam(forgedMessage(meta))
-            val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
-            statAdvance("stat.smithing", xp)
-        }
+        spam(forgedMessage(meta))
+        val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
+        statAdvance("stat.smithing", xp)
     }
 
     private fun forgedMessage(meta: SmithingProductMeta): String {

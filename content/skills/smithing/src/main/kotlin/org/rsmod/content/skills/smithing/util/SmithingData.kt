@@ -78,6 +78,7 @@ object SmithingData {
             "component.smithing:other_3",
             "component.smithing:bolts",
             "component.smithing:limbs",
+            "component.smithing:other_4",
         )
 
 
@@ -205,6 +206,7 @@ object SmithingData {
             child == "component.smithing:bolts" -> "${bar.prefix} bolts (unf)"
             child == "component.smithing:limbs" -> "${bar.prefix} limbs"
             child == "component.smithing:other_3" -> "${bar.prefix} javelin tips"
+            child == "component.smithing:other_4" -> "${bar.prefix} keel parts"
             else -> null
         }
 }

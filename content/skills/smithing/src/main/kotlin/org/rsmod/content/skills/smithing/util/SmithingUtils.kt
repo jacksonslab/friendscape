@@ -1,6 +1,10 @@
 package org.rsmod.content.skills.smithing.util
 
 import dev.openrune.types.ItemServerType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import kotlin.random.Random
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.craftingLvl
@@ -8,6 +12,14 @@ import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.game.entity.Player
 
 object SmithingUtils {
+    fun forge(access: ProtectedAccess, meta: SmithingProductMeta): Boolean = with(access) {
+        player.invTransaction(inv) {
+            val inventory = select(inv)
+            delete(inventory, meta.bar.output.id, meta.barCount)
+            add(inventory, meta.product.id, meta.numProduced)
+        }.success
+    }
+
     private val smithsUniformPieces = listOf(
         "obj.smithing_uniform_torso",
         "obj.smithing_uniform_legs",

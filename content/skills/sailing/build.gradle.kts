@@ -8,9 +8,11 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.registry)
     implementation(projects.api.utils.utilsSkills)
+    implementation(projects.content.skills.utils)
     implementation(libs.or2.all.cache)
     implementation(libs.netty.buffer)
     testImplementation(libs.fastutil)
     integrationImplementation(projects.api.pluginCommons)
     integrationImplementation(projects.api.registry)
+    integrationImplementation(projects.content.skills.smithing)
 }

@@ -20,6 +20,7 @@ class BoatType(private val row: FriendscapeSailingTemplatesRow) {
     val baseSpeed: Int = row.baseSpeed
     val speedCap: Int = row.speedCap
     val acceleration: Int = row.acceleration
+    val purchaseCost: Int = row.purchaseCost
     val helmPlayerGrab: String = row.helmPlayerGrab
     val helmSynthGrab: Int = row.helmSynthGrab
     val helmSynthRelease: Int = row.helmSynthRelease
