@@ -8,6 +8,7 @@ import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onApNpc1
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
@@ -37,6 +38,9 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(tutorial_npcs.FISHING_SPOT) { fish() }
+        onApNpc1(tutorial_npcs.FISHING_SPOT) {
+            if (isWithinApRange(it.npc, 1)) fish()
+        }
         onOpLoc1(tutorial_locs.TREE) { chop() }
         onOpLoc1(tutorial_locs.TREE2) { chop() }
         onOpLoc1(tutorial_locs.OAK) { oakDeny() }
@@ -69,12 +73,15 @@ constructor(
             )
             return
         }
-        if (inv.freeSpace() <= 0 && invTotal(inv, tutorial_objs.TUT2_RAW_SHRIMP) <= 0) {
+        if (!inv.contains(tutorial_objs.NET)) {
+            mes("You need a small fishing net to catch shrimp.")
+            return
+        }
+        if (!tutorialExchange(emptyList(), listOf(tutorial_objs.TUT2_RAW_SHRIMP to 1))) {
             mes("You don't have enough inventory space to hold that item.")
             return
         }
         anim(tutorial_seqs.SMALL_NET)
-        invAdd(inv, tutorial_objs.TUT2_RAW_SHRIMP, 1)
         statAdvance("stat.fishing", FISHING_XP)
         mes("You manage to catch some shrimp.")
         // Catch advances to SurvivalSkills (flash skills tab). Opening skills â†’ SurvivalTools,
