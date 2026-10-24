@@ -99,21 +99,30 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
      * to him. Re-points the arrow and swaps the guide text to say so.
      */
     fun pointBackToBasicsTutor(player: Player) {
-        val npc =
-            npcSearch.find(
-                player.coords,
-                tutorial_npcs.BASICS_TUTOR,
-                HINT_NPC_DISTANCE,
-                HuntVis.Off,
-            )
-        if (npc != null) {
-            HintArrows.setNpc(player, npc)
-        }
-        TutorialClientScripts.mesOverlay(
+        pointBackTo(
             player,
+            tutorial_npcs.BASICS_TUTOR,
             "<col=0000ff>Settings menu</col><br>Good. Now speak to the Gielinor Guide again to " +
                 "continue.",
         )
+    }
+
+    fun pointBackToQuestTutor(player: Player) {
+        player.flashingSide = FLASH_SIDE_NONE
+        pointBackTo(
+            player,
+            tutorial_npcs.QUEST_TUTOR,
+            "<col=0000ff>Your quest list</col><br>This is your quest list. Talk to the Quest " +
+                "Guide again for an explanation.",
+        )
+    }
+
+    private fun pointBackTo(player: Player, npcType: String, text: String) {
+        val npc = npcSearch.find(player.coords, npcType, HINT_NPC_DISTANCE, HuntVis.Off)
+        if (npc != null) {
+            HintArrows.setNpc(player, npc)
+        }
+        TutorialClientScripts.mesOverlay(player, text)
     }
 
     fun setControlGuide(player: Player, step: TutorialStep) {

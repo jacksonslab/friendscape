@@ -123,9 +123,8 @@ constructor(
 
     private fun onQuestListOpened(player: Player) {
         if (!progression.isActive(player)) return
-        val step = progression.current(player)
-        if (step == TutorialStep.QuestTalk || step == TutorialStep.QuestList) {
-            progression.setStep(player, TutorialStep.QuestList)
+        if (progression.current(player) == TutorialStep.QuestList) {
+            focus.pointBackToQuestTutor(player)
         }
     }
 
