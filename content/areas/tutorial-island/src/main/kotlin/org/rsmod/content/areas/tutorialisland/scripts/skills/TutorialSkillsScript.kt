@@ -234,11 +234,10 @@ constructor(
             )
             return
         }
-        if (invTotal(inv, tutorial_objs.BRONZE_PICKAXE) <= 0) {
-            progression.deny(
-                player,
-                "You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.",
-            )
+        if (invTotal(inv, tutorial_objs.BRONZE_PICKAXE) <= 0 &&
+            invTotal(worn, tutorial_objs.BRONZE_PICKAXE) <= 0
+        ) {
+            mes("You need a pickaxe to mine this rock.")
             return
         }
         if (inv.freeSpace() <= 0) {
