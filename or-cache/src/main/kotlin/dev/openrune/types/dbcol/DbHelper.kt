@@ -140,8 +140,8 @@ public class DbHelper(private val row: DBRowType) {
     }
 
     public fun getColumn(id: Int): Column {
-        val col = row.definedColumns()[id] ?: throw DbException.MissingColumn(tableId, id, id)
-        return Column(col, rowId = id, columnId = id, tableId = tableId)
+        val col = row.definedColumns()[id] ?: throw DbException.MissingColumn(tableId, this.id, id)
+        return Column(col, rowId = this.id, columnId = id, tableId = tableId)
     }
 
     public class Column(

@@ -179,9 +179,7 @@ private fun varTypeCodegen(vt: VarType): VarTypeCodegen =
         VarType.NAMEDOBJ ->
             VarTypeCodegen(
                 typeObj,
-                CodecPlacement.Nested to "ItemServerTypeCodec",
-                "obj",
-                "objOptional",
+                CodecPlacement.Nested to "NamedItemServerTypeCodec",
             )
         VarType.GRAPHIC ->
             VarTypeCodegen(codec = CodecPlacement.TopLevel to "GraphicIdCodec")
