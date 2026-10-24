@@ -54,6 +54,34 @@ private fun GameTestScope.coinBags(): Int =
 @Execution(ExecutionMode.SAME_THREAD)
 class SailingItemSafetyTest {
     @Test
+    fun GameTestState.`prepare login restores shore before inventories exist`() =
+        runGameTest(SailingSessionScript::class) {
+            val fresh = org.rsmod.game.entity.Player()
+            val shore = CoordGrid(2950, 3200, 0)
+            fresh.sailingShore = shore.packed
+            fresh.aboardPlayerBoat = 1
+            fresh.helmLockedIn = 3
+            org.junit.jupiter.api.Assertions.assertThrows(UninitializedPropertyAccessException::class.java) { fresh.inv }
+            eventBus.publish(org.rsmod.game.entity.player.SessionStateEvent.PrepareLogin(fresh))
+            assertEquals(shore, fresh.coords)
+            assertEquals(0, fresh.sailingShore)
+            assertEquals(0, fresh.aboardPlayerBoat)
+            assertEquals(0, fresh.helmLockedIn)
+        }
+
+    @Test
+    fun GameTestState.`ready login refreshes cargo after inventory initialization`() =
+        runGameTest(SailingSessionScript::class) {
+            prepare()
+            player.inv[0] = InvObj(crate(FISH_TASK).internalName)
+            eventBus.publish(org.rsmod.game.entity.player.SessionStateEvent.EngineLoginReady(player))
+            assertEquals(1, player.carryingCargo)
+            player.clearInv()
+            eventBus.publish(org.rsmod.game.entity.player.SessionStateEvent.EngineLoginReady(player))
+            assertEquals(0, player.carryingCargo)
+        }
+
+    @Test
     fun GameTestState.`taking cargo hands over exactly one crate`() =
         runGameTest(PortTaskScript::class) {
             prepare()

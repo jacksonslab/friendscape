@@ -24,6 +24,8 @@ constructor(private val boats: BoatManager, private val cargo: CargoService) : P
             }
             player.aboardPlayerBoat = 0
             player.helmLockedIn = 0
+        }
+        onEvent<SessionStateEvent.EngineLoginReady> {
             cargo.refreshCarrying(player)
         }
         onEvent<SessionStateEvent.Logout> {
