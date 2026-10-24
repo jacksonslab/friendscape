@@ -105,7 +105,10 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
             it.bar.output.id == bar.output.id && it.product.internalName.startsWith("obj.sailing_boat_keel_part_")
         }
         // Friendscape permits Sailing before Pandemonium; the native interface hides this slot.
-        if (keel != null && player.vars["varp.sailing_intro"] < 50 &&
+        val onTutorialIsland =
+            player.vars["varp.friendscape_tutorial_started"] == 1 &&
+                player.vars["varp.tut2_completed"] == 0
+        if (keel != null && !onTutorialIsland &&
             choice2("Smith other items.", false, "Make keel parts.", true)) {
             openSkillMulti(SkillMultiConfig(verb = "make", entries = listOf(
                 SkillMultiEntry(keel.product.internalName, listOf(Material(bar.output.internalName, keel.barCount))),
