@@ -47,8 +47,10 @@ internal constructor(private val raids: TobRaids, private val parties: TobPartie
         onOpLoc1("loc.tob_treasureroom_stairsup") { with(raids) { leaveTheatre() } }
         onOpLoc1("loc.tob_treasureroom_teleportout") { with(raids) { leaveTheatre() } }
 
-        onOpNpc1(VerzikRoom.INITIAL) { talkToVerzik(it.npc) }
-        onOpNpc3(VerzikRoom.INITIAL) { talkToVerzik(it.npc) }
+        for (verzik in VERZIK_THRONE) {
+            onOpNpc1(verzik) { talkToVerzik(it.npc) }
+            onOpNpc3(verzik) { talkToVerzik(it.npc) }
+        }
 
         for (name in TobNpcs.ALL) {
             val type = ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC)) ?: continue
@@ -154,6 +156,8 @@ internal constructor(private val raids: TobRaids, private val parties: TobPartie
     }
 
     private companion object {
+        val VERZIK_THRONE =
+            listOf(VerzikRoom.INITIAL, "npc.verzik_initial_base", "npc.verzik_initial_quickstart")
         val PASSAGES = listOf("loc.tob_dungeon_walkway_exit_clickbox", "loc.tob_dungeon_xarpus_arena_door_exit")
         val LOBBY_CHESTS =
             listOf(

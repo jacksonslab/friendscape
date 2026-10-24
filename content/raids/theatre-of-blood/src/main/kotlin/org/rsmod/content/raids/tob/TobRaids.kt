@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.tob
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -45,6 +46,7 @@ constructor(
     private val parties: TobParties,
     private val rewards: TobRewards,
 ) {
+    private val logger = InlineLogger()
     private val raids = HashMap<InstanceId, TobRaid>()
     private val byPlayer = HashMap<Long, TobRaid>()
 
@@ -156,7 +158,8 @@ constructor(
     suspend fun ProtectedAccess.passBarrier(barrierCoords: CoordGrid) {
         val raid = raidFor(player) ?: return
         val raider = raid.raider(player) ?: return
-        val static = raid.static(barrierCoords)
+        val clicked = raid.static(barrierCoords)
+        val static = CoordGrid(clicked.x, clicked.z, raid.static(player.coords).level)
         val (room, barrier) = barrierAt(raid, static) ?: return
         val inward = !barrier.isInside(raid.static(player.coords))
         val refusal =
@@ -323,19 +326,29 @@ constructor(
     fun tick() {
         for (raid in raids.values.toList()) {
             if (raid.ended) continue
-            for (raider in raid.raiders.values.toList()) {
-                if (raider.left) continue
-                val player = playerFor(raider.uuid)
-                if (player == null) {
-                    markLeft(raid, raider)
-                } else if (!raid.contains(player.coords)) {
-                    markLeft(raid, player)
-                }
+            try {
+                tick(raid)
+            } catch (e: Exception) {
+                logger.error(e) { "Theatre of Blood raid failed; ending it: $raid" }
+                raid.broadcast("<col=ff0000>Something went wrong in the Theatre; your party has been sent back.</col>")
+                endRaid(raid)
             }
-            raid.rooms.forEach(TobRoom::process)
-            checkWipe(raid)
-            if (raid.players().isEmpty()) endRaid(raid)
         }
+    }
+
+    private fun tick(raid: TobRaid) {
+        for (raider in raid.raiders.values.toList()) {
+            if (raider.left) continue
+            val player = playerFor(raider.uuid)
+            if (player == null) {
+                markLeft(raid, raider)
+            } else if (!raid.contains(player.coords)) {
+                markLeft(raid, player)
+            }
+        }
+        raid.rooms.forEach(TobRoom::process)
+        checkWipe(raid)
+        if (raid.players().isEmpty()) endRaid(raid)
     }
 
     private fun checkWipe(raid: TobRaid) {
