@@ -1,52 +1,34 @@
 # Sailing implementation
 
-Requested scope: full OSRS-style Sailing, delivered in stages. This branch is
-`sailing-stage-1`, based on Friendscape `bfac821a4`, revision 241. It is not deployed.
+Branch `sailing-stage-1` (revision 241). Built on the world-entity boat engine from OpenRune PR 182
+(https://github.com/OpenRune/OpenRune-Server/pull/182). Not yet tested in a live client.
 
-The initial protocol and helm work comes from OpenRune PR 182:
-https://github.com/OpenRune/OpenRune-Server/pull/182
+## Working
 
-## Stage 1: navigation and recovery (in progress)
+- **Boarding**: any port's gangplank (32 ports, from `friendscape_sailing_ports`). It checks the
+  dock level (`sailing_dock`) and the boat level (`sailing_boat`). The cache retrieval fee is
+  charged when the boat was last moored elsewhere. Board-previous chooses a boat; Board-friend
+  boards another player's moored boat.
+- **Navigation**: the helm steers. The hull collides against `SeaMap`. Rev 241 gives open sea no
+  collision flags, so water comes from the terrain overlay textures. To disembark, stop within 10
+  tiles of a dock; the boat snaps to the mooring.
+- **Port tasks (courier)**: notice boards, ledger tables and the cargo hold, on Jagex's
+  `port_task_slot_*` varbits. 438 tasks with wiki XP (`enum.friendscape_courier_task_xp`).
+  Slots unlock at 1/7/28/56/84. Port coin bags pay out the wiki ranges. Relocating a boat
+  confiscates crates and hands them back to the task.
+- **Salvaging**: 185 shipwreck spawns cycle through active, depleted and respawned. The raft swaps
+  its cargo hold for a hook (Modify); skiff and sloop carry both. Deploy the hook next to a wreck.
+  Sort salvage at port salvaging stations using the wiki loot tables.
+- **Charting**: the 92 generic "Chart" landmarks give 35 XP each, tracked in server varps.
+- **Shipbuilding**: notice board, then "Commission a boat". A skiff or sloop costs the base
+  hull/keel/sail/helm materials from the cache; noted materials count.
 
-- World-entity registry, client synchronization, moving deck scene, helm headings.
-- Raft, skiff and sloop development templates with cache-driven furniture/docks.
-- Acceleration, braking, bounded turning and quantized movement; four maths tests.
-- Boat ownership checks, shore fallback saved before boarding, logout evacuation,
-  pre-login recovery from an interrupted session, and owner-boat cleanup.
-- Stopped boats can moor near a known dock; disembarking at sea is rejected.
-- Forced map rebuild invalidates both the physical deck and root view zone caches.
-- Generated readers distinguish named-item cache columns from ordinary item
-  columns, needed for native Sailing upgrade materials.
+## Not done / deviations
 
-Public boarding stays disabled until the remaining navigation work is verified:
-
-- Authoritative navigable-water and hull collision, swept movement and rotation.
-- Verified gangplank placements, dock geometry, level/quest access and mooring.
-- Persistent vessel records, retrieval costs, shipyard construction and upgrades.
-- Passenger synchronization, world switching, disconnects and server restarts.
-- Full client testing of deck movement, scenery, inventory and ship controls.
-
-The inherited template speeds and dock positions are development data awaiting
-verification. Shared prototype boats and destination-only travel are insufficient
-for the requested scope. Current recovery returns a disconnected sailor to shore;
-it does not yet persist a vessel at sea.
-
-## Stage 2: introduction and training
-
-Pandemonium and introductory quest; seamanship, sail trimming and repair; port
-tasks/courier cargo, salvage, charting, sea discovery and Barracuda Trials.
-XP, unlocks and rewards must follow the cache/content data and be awarded only
-after successful actions. Every item/cargo exchange needs atomic rollback tests.
-
-## Stage 3: progression and sea content
-
-Boat construction, keel/hull/sails/steering tiers, facilities, cargo holds, crew,
-upgrades, sea hazards, encounters and combat, trawling, islands, quests, unlocks,
-level 99 rewards and skillcape. Native cache rows supply the content catalog.
-
-## Stage 4: release coverage
-
-Verify levels 1–99, each vessel and activity, solo and group Ironman restrictions,
-cargo conservation, concurrent passengers, reconnect/restart behavior and a full
-client playthrough. Integrate with the quest/tutorial/Hunter/Farming release,
-produce backup/rollback artifacts, then deploy the tested release.
+- Hull and keel parts (`sailing_boat_hull_part_*`, `sailing_boat_keel_part_*`) can't be crafted
+  yet, so commissioning is only possible with spawned parts.
+- No bounty tasks, boat combat, trawling, crew, sea charting beyond generic landmarks, sail
+  trimming, Barracuda Trials, facility upgrades, or the Pandemonium quest; everyone owns a raft.
+- Task choice uses chat menus rather than Jagex's port_task_board interface.
+- Salvage success uses a flat 64/192 curve. Wreck duration is the wiki's average.
+- Dock quest requirements are ignored.
