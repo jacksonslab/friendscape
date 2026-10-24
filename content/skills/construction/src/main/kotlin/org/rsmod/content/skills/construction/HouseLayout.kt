@@ -77,6 +77,29 @@ class HouseLayout(
         }
     }
 
+    /**
+     * Builds [row] over [replaces] (null for an empty hotspot) once [pay] succeeds. Nothing is paid
+     * when the hotspot no longer holds [replaces], so a second click queued behind the first finds
+     * the piece already built and costs nothing.
+     */
+    fun buildPaid(
+        slot: Int,
+        hotspot: Int,
+        row: Int,
+        variant: Int?,
+        replaces: Int?,
+        pay: () -> Boolean,
+    ): Boolean {
+        if (slot !in rooms || built(slot, hotspot) != replaces) {
+            return false
+        }
+        if (!pay()) {
+            return false
+        }
+        build(slot, hotspot, row, variant)
+        return true
+    }
+
     fun variant(slot: Int, hotspot: Int): Int? = variants[furnitureKey(slot, hotspot)]
 
     fun demolish(slot: Int, hotspot: Int) {

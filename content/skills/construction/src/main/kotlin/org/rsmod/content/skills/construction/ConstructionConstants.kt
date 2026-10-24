@@ -74,18 +74,14 @@ const val FURNITURE_ENTRY_HEIGHT: Int = 60
 
 const val EXIT_PORTAL: String = "loc.poh_exit_portal"
 
-val TOWN_PORTALS: List<String> =
-    listOf(
-        "loc.poh_rimmington_portal",
-        "loc.poh_taverly_portal",
-        "loc.poh_pollnivneach_portal",
-        "loc.poh_rellekka_portal",
-        "loc.poh_brimhaven_portal",
-        "loc.poh_yanille_portal",
-        "loc.poh_kourend_portal",
-        "loc.poh_prifddinas_portal",
-        "loc.poh_aldarin_portal",
-    )
+const val INTERFACE_ADD_ROOM: String = "interface.poh_add_room"
+
+/** The add-room window resumes on this list with the chosen room type as the subcomponent. */
+const val COMPONENT_ADD_ROOM_LIST: String = "component.poh_add_room:list"
+
+/** `dbcol.poh_room:floor_restriction`: dungeon rooms, and rooms that need open sky. */
+const val FLOOR_DUNGEON: Int = 1
+const val FLOOR_GROUND: Int = 2
 
 /**
  * Construction xp is not in the cache tables, so it is derived from what a build consumes. These are

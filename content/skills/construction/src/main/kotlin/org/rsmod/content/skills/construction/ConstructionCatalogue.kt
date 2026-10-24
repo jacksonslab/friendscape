@@ -85,6 +85,7 @@ class DoorDef(
     val locId: Int,
     /** Compass direction of the wall this doorway sits on: 0 north, 1 east, 2 south, 3 west. */
     val direction: Int,
+    val part: HotspotPart,
 )
 
 class RoomDef(
@@ -120,6 +121,13 @@ class RoomDef(
         doorDirections.mapTo(HashSet()) { (it + rotation) and 3 }
 
     fun hotspot(index: Int): HotspotDef? = hotspots.firstOrNull { it.index == index }
+
+    fun allowedOn(level: Int): Boolean =
+        when (row.floorRestriction) {
+            FLOOR_DUNGEON -> level == LEVEL_DUNGEON
+            FLOOR_GROUND -> level == LEVEL_GROUND
+            else -> level != LEVEL_DUNGEON
+        }
 }
 
 /**
@@ -357,7 +365,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
             val localX = loc.coords.x - baseX
             val localZ = loc.coords.z - baseZ
             val direction = wallDirection(localX, localZ) ?: return@mapNotNull null
-            DoorDef(localX, localZ, loc.id, direction)
+            DoorDef(localX, localZ, loc.id, direction, part(loc, baseX, baseZ))
         }
 
     private fun part(loc: LocInfo, baseX: Int, baseZ: Int): HotspotPart =
