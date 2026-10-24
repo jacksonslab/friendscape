@@ -10,6 +10,8 @@ dependencies {
     implementation(projects.api.scriptAdvanced)
     implementation(projects.api.playerOutput)
     implementation(projects.api.config)
+    implementation(projects.content.generic.genericLocs)
+    integrationImplementation(projects.content.generic.genericLocs)
     implementation(projects.content.interfaces.settings)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.interfaces.gameframe)

@@ -4,6 +4,7 @@ import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.game.loc.BoundLocInfo
@@ -29,7 +30,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
 
         val stepAway = closed.openStepAway(openedCoords)
         if (coords == openedCoords && stepAway != CoordGrid.NULL) {
-            teleport(stepAway)
+            teleport(stepAway, TeleportType.Exempt)
             delay(2)
         }
 
@@ -64,7 +65,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
 
         val stepAway = closed.closeStepAway(closedCoords)
         if (coords == closedCoords && stepAway != CoordGrid.NULL) {
-            teleport(stepAway)
+            teleport(stepAway, TeleportType.Exempt)
             delay(2)
         }
 

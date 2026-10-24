@@ -210,6 +210,8 @@ class WaterSourceScriptTest {
         override fun configure() {
             Multibinder.newSetBinder(binder(), PlayerDeathHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathCleanupHook::class.java)
+            Multibinder.newSetBinder(binder(), org.rsmod.api.death.PlayerDeathDropLocationHook::class.java)
+            Multibinder.newSetBinder(binder(), org.rsmod.api.death.PlayerDeathOverrideHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
         }
     }

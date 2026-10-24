@@ -2,10 +2,13 @@ package org.rsmod.content.areas.tutorialisland.scripts.locs
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
 import org.rsmod.content.areas.tutorialisland.progression.TutorialProgression
 import org.rsmod.content.areas.tutorialisland.progression.TutorialStep
+import org.rsmod.content.generic.locs.doors.DoorTranslations
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.map.CoordGrid
@@ -16,7 +19,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  * Progression gates for Tutorial Island doors, gates, and ladders. Denied interactions use
  * transcript messages; allowed ones advance the step and teleport where needed.
  */
-class TutorialGatesScript @Inject constructor(private val progression: TutorialProgression) :
+class TutorialGatesScript @Inject constructor(private val progression: TutorialProgression, private val locRepo: LocRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1(tutorial_locs.SURVIVAL_ENTRY) { survivalEntry(it.loc) }
@@ -48,8 +51,6 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
      * this cannot key off "which side is the player on" alone: that case has no offset to mirror,
      * and the player would be left standing still, walking back to the door and clicking again.
      *
-     * The tutorial doors carry no `next_loc_stage` and no door content group, so there is nothing
-     * to swing open; this is a step through the doorway.
      */
     private fun ProtectedAccess.stepThrough(door: BoundLocInfo) {
         val beyond =
@@ -59,7 +60,7 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
                 LocAngle.East -> door.coords.translateX(1)
                 LocAngle.South -> door.coords.translateZ(-1)
             }
-        teleport(if (coords == door.coords) beyond else door.coords)
+        teleport(if (coords == door.coords) beyond else door.coords, TeleportType.Exempt)
     }
 
     /**
@@ -86,7 +87,10 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             return
         }
         progression.advance(player, TutorialStep.SurvivalTalk)
-        // Door open animation handled by map/loc params when present; nudge into survival area.
+        val openedCoords = DoorTranslations.translateOpen(door.coords, door.shape, door.angle)
+        locRepo.del(door, 500)
+        locRepo.add(openedCoords, "loc.poordooropen", 500, door.turnAngle(rotations = 1), door.shape)
+        soundSynth("synth.nicedoor_open")
         stepThrough(door)
     }
 
@@ -135,7 +139,7 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             return
         }
         progression.advance(player, TutorialStep.MineTalk)
-        telejump(CoordGrid(0, 26, 195, 16, 47))
+        telejump(CoordGrid(0, 26, 195, 16, 47), TeleportType.Exempt)
     }
 
     private fun ProtectedAccess.miningLadderUp() {
@@ -144,7 +148,7 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             progression.deny(player, "You need to finish with Mining and Smithing first.")
             return
         }
-        telejump(CoordGrid(0, 26, 95, 16, 47))
+        telejump(CoordGrid(0, 26, 95, 16, 47), TeleportType.Exempt)
     }
 
     private fun ProtectedAccess.miningExit(door: BoundLocInfo) {
@@ -199,11 +203,11 @@ class TutorialGatesScript @Inject constructor(private val progression: TutorialP
             return
         }
         progression.advance(player, TutorialStep.PrayerTalk)
-        telejump(COMBAT_LADDER_TOP)
+        telejump(COMBAT_LADDER_TOP, TeleportType.Exempt)
     }
 
     private fun ProtectedAccess.bankLadder() {
-        telejump(COMBAT_LADDER_BOTTOM)
+        telejump(COMBAT_LADDER_BOTTOM, TeleportType.Exempt)
     }
 
     /**
