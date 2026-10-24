@@ -32,6 +32,7 @@ constructor(
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
     private val areaChecker: AreaChecker,
+    private val dropLocationHooks: Set<PlayerDeathDropLocationHook>,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
     private var Player.inInstance by boolVarBit("varbit.player_in_instance")
@@ -95,8 +96,9 @@ constructor(
         val handling = handlingResolver.resolve(context)
 
         val result = drops.selectDrops(player, context, handling)
-        drops.applyDrops(player, result, handling, deathCoords)
-        drops.spawnRemains(deathCoords, handling)
+        val dropCoords = dropLocationHooks.firstNotNullOfOrNull { it.dropLocation(player) } ?: deathCoords
+        drops.applyDrops(player, result, handling, dropCoords)
+        drops.spawnRemains(dropCoords, handling)
 
         player.attr.remove(DEATH_KILLER_ATTR)
         player.attr.remove(DEATH_CAUSE_ATTR)

@@ -1,15 +1,18 @@
 package org.rsmod.content.areas.misc.wizards_tower.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class WizardsTowerNpcs : PluginScript() {
+class WizardsTowerNpcs @Inject constructor(private val demonSlayer: DemonSlayerQuest) :
+    PluginScript() {
     private var Player.rickOpenedShop by intVarBit("varbit.rick_has_opened_shop")
 
     override fun ScriptContext.startup() {
@@ -23,13 +26,18 @@ class WizardsTowerNpcs : PluginScript() {
 
     private suspend fun Dialogue.traiborn() {
         chatNpc(confused, "Ello young thingummywut.")
+        val keyTopic = demonSlayer.traibornKeyTopic(player)
         val topic =
             menu(
-                "What's a thingummywut?" to 0,
-                "Teach me to be a mighty and powerful wizard." to 1,
-                "I'd better go." to 2,
+                buildList {
+                    add("What's a thingummywut?" to 0)
+                    add("Teach me to be a mighty and powerful wizard." to 1)
+                    if (keyTopic != null) add(keyTopic to 3)
+                    add("I'd better go." to 2)
+                }
             )
         when (topic) {
+            3 -> with(demonSlayer) { traibornKey() }
             0 -> {
                 chatPlayer(quiz, "What's a thingummywut?")
                 chatNpc(confused, "A thingummywut? Where? Where?")

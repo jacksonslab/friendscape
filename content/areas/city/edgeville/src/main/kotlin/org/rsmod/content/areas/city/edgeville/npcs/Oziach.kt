@@ -6,6 +6,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.area.crandor.DragonSlayerQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -13,7 +14,7 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Oziach, who only sells rune platebodies to those who have slain Elvarg. */
-class Oziach @Inject constructor(private val shops: Shops) : PluginScript() {
+class Oziach @Inject constructor(private val shops: Shops, private val dragonSlayer: DragonSlayerQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.oziach") { talk(it.npc) }
         onOpNpc3("npc.oziach") { trade(it.npc) }
@@ -21,7 +22,7 @@ class Oziach @Inject constructor(private val shops: Shops) : PluginScript() {
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
         val slayer = QuestRequirements.hasCompleted(player, DRAGON_SLAYER)
-        startDialogue(npc) { if (slayer) dragonSlayer(npc) else fairDay() }
+        startDialogue(npc) { if (!with(dragonSlayer) { oziachQuest() }) { if (slayer) dragonSlayer(npc) else fairDay() } }
     }
 
     private suspend fun ProtectedAccess.trade(npc: Npc) {
