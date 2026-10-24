@@ -31,6 +31,7 @@ constructor(
     private val handlingResolver: PlayerDeathHandlingResolver,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
+    private val deathOverrideHooks: Set<PlayerDeathOverrideHook>,
     private val areaChecker: AreaChecker,
     private val dropLocationHooks: Set<PlayerDeathDropLocationHook>,
 ) {
@@ -39,6 +40,9 @@ constructor(
     private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
+        for (hook in deathOverrideHooks) {
+            if (with(hook) { access.override() }) return
+        }
         access.deathSequence()
     }
 
