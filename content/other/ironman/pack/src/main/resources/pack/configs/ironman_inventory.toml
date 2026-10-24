@@ -1,0 +1,8 @@
+[[inventory]]
+id = "inv.inv_group_temp"
+isServerOnly = true
+inherit = "inv.inv_group_temp"
+size = 1000
+scope = "Temp"
+stack = "Always"
+protect = false

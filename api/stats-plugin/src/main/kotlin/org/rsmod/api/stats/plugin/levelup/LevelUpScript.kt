@@ -26,7 +26,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class LevelUpScript
 @Inject
-constructor(private val worldRepo: WorldRepository, private val worldQueues: WorldQueueList) :
+constructor(
+    private val worldRepo: WorldRepository,
+    private val worldQueues: WorldQueueList,
+    private val eventBus: org.rsmod.events.EventBus = org.rsmod.events.EventBus(),
+) :
     PluginScript() {
     private val unlocks by lazy { SkillUnlocks.load() }
     private val guideUnlocks by lazy { LevelUpUnlocks.load() }
@@ -42,7 +46,10 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         }
         // UNVERIFIED: login clearing the stats tab flash (guess)
         onPlayerLogin { VarPlayerIntMapSetter.set(player, FLASHSIDE_VARBIT, 0) }
-        onIfOverlayButton(STATS_STONE) { VarPlayerIntMapSetter.set(player, FLASHSIDE_VARBIT, 0) }
+        onIfOverlayButton(STATS_STONE) {
+            VarPlayerIntMapSetter.set(player, FLASHSIDE_VARBIT, 0)
+            eventBus.publish(org.rsmod.api.player.events.SideTabClicked(player, 1))
+        }
     }
 
     private suspend fun ProtectedAccess.advanceStat(advance: StatAdvance) {

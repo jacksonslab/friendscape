@@ -198,6 +198,7 @@ constructor(
             val initialize = eventBus.publish(SessionStateEvent.Initialize(player))
             val login = eventBus.publish(SessionStateEvent.Login(player))
             val engineLogin = eventBus.publish(SessionStateEvent.EngineLogin(player))
+            eventBus.publish(SessionStateEvent.EngineLoginReady(player))
 
             eventBus.publish(WorldTypeChangedEvent(player, from = from, to = target))
 

@@ -19,7 +19,11 @@ class DoughMakingEvents : PluginScript() {
 
     override fun ScriptContext.startup() {
         waterSources.forEach { (water, emptyContainer) ->
-            onOpHeldU("obj.pot_flour", water) { chooseDough(water, emptyContainer) }
+            onOpHeldU("obj.pot_flour", water) {
+                val request = DoughMakingRequest(this, water)
+                eventBus.publish(request)
+                if (!request.handled) chooseDough(water, emptyContainer)
+            }
         }
     }
 

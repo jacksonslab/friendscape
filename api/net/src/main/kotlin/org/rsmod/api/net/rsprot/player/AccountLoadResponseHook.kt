@@ -439,6 +439,7 @@ class AccountLoadResponseHook(
             persistTrustedDevicesIfNeeded(loadResponse.account.accountId, player)
             eventBus.publish(SessionStateEvent.Login(player))
             eventBus.publish(SessionStateEvent.EngineLogin(player))
+            eventBus.publish(SessionStateEvent.EngineLoginReady(player))
             val eventsMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - eventsStart)
             if (loginTimingLogs && (eventsMs >= GAME_LOGIN_TIMING_INFO_MS || responseMs >= GAME_LOGIN_TIMING_INFO_MS)) {
                 logger.info {

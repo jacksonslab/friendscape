@@ -1,0 +1,5 @@
+[[varp]]
+id = "varp.friendscape_tutorial_started"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
