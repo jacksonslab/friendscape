@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.ResourceLock
 
+@ResourceLock("ServerCacheManager")
 class SeaMapTest {
     @Test
     fun `open sea is water and the Port Sarim pier is not`() {

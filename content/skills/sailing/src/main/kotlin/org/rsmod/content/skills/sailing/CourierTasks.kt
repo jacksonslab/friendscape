@@ -17,6 +17,7 @@ class CourierTask(row: PortTaskRow, val xp: Int) {
     val crate: ItemServerType = row.cargo.first().t0
     val crates: Int = row.cargo.first().t1
     val flavour: String = row.flavourText
+    val cancellable: Boolean = row.cancellable != false
 
     val coinBagTier: Int
         get() = (1..MAX_BAG_TIER).count { tier -> xp >= (friendscape_port_bag_tier_xp[tier] ?: Int.MAX_VALUE) }
@@ -41,9 +42,12 @@ object CourierTasks {
 
     operator fun get(id: Int): CourierTask? = byId[id]
 
-    fun offeredAt(board: Port): List<CourierTask> = ALL.filter { it.board == board.dockRowId }
+    val PANDEMONIUM: CourierTask by lazy { byId.getValue(PortTaskRow.getRow(PANDEMONIUM_ROW).taskId) }
+
+    fun offeredAt(board: Port): List<CourierTask> = ALL.filter { it.board == board.dockRowId && it !== PANDEMONIUM }
 
     private const val COURIER = 0
+    private const val PANDEMONIUM_ROW = "dbrow.port_task_sailing_intro"
 }
 
 data class TaskSlot(val index: Int, val taskId: Int, val taken: Int, val delivered: Int) {

@@ -116,7 +116,11 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.cancelTask() {
-        val active = TaskSlots.active(player).filter { it.task != null }
+        val active = TaskSlots.active(player).filter { it.task?.cancellable == true }
+        if (active.isEmpty()) {
+            mes("You don't have any port tasks you can cancel.")
+            return
+        }
         val slot = choose(active.map { it.task!!.name }, active, title = "Cancel which task?") ?: return
         val task = slot.task ?: return
         val confirmed = choice2("Yes, cancel it.", true, "No, keep it.", false, title = "Cancel ${task.name}?")

@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.api.registry)
     implementation(projects.api.utils.utilsSkills)
     implementation(projects.content.skills.utils)
+    implementation(projects.content.quest)
     implementation(libs.or2.all.cache)
     implementation(libs.netty.buffer)
     testImplementation(libs.fastutil)

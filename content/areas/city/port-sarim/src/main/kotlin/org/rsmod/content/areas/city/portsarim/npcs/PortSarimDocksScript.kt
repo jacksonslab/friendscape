@@ -21,11 +21,8 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops, private
         onOpNpc1("npc.vc_face") { startDialogue(it.npc) { theFace() } }
 
         onTalkAcross(SHIPWRIGHT) { startDialogue(it) { shipwrightSam() } }
-        onOpNpc4(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
-        onOpNpc5(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
-
-        onOpNpc1("npc.sailing_intro_anne_sarim") { startDialogue(it.npc) { sailingRecruiters() } }
-        onOpNpc1("npc.sailing_intro_will_sarim") { startDialogue(it.npc) { sailingRecruiters() } }
+        onOpNpc4(SHIPWRIGHT) { startDialogue { mesbox(SHIPWRIGHT_UNAVAILABLE) } }
+        onOpNpc5(SHIPWRIGHT) { startDialogue { mesbox(SHIPWRIGHT_UNAVAILABLE) } }
 
         for (crew in TRADER_CREW + TRADER_STAN) {
             val isStan = crew == TRADER_STAN
@@ -113,45 +110,6 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops, private
                 "experience to handle them.",
         )
         chatPlayer(happy, "Okay, fair enough.")
-    }
-
-    private suspend fun Dialogue.sailingRecruiters() {
-        chatNpcSpecific(
-            ANNE_NAME,
-            ANNE,
-            happy,
-            "Ah, look what we have here, Will! This looks like someone who needs a good job!",
-        )
-        chatPlayer(confused, "What?")
-        chatNpcSpecific(
-            WILL_NAME,
-            WILL,
-            happy,
-            "Goodness, Anne, I think you're right! This one's clearly never worked an honest day " +
-                "in their life, and it's about time someone changed that!",
-        )
-        chatPlayer(confused, "But I don't need a...")
-        chatNpcSpecific(
-            ANNE_NAME,
-            ANNE,
-            happy,
-            "Well, let's not waste any more time! Stranger, are you ready for your interview?",
-        )
-        if (choice2("Yes.", true, "No.", false, title = "Start the Pandemonium quest?")) {
-            mesbox(SAILING_LOCKED)
-            return
-        }
-        chatPlayer(
-            confused,
-            "Sorry, but I'm not looking for a job right now. I'm just going to go...",
-        )
-        chatNpcSpecific(
-            WILL_NAME,
-            WILL,
-            happy,
-            "Oh, you'll be back, friend! You already know you can't turn down an opportunity " +
-                "like this!",
-        )
     }
 
     private suspend fun Dialogue.traderCrewmember(isStan: Boolean) {
@@ -291,12 +249,8 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops, private
     private companion object {
         const val SHIPWRIGHT = "npc.sailing_shipwright_port_sarim"
         const val TRADER_STAN = "npc.sailing_transport_trader_stan"
-        const val ANNE = "npc.sailing_intro_anne_sarim"
-        const val ANNE_NAME = "Anne"
-        const val WILL = "npc.sailing_intro_will_sarim"
-        const val WILL_NAME = "Will"
-        const val SAILING_LOCKED =
-            "You need to complete the Pandemonium quest to access the Sailing skill."
+        const val SHIPWRIGHT_UNAVAILABLE =
+            "Boat customisation and recovery aren't available yet."
         const val CHARTER_UNAVAILABLE = "Charter ships aren't available yet."
 
         val TRADER_CREW =
