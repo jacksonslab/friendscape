@@ -154,7 +154,7 @@ constructor(
             when (mode) {
                 TakeMode.First -> waiting.first()
                 TakeMode.Last ->
-                    waiting.firstOrNull { it.taskId == player.vars["varbit.port_task_last_cargo_taken"] } ?: waiting.first()
+                    waiting.firstOrNull { it.index == player.vars["varbit.port_task_last_cargo_taken"] } ?: waiting.first()
                 TakeMode.Any -> choose(waiting.map { it.task!!.name }, waiting, title = "Take which cargo?") ?: return
             }
         val task = slot.task ?: return
@@ -166,7 +166,7 @@ constructor(
             return
         }
         TaskSlots.set(player, slot.copy(taken = slot.taken + 1))
-        org.rsmod.api.player.vars.VarPlayerIntMapSetter.set(player, "varbit.port_task_last_cargo_taken", task.id)
+        org.rsmod.api.player.vars.VarPlayerIntMapSetter.set(player, "varbit.port_task_last_cargo_taken", slot.index)
         cargo.refreshCarrying(player)
         mes("You take a crate of cargo for the ${task.name}.")
     }
