@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.admin_infinite_stamina"
+scope = "Temp"
+transmit = "Never"

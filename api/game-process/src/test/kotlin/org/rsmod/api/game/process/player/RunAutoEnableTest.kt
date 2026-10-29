@@ -2,6 +2,7 @@ package org.rsmod.api.game.process.player
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.or2.central.account.Rights
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeAll
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.player.cheat.adminInfiniteStamina
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.autoEnableRunOnMove
 import org.rsmod.api.player.vars.setActiveMoveSpeed
@@ -21,6 +23,45 @@ import org.rsmod.game.movement.MoveSpeed
 @ResourceLock("ServerCacheManager")
 class RunAutoEnableTest {
     private val processor = PlayerRunUpdateProcessor()
+
+    @Test
+    fun `admin infinite stamina refills energy and prevents running drain`() {
+        val player = player(threshold = 0)
+        player.modLevel = Rights.ADMINISTRATOR
+        player.adminInfiniteStamina = true
+        player.runEnergy = 1
+        player.pendingStepCount = 2
+        player.setActiveMoveSpeed(MoveSpeed.Run)
+        repeat(3) { processor.process(player) }
+        assertEquals(10_000, player.runEnergy)
+        assertEquals(MoveSpeed.Run, player.varMoveSpeed)
+    }
+
+    @Test
+    fun `disabling infinite stamina restores normal energy drain`() {
+        val player = player(threshold = 0)
+        player.modLevel = Rights.ADMINISTRATOR
+        player.adminInfiniteStamina = true
+        player.adminInfiniteStamina = false
+        player.runEnergy = 1
+        player.pendingStepCount = 2
+        player.setActiveMoveSpeed(MoveSpeed.Run)
+        processor.process(player)
+        assertEquals(0, player.runEnergy)
+        assertEquals(MoveSpeed.Walk, player.varMoveSpeed)
+    }
+
+    @Test
+    fun `infinite stamina flag cannot bypass administrator rights`() {
+        val player = player(threshold = 0)
+        player.adminInfiniteStamina = true
+        player.runEnergy = 1
+        player.pendingStepCount = 2
+        player.setActiveMoveSpeed(MoveSpeed.Run)
+        processor.process(player)
+        assertEquals(0, player.runEnergy)
+        assertEquals(MoveSpeed.Walk, player.varMoveSpeed)
+    }
 
     @Test
     fun `energy climbing past the threshold while standing leaves run off`() {

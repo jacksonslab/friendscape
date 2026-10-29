@@ -1,0 +1,18 @@
+[clientscript,friendscape_admin_init]()
+~steelborder(friendscape_admin:border, "Friendscape Administration", 0);
+if_settextshadow(true, friendscape_admin:status);
+if_settextshadow(true, friendscape_admin:toggles);
+~button_setup(null, friendscape_admin:players, "Online players");
+~button_setup(null, friendscape_admin:find, "Find player");
+~button_setup(null, friendscape_admin:goto, "Go to player");
+~button_setup(null, friendscape_admin:bring, "Bring player");
+~button_setup(null, friendscape_admin:teleport, "Teleport coordinates");
+~button_setup(null, friendscape_admin:spawn, "Item spawner");
+~button_setup(null, friendscape_admin:bank, "Open bank");
+~button_setup(null, friendscape_admin:restore, "Restore and cure");
+~button_setup(null, friendscape_admin:god, "Toggle god mode");
+~button_setup(null, friendscape_admin:maxhit, "Toggle max hit");
+~button_setup(null, friendscape_admin:broadcast, "Broadcast");
+~button_setup(null, friendscape_admin:refresh, "Refresh");
+~button_setup(null, friendscape_admin:npcnames, "Global NPC names");
+~button_setup(null, friendscape_admin:stamina, "Toggle infinite stamina");

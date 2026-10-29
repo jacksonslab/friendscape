@@ -1,11 +1,13 @@
 package org.rsmod.api.game.process.player
 
 import dev.openrune.util.Wearpos
+import dev.or2.central.account.Rights
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.inv.weight.InvWeight
+import org.rsmod.api.player.cheat.adminInfiniteStamina
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.vars.armRunAutoEnable
@@ -30,7 +32,9 @@ public class PlayerRunUpdateProcessor {
     private fun Player.updateRunEnergy() {
         val startRunEnergy = runEnergy
 
-        if (pendingStepCount > 1) {
+        if (adminInfiniteStamina && modLevel.isAtLeast(Rights.ADMINISTRATOR)) {
+            runEnergy = constants.run_max_energy
+        } else if (pendingStepCount > 1) {
             decreaseRunEnergy()
         } else {
             restoreRunEnergy()

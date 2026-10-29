@@ -1,0 +1,152 @@
+[[interface]]
+name = "interface.friendscape_admin"
+width = 512
+height = 334
+on_load = ["clientscript.friendscape_admin_init"]
+
+[[component]]
+name = "border"
+type = "layer"
+width = 512
+height = 334
+no_click_through = true
+
+[[component]]
+name = "status"
+type = "text"
+x = 16
+y = 39
+width = 480
+height = 22
+text = "Friendscape admin tools"
+font = "regular"
+h_align = "center"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "toggles"
+type = "text"
+x = 16
+y = 307
+width = 480
+height = 16
+text = ""
+font = "regular"
+h_align = "center"
+v_align = "center"
+color = "#FF981F"
+[[component]]
+name = "players"
+type = "layer"
+x = 18
+y = 68
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "find"
+type = "layer"
+x = 260
+y = 68
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "goto"
+type = "layer"
+x = 18
+y = 103
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "bring"
+type = "layer"
+x = 260
+y = 103
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "teleport"
+type = "layer"
+x = 18
+y = 138
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "spawn"
+type = "layer"
+x = 260
+y = 138
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "bank"
+type = "layer"
+x = 18
+y = 173
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "restore"
+type = "layer"
+x = 260
+y = 173
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "god"
+type = "layer"
+x = 18
+y = 208
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "maxhit"
+type = "layer"
+x = 260
+y = 208
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "broadcast"
+type = "layer"
+x = 18
+y = 243
+width = 234
+height = 28
+options = ["Select"]
+[[component]]
+name = "refresh"
+type = "layer"
+x = 260
+y = 243
+width = 234
+height = 28
+options = ["Select"]
+
+[[component]]
+name = "npcnames"
+type = "layer"
+x = 18
+y = 278
+width = 234
+height = 24
+options = ["Select"]
+
+[[component]]
+name = "stamina"
+type = "layer"
+x = 260
+y = 278
+width = 234
+height = 24
+options = ["Select"]

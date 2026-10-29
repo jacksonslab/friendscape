@@ -1,0 +1,8 @@
+[gamevals.interface]
+friendscape_admin = 1102
+
+[gamevals.clientscript]
+friendscape_admin_init = 45600
+
+[gamevals.varp]
+admin_infinite_stamina = 64421

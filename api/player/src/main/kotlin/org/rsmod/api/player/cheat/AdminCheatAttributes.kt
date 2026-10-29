@@ -1,11 +1,14 @@
 package org.rsmod.api.player.cheat
 
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.vars.boolVarp
 import org.rsmod.game.entity.Player
 
 public val ADMIN_GOD_MODE_ATTR: AttributeKey<Boolean> = AttributeKey()
 
 public val ADMIN_MAX_HIT_ATTR: AttributeKey<Boolean> = AttributeKey()
+
+public var Player.adminInfiniteStamina: Boolean by boolVarp("varp.admin_infinite_stamina")
 
 public var Player.adminGodMode: Boolean
     get() = attr[ADMIN_GOD_MODE_ATTR] == true
