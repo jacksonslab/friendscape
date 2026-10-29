@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.content.interfaces.settings)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.interfaces.gameframe)
+    integrationImplementation(projects.content.interfaces.gameframe)
     implementation(projects.content.skills.smithing)
     integrationImplementation(projects.content.skills.smithing)
     implementation(projects.content.skills.cooking)

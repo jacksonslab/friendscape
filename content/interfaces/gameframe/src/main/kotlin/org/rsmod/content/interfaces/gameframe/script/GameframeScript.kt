@@ -75,6 +75,9 @@ internal constructor(
     private fun Player.openLoginGameframe() {
         val gameframe = gameframes[gameframeTopLevel]
         if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
+            // RuneLite selects its minimap widget using this flag, even when restoring a saved frame.
+            stoneArrangements = gameframe.stoneArrangement
+            resyncVar("varbit.resizable_stone_arrangement")
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             sendAllStoneEvents()
@@ -84,6 +87,7 @@ internal constructor(
         ui.frameResizable = fallback.resizable
         gameframeTopLevel = fallback.topLevel.asRSCM(RSCMType.INTERFACE)
         stoneArrangements = fallback.stoneArrangement
+        resyncVar("varbit.resizable_stone_arrangement")
         ifOpenTop(fallback.topLevel)
         openGameframe(fallback, eventBus)
         sendAllStoneEvents()
@@ -151,6 +155,7 @@ internal constructor(
         val (from, dest, intermediate) = move
         if (dest.resizable && from.isGameplay && dest.isGameplay) {
             stoneArrangements = dest.stoneArrangement
+            resyncVar("varbit.resizable_stone_arrangement")
         }
         resyncVar("varp.chat_filter_assist")
         resyncVar("varp.settings_tracking")
