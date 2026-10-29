@@ -50,8 +50,21 @@ class BoatMotionTest {
     @Test
     fun `invalid speeds clamp and large acceleration cannot overflow`() {
         assertEquals(448, BoatMotion.step(Int.MAX_VALUE, Int.MAX_VALUE, 448, Int.MAX_VALUE, 0, 0).speed)
-        assertEquals(0, BoatMotion.step(-100, -100, 448, 64, 0, 0).speed)
+        assertEquals(-448, BoatMotion.step(Int.MIN_VALUE, Int.MIN_VALUE, 448, Int.MAX_VALUE, 0, 0).speed)
         assertThrows(IllegalArgumentException::class.java) { BoatMotion.step(0, 0, -1, 64, 0, 0) }
         assertThrows(IllegalArgumentException::class.java) { BoatMotion.step(0, 0, 448, 0, 0, 0) }
+    }
+
+    @Test
+    fun `a negative target reverses against the heading and brakes back to a stop`() {
+        var speed = 0
+        repeat(5) { speed = BoatMotion.step(speed, -96, 448, 64, 0, 0).speed }
+        assertEquals(-96, speed)
+        val forward = BoatMotion.step(96, 96, 448, 64, 0, 0)
+        val reverse = BoatMotion.step(-96, -96, 448, 64, 0, 0)
+        assertEquals(-forward.dx, reverse.dx)
+        assertEquals(-forward.dz, reverse.dz)
+        repeat(5) { speed = BoatMotion.step(speed, 0, 448, 64, 0, 0).speed }
+        assertEquals(0, speed)
     }
 }

@@ -8,8 +8,8 @@ internal data class BoatMotion(val speed: Int, val angle: Int, val dx: Int, val 
     companion object {
         fun step(speed: Int, targetSpeed: Int, speedCap: Int, acceleration: Int, angle: Int, targetAngle: Int): BoatMotion {
             require(speedCap >= 0 && acceleration > 0)
-            val current = speed.coerceIn(0, speedCap)
-            val target = targetSpeed.coerceIn(0, speedCap)
+            val current = speed.coerceIn(-speedCap, speedCap)
+            val target = targetSpeed.coerceIn(-speedCap, speedCap)
             val delta = (target.toLong() - current).coerceIn(-acceleration.toLong(), acceleration.toLong())
             val nextSpeed = (current + delta).toInt()
             val difference = ((targetAngle - angle + HALF_ANGLE) and ANGLE_MASK) - HALF_ANGLE

@@ -47,6 +47,6 @@ class BoatKinematics @Inject constructor(private val boats: BoatManager) {
         if (boat.moveMode != SailingMoveModes.STOPPED) {
             boat.moveMode = SailingMoveModes.HELM_IDLE
         }
-        boat.helmsman?.mes("Your boat can't sail any further that way.")
+        boat.helmsman?.mes("Your boat can't sail any further that way. Un-set the sails once it stops to reverse.")
     }
 }
