@@ -29,8 +29,8 @@ import org.rsmod.game.entity.WorldEntity
 import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.player.SessionStateEvent
-import org.rsmod.game.world.WorldType
 import org.rsmod.game.entity.worldentity.WorldEntityStateEvents
+import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -240,6 +240,7 @@ constructor(
                 direction = npc.respawnDir.id,
             )
         npc.infoProtocol = RspNpcInfo(rspAvatar)
+        org.rsmod.game.entity.npc.GlobalNpcNames.get(npc.id)?.let(npc.infoProtocol::setName)
     }
 
     private fun deleteNpcAvatar(npc: Npc) {

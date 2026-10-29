@@ -200,7 +200,7 @@ public class Npc(
         get() = type.id
 
     public val name: String
-        get() = type.name
+        get() = org.rsmod.game.entity.npc.GlobalNpcNames.get(id) ?: type.name
 
     public var moveRestrict: MoveRestrict = type.moveRestrict
 

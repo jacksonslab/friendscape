@@ -4,6 +4,8 @@ import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 
 public interface NpcInfoProtocol {
+    public fun setName(name: String) {}
+
     public fun setSequence(seq: Int, delay: Int)
 
     public fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int)

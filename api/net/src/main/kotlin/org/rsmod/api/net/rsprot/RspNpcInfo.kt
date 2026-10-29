@@ -9,6 +9,10 @@ import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 
 class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
+    override fun setName(name: String) {
+        rspAvatar.extendedInfo.setNameChange(name)
+    }
+
     override fun setSequence(seq: Int, delay: Int) {
         rspAvatar.extendedInfo.setSequence(seq, delay)
     }

@@ -2,6 +2,10 @@ plugins {
     id("base-conventions")
 }
 
+tasks.withType<Test>().configureEach {
+    workingDir(rootProject.projectDir)
+}
+
 dependencies {
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)
