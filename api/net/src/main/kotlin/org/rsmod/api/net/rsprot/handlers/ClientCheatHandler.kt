@@ -13,9 +13,9 @@ constructor(
     private val centralActivityLogWriter: CentralActivityLogWriter,
 ) : MessageHandler<ClientCheat> {
     override fun handle(player: Player, message: ClientCheat) {
-        val text = message.command.lowercase()
+        val text = message.command
         val split = text.split(" ")
-        val command = split[0]
+        val command = split[0].lowercase()
         val args = if (split.size > 1) split.subList(1, split.size).toList() else emptyList()
         centralActivityLogWriter.logCommand(player, command, args)
         commands.execute(player, command, args)
