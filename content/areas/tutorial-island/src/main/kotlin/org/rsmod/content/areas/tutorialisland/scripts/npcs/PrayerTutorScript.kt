@@ -1,12 +1,10 @@
 package org.rsmod.content.areas.tutorialisland.scripts.npcs
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
-import org.rsmod.content.areas.tutorialisland.progression.TutorialClientScripts.toplevelSidebuttonSwitch
 import org.rsmod.content.areas.tutorialisland.progression.TutorialProgression
 import org.rsmod.content.areas.tutorialisland.progression.TutorialStep
 import org.rsmod.game.entity.Npc
@@ -34,7 +32,6 @@ class PrayerTutorScript @Inject constructor(private val progression: TutorialPro
         chatPlayer(happy, "Good day, brother.")
         chatNpc(happy, "Hello, I'm Brother Brace. I'm here to tell you all about Prayer.")
         progression.setStep(player, TutorialStep.PrayerTab, npc)
-        toplevelSidebuttonSwitch(player, constants.toplevel_prayer)
     }
 
     private suspend fun Dialogue.afterPrayer(npc: Npc) {

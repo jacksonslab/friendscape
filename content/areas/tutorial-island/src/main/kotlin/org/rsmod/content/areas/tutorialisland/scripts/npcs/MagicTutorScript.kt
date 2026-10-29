@@ -41,7 +41,6 @@ constructor(private val progression: TutorialProgression, private val leave: Tut
             "Good day, newcomer. My name is Terrova. I'm here to tell you about Magic. Let's start by opening your magic interface.",
         )
         progression.setStep(player, TutorialStep.MagicTab, npc)
-        toplevelSidebuttonSwitch(player, 6)
     }
 
     private suspend fun Dialogue.giveRunes(npc: Npc) {
@@ -92,7 +91,7 @@ constructor(private val progression: TutorialProgression, private val leave: Tut
                 1,
                 "Tell me about Ironman first.",
                 2,
-                "I'm ready â€” home teleport me.",
+                "I'm ready. Home teleport me.",
                 3,
                 title = "Before you leave...",
             )

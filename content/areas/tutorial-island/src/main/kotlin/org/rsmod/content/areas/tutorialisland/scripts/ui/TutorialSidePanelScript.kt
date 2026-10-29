@@ -2,6 +2,7 @@ package org.rsmod.content.areas.tutorialisland.scripts.ui
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.SideTabClicked
+import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_components
@@ -25,6 +26,14 @@ constructor(
     private val focus: TutorialFocusGuidance,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
+        onWearposChange {
+            if (progression.isActive(player)) {
+                val step = progression.current(player)
+                if (step == TutorialStep.CombatDagger || step == TutorialStep.CombatRange) {
+                    focus.apply(player, step)
+                }
+            }
+        }
         bindStones(
             "component.toplevel:stone11",
             "component.toplevel_pre_eoc:stone11",
@@ -44,6 +53,7 @@ constructor(
                 2 -> onQuestListOpened(player)
                 5 -> onPrayerOpened(player)
                 6 -> onMagicOpened(player)
+                8 -> onAccountOpened(player)
                 11 -> onSettingsOpened(player)
             }
         }
@@ -149,21 +159,21 @@ constructor(
     private fun onAccountOpened(player: Player) {
         if (!progression.isActive(player)) return
         if (progression.current(player) == TutorialStep.AccountMgmt) {
-            progression.setStep(player, TutorialStep.AccountMgmt)
+            focus.pointBackToTabTutor(player, TutorialStep.AccountMgmt)
         }
     }
 
     private fun onPrayerOpened(player: Player) {
         if (!progression.isActive(player)) return
         if (progression.current(player) == TutorialStep.PrayerTab) {
-            progression.setStep(player, TutorialStep.PrayerTab)
+            focus.pointBackToTabTutor(player, TutorialStep.PrayerTab)
         }
     }
 
     private fun onMagicOpened(player: Player) {
         if (!progression.isActive(player)) return
         if (progression.current(player) == TutorialStep.MagicTab) {
-            progression.setStep(player, TutorialStep.MagicTab)
+            focus.pointBackToTabTutor(player, TutorialStep.MagicTab)
         }
     }
 }

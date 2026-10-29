@@ -18,8 +18,8 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_components
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_interfaces
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
-import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
+import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_varbits
 import org.rsmod.content.areas.tutorialisland.progression.HintArrows
 import org.rsmod.content.areas.tutorialisland.progression.TutorialClientScripts
@@ -56,6 +56,13 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
         applyUiFlash(player, step)
         applyOutlines(player, step)
         applyOreGuide(player, step)
+        if (step == TutorialStep.CombatDagger && player.worn.count(tutorial_objs.BRONZE_DAGGER) > 0) {
+            pointBackTo(
+                player,
+                tutorial_npcs.COMBAT_TUTOR,
+                guideHtml(step, combatDaggerGuide(player)),
+            )
+        }
     }
 
     fun clear(player: Player) {
@@ -119,6 +126,23 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
         )
     }
 
+    fun pointBackToTabTutor(player: Player, step: TutorialStep) {
+        val npcType = when (step) {
+            TutorialStep.PrayerTab -> tutorial_npcs.PRAYER_TUTOR
+            TutorialStep.MagicTab -> tutorial_npcs.MAGIC_TUTOR
+            TutorialStep.AccountMgmt -> tutorial_npcs.BANK_TUTOR
+            else -> return
+        }
+        val body = when (step) {
+            TutorialStep.PrayerTab -> "Speak to Brother Brace again to learn how to use your prayers."
+            TutorialStep.MagicTab -> "Speak to the Magic Instructor again to receive runes and learn your first spell."
+            else -> "Speak to the Account Guide again to continue."
+        }
+        player.flashingSide = FLASH_SIDE_NONE
+        player.ifSetText(tutorial_components.HINT_TEXT_2, body)
+        pointBackTo(player, npcType, guideHtml(step, body))
+    }
+
     private fun pointBackTo(player: Player, npcType: String, text: String) {
         val npc = npcSearch.find(player.coords, npcType, HINT_NPC_DISTANCE, HuntVis.Off)
         if (npc != null) {
@@ -128,13 +152,39 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
     }
 
     fun setControlGuide(player: Player, step: TutorialStep) {
+        val body = when (step) {
+            TutorialStep.CombatDagger -> combatDaggerGuide(player)
+            TutorialStep.CombatRange -> rangedGuide(player)
+            else -> step.guideBody
+        }
         player.ifSetText(tutorial_components.HINT_TEXT_1, step.guideTitle)
-        player.ifSetText(tutorial_components.HINT_TEXT_2, step.guideBody)
+        player.ifSetText(tutorial_components.HINT_TEXT_2, body)
         player.ifSetText(tutorial_components.HINT_TEXT_3, "")
         player.ifSetText(tutorial_components.HINT_TEXT_4, "")
         player.ifOpenOverlay(tutorial_interfaces.MESOVERLAY, "component.chatbox:chatmodal", eventBus)
-        TutorialClientScripts.mesOverlay(player, guideHtml(step))
+        TutorialClientScripts.mesOverlay(player, guideHtml(step, body))
     }
+
+    private fun combatDaggerGuide(player: Player): String =
+        if (player.worn.count(tutorial_objs.BRONZE_DAGGER) > 0) {
+            "Your bronze dagger is equipped. Speak to the combat instructor again to get your next equipment."
+        } else {
+            TutorialStep.CombatDagger.guideBody
+        }
+
+    private fun rangedGuide(player: Player): String = when {
+        player.worn.count(tutorial_objs.SHORTBOW) > 0 &&
+            player.worn.count(tutorial_objs.BRONZE_ARROW) > 0 ->
+            "You are ready for ranged combat. Attack a giant rat from outside the pen using your shortbow."
+        player.worn.count(tutorial_objs.SHORTBOW) > 0 ->
+            "Your shortbow is equipped. Equip the bronze arrows in your backpack, then attack a giant rat from outside the pen."
+        player.inv.count(tutorial_objs.SHORTBOW) > 0 -> TutorialStep.CombatRange.guideBody
+        else -> "Well done! Speak to the combat instructor again to learn about ranged combat and receive a shortbow and arrows."
+    }
+
+    private fun rangedTarget(player: Player): String =
+        if (player.worn.count(tutorial_objs.SHORTBOW) > 0) tutorial_npcs.GIANT_RAT
+        else tutorial_npcs.COMBAT_TUTOR
 
     /**
      * Live Past Experience modal (`tutorial_player_experience` / 929) on the main modal slot.
@@ -198,7 +248,8 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
             HintArrows.setTile(player, tile)
             return
         }
-        val type = hintNpcType(step) ?: return
+        val type = if (step == TutorialStep.CombatRange) rangedTarget(player) else hintNpcType(step)
+        if (type == null) return
         val npc =
             hintNpc?.takeIf { it.id == type.asRSCM() }
                 ?: npcSearch.find(player.coords, type, HINT_NPC_DISTANCE, HuntVis.Off)
@@ -238,12 +289,16 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
         // `flashside` is 4 bits holding the side id plus one, leaving 0 for "nothing is flashing".
         // Confirmed in-game: the settings step flashes the spanner. `toplevel_flashicon` (913) is
         // a proc taking 3 ints whose meaning has not been recovered, so it is not called here.
+        // The client suppresses the tutorial cue for the currently selected tab.
+        if (step == TutorialStep.AccountMgmt || step == TutorialStep.PrayerTab || step == TutorialStep.MagicTab) {
+            TutorialClientScripts.toplevelSidebuttonSwitch(player, 3)
+        }
         player.flashingSide = side + 1
     }
 
     private fun applyOutlines(player: Player, step: TutorialStep) {
         TutorialClientScripts.highlightingOn(player)
-        val npcType = outlineNpcType(step)
+        val npcType = if (step == TutorialStep.CombatRange) rangedTarget(player) else outlineNpcType(step)
         if (npcType != null) {
             TutorialClientScripts.highlightNpcTypeOn(player, npcType.asRSCM())
         }
@@ -316,10 +371,13 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
             TutorialStep.CombatGear,
             TutorialStep.CombatRange -> tutorial_npcs.COMBAT_TUTOR
             TutorialStep.CombatMelee -> tutorial_npcs.GIANT_RAT
-            TutorialStep.AccountTalk -> tutorial_npcs.BANK_TUTOR
-            TutorialStep.PrayerTalk -> tutorial_npcs.PRAYER_TUTOR
+            TutorialStep.AccountTalk,
+            TutorialStep.AccountMgmt -> tutorial_npcs.BANK_TUTOR
+            TutorialStep.PrayerTalk,
+            TutorialStep.PrayerTab -> tutorial_npcs.PRAYER_TUTOR
             TutorialStep.Ironman -> tutorial_npcs.IRONMAN_TUTOR
             TutorialStep.MagicTalk,
+            TutorialStep.MagicTab,
             TutorialStep.LeaveTalk -> tutorial_npcs.MAGIC_TUTOR
             TutorialStep.MagicRunes,
             TutorialStep.MagicCast -> tutorial_npcs.CHICKEN
@@ -471,7 +529,7 @@ constructor(private val eventBus: EventBus, private val npcSearch: NpcSearch) {
         /** Live `midi_song_v2 id=62` (Newbie Melody) on first character-create open. */
         private val NEWBIE_MELODY = "midi.newbie_melody"
 
-        private fun guideHtml(step: TutorialStep): String =
-            "<col=0000ff>${step.guideTitle}</col><br>${step.guideBody}"
+        private fun guideHtml(step: TutorialStep, body: String = step.guideBody): String =
+            "<col=0000ff>${step.guideTitle}</col><br>$body"
     }
 }

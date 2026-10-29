@@ -2,6 +2,7 @@ package org.rsmod.content.areas.tutorialisland.progression
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
@@ -11,7 +12,14 @@ import org.rsmod.map.CoordGrid
 class TutorialLeave @Inject constructor(private val progression: TutorialProgression) {
     fun giveLeaveKit(access: ProtectedAccess) {
         val player = access.player
-        if (!progression.isActive(player)) return
+        if (!progression.isActive(player)) {
+            // Recover players completed by the old, blocked exit teleport without regranting items.
+            if (progression.current(player) == TutorialStep.Completed &&
+                player.coords.x in 1664..1727 && player.coords.z in 6080..6143) {
+                access.teleport(LUMBRIDGE_SPAWN, TeleportType.Exempt)
+            }
+            return
+        }
 
         val kit = listOf(
             tutorial_objs.BRONZE_AXE to 1,
@@ -38,8 +46,8 @@ class TutorialLeave @Inject constructor(private val progression: TutorialProgres
             return
         }
 
-        access.teleport(LUMBRIDGE_SPAWN)
-        progression.finishAndLeave(player)
+        access.teleport(LUMBRIDGE_SPAWN, TeleportType.Exempt)
+        if (player.coords == LUMBRIDGE_SPAWN) progression.finishAndLeave(player)
     }
 
     companion object {

@@ -5,7 +5,6 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
-import org.rsmod.content.areas.tutorialisland.progression.TutorialClientScripts.toplevelSidebuttonSwitch
 import org.rsmod.content.areas.tutorialisland.progression.TutorialProgression
 import org.rsmod.content.areas.tutorialisland.progression.TutorialStep
 import org.rsmod.game.entity.Npc
@@ -42,7 +41,6 @@ class AccountTutorScript @Inject constructor(private val progression: TutorialPr
             "There's various things you can do with your account which is where the Account Management menu comes into play. Let's take a look at it now.",
         )
         progression.setStep(player, TutorialStep.AccountMgmt, npc)
-        toplevelSidebuttonSwitch(player, 8)
     }
 
     private suspend fun Dialogue.lecture(npc: Npc) {

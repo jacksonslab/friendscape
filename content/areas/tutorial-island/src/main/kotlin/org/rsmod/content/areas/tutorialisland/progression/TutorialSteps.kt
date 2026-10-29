@@ -154,7 +154,7 @@ enum class TutorialStep(override val varValue: Int) : VarEnumDelegate {
                     "Well done! Speak to the survival expert if you want a recap, otherwise you can move on. Click on the gate shown and follow the path."
                 ChefDoor ->
                     "Talk to learn the more advanced aspects of Cooking such as combining ingredients!"
-                ChefTalk,
+                ChefTalk -> "Speak to the Master Chef to learn how to make bread."
                 ChefDough ->
                     "To make dough you must mix flour with water. Click on the flour in your inventory, then click on the water to combine them into dough."
                 ChefBread ->
@@ -163,21 +163,21 @@ enum class TutorialStep(override val varValue: Int) : VarEnumDelegate {
                     "When navigating the world, you can either run or walk. You can use the flashing orb next to the minimap to toggle running."
                 QuestDoor ->
                     "It's time to learn about quests! Just talk to the Quest Guide to get started."
-                QuestTalk,
+                QuestTalk -> "Speak to the Quest Guide to learn about quests."
                 QuestList -> "Click on the flashing icon to the left of your inventory."
                 QuestLadder ->
                     "It's time to enter some caves. Click on the ladder to go down to the next area."
-                MineTalk,
+                MineTalk -> "Speak to the Mining Instructor to learn about mining and smithing."
                 MineOres ->
                     "To mine a rock, all you need to do is click on it. First up, try mining some tin."
                 MineSmelt ->
                     "You now have some tin ore and some copper ore. You can smelt these into a bronze bar. Click on the indicated furnace."
-                MineHammer,
+                MineHammer -> "Speak to the Mining Instructor again to learn about smithing and receive a hammer."
                 MineDagger ->
                     "To smith you'll need a hammer and enough metal bars. Click on the anvil, or alternatively use the bar on it."
                 MineGate ->
                     "In this area you will find out about melee and ranged combat. Speak to the guide and he will tell you all about it."
-                CombatTalk,
+                CombatTalk -> "Speak to the Combat Instructor to begin your combat training."
                 CombatWorn ->
                     "You now have access to a new interface. Click on the flashing icon of a man, the one to the right of your backpack icon."
                 CombatStats ->
@@ -194,20 +194,21 @@ enum class TutorialStep(override val varValue: Int) : VarEnumDelegate {
                     "Equip the shortbow and arrows, then try killing another rat. You don't need to enter the pen this time."
                 CombatLadder ->
                     "You have completed the tasks here. To move on, click on the indicated ladder."
-                PrayerTalk,
-                PrayerTab -> "Click on the flashing icon to open the Prayer menu."
+                PrayerTalk -> "Speak to the Prayer Instructor to learn about Prayer."
+                PrayerTab -> "Open the flashing Prayer menu, then speak to Brother Brace again."
                 PrayerExit ->
                     "You're done here. Head through the door and follow the path round to the bank."
                 BankOpen ->
                     "This is the Bank of Gielinor. To open your bank, just click on the indicated booth."
                 PollView -> "To continue, close the bank and click on the indicated poll booth."
-                AccountTalk,
-                AccountMgmt -> "Click on the flashing icon to open your Account Management menu."
-                AccountExit,
-                Ironman ->
+                AccountTalk -> "Speak to the Account Guide to learn about account management."
+                AccountMgmt -> "Open the flashing Account Management menu, then speak to the Account Guide again."
+                AccountExit ->
                     "You're almost finished on tutorial island. Pass through the door to find the path leading to your final instructor."
-                MagicTalk,
-                MagicTab -> "Open up the magic interface by clicking on the flashing icon."
+                Ironman ->
+                    "Speak to the Ironman tutor about account modes before continuing to the Magic Instructor."
+                MagicTalk -> "Speak to the Magic Instructor to begin your magic training."
+                MagicTab -> "Open the flashing magic interface, then speak to the Magic Instructor again."
                 MagicRunes,
                 MagicCast ->
                     "Look for the Wind Strike spell in your magic interface. Click on this spell to select it and then click on a chicken to cast it."

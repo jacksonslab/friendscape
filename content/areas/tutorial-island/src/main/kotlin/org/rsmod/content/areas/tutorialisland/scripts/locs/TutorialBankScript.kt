@@ -3,13 +3,17 @@ package org.rsmod.content.areas.tutorialisland.scripts.locs
 import jakarta.inject.Inject
 import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_locs
+import org.rsmod.content.areas.tutorialisland.configs.tutorial_npcs
 import org.rsmod.content.areas.tutorialisland.configs.tutorial_objs
 import org.rsmod.content.areas.tutorialisland.progression.TutorialProgression
 import org.rsmod.content.areas.tutorialisland.progression.TutorialStep
 import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.events.EventBus
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -19,8 +23,20 @@ class TutorialBankScript
 constructor(private val progression: TutorialProgression, private val eventBus: EventBus) :
     PluginScript() {
     override fun ScriptContext.startup() {
+        for (banker in listOf(tutorial_npcs.BANKER, tutorial_npcs.LEGACY_BANKER)) {
+            onOpNpc1(banker) { openTutorialBank() }
+            onApNpc1(banker) { approachBanker(it.npc) }
+        }
         onOpLoc1(tutorial_locs.BANKBOOTH) { openTutorialBank() }
         onOpLoc1(tutorial_locs.POLLBOOTH) { openPollBooth() }
+    }
+
+    private fun ProtectedAccess.approachBanker(npc: Npc) {
+        if (isWithinDistance(npc, 2)) {
+            openTutorialBank()
+        } else {
+            apRange(2)
+        }
     }
 
     private fun ProtectedAccess.openTutorialBank() {
@@ -31,7 +47,8 @@ constructor(private val progression: TutorialProgression, private val eventBus: 
             )
             return
         }
-        if (!player.isUltimateIronman && invTotal(bank, tutorial_objs.COINS) <= 0) {
+        if (progression.current(player) == TutorialStep.BankOpen &&
+            !player.isUltimateIronman && invTotal(bank, tutorial_objs.COINS) <= 0) {
             invAdd(bank, tutorial_objs.COINS, 25)
         }
         if (player.isUltimateIronman) {
