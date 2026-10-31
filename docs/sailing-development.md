@@ -13,6 +13,11 @@ Built on the world-entity boat engine from OpenRune PR 182
 - **Navigation**: the helm steers. The hull collides against `SeaMap`. Rev 241 gives open sea no
   collision flags, so water comes from the terrain overlay textures. To disembark, stop within 10
   tiles of a dock; the boat snaps to the mooring.
+- **Boat controls** (`sailing-controls` branch): the native `sailing_sidepanel` opens in the combat
+  tab when boarding. Its Set/Un-set, Lower speed and Raise speed buttons control the actual boat,
+  including half speed and reverse. Take the physical helm first; heading still comes from clicking
+  the sea. The panel shows helm status and movement stats, can switch to combat options and back,
+  and restores normal combat options when leaving. Passengers cannot change the captain's speed.
 - **Port tasks (courier)**: notice boards, ledger tables and the cargo hold, on Jagex's
   `port_task_slot_*` varbits. 438 tasks with wiki XP (`enum.friendscape_courier_task_xp`).
   Slots unlock at 1/7/28/56/84. Port coin bags pay out the wiki ranges. Relocating a boat
