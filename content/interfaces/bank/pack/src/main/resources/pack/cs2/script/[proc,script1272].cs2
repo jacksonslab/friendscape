@@ -1,0 +1,80 @@
+// 1272
+[proc,script1272](component $component0, component $component1)
+def_obj $obj = null;
+def_int $int3 = 0;
+def_int $int4 = 0;
+while ($int4 < 1600) {
+    $obj = inv_getobj(bank, $int4);
+    if (oc_unplaceholder($obj) ! $obj) {
+        $int3 = calc($int3 + 1);
+    }
+    $int4 = calc($int4 + 1);
+}
+cc_deleteall($component0);
+def_int $int5 = 0;
+if ($int3 > 0) {
+    $int5 = ~options_button_on($component0, $int5);
+} else {
+    $int5 = ~options_button_off($component0, $int5);
+}
+def_string $string = "Release all placeholders";
+if ($int3 > 0) {
+    $string = append($string, " (<~tostring_spacer($int3, ",")>)");
+}
+if_setop(1, $string, $component0);
+cc_create($component0, ^iftype_graphic, $int5);
+$int5 = calc($int5 + 1);
+cc_setsize(29, 22, ^setsize_abs, ^setsize_abs);
+cc_setposition(3, 0, ^setpos_abs_left, ^setpos_abs_centre);
+cc_setgraphic("bankbuttons,7");
+cc_create($component0, ^iftype_text, $int5);
+cc_setsize(20, 0, ^setsize_minus, ^setsize_minus);
+cc_setposition(20, 0, ^setpos_abs_left, ^setpos_abs_centre);
+cc_settextshadow(true);
+cc_settextalign(^settextalign_centre, ^settextalign_centre, 0);
+cc_settextfont(p12_full);
+cc_settext($string);
+if ($int3 > 0) {
+    cc_setcolour(0xff981f);
+    if (~on_mobile = false) {
+        if_setonmouseover("cc_colour_swapper(event_com, $int5, 16777215)", $component0);
+        if_setonmouseleave("cc_colour_swapper(event_com, $int5, 16750623)", $component0);
+    }
+    if_setonop("script1273(event_op, $component0, $component1)", $component0);
+} else {
+    cc_setcolour(0x8f8f8f);
+    if (~on_mobile = false) {
+        if_setonmouseover(null, $component0);
+        if_setonmouseleave(null, $component0);
+    }
+    if_setonop("opsound(event_op, 2)", $component0);
+}
+cc_deleteall($component1);
+$int5 = ~options_button_off($component1, 0);
+cc_create($component1, ^iftype_graphic, $int5);
+$int5 = calc($int5 + 1);
+cc_setsize(29, 22, ^setsize_abs, ^setsize_abs);
+cc_setposition(-1, 0, ^setpos_abs_left, ^setpos_abs_centre);
+cc_setgraphic("bankbuttons,7");
+cc_create($component1, ^iftype_graphic, $int5);
+$int5 = calc($int5 + 1);
+cc_setsize(22, 22, ^setsize_abs, ^setsize_abs);
+cc_setposition(15, 1, ^setpos_abs_left, ^setpos_abs_centre);
+cc_setgraphic("acc_man_icons,7");
+$string = "Deposit Lock Settings";
+if_setop(1, $string, $component1);
+~script4081(2, $component1);
+if_setonvartransmit("script4080(2, event_com){bank_locked_slots}", $component1);
+cc_create($component1, ^iftype_text, $int5);
+cc_setsize(20, 0, ^setsize_minus, ^setsize_minus);
+cc_setposition(20, 0, ^setpos_abs_left, ^setpos_abs_centre);
+cc_settextshadow(true);
+cc_settextalign(^settextalign_centre, ^settextalign_centre, 0);
+cc_settextfont(p12_full);
+cc_settext($string);
+cc_setcolour(0xff981f);
+if (~on_mobile = false) {
+    if_setonmouseover("cc_colour_swapper(event_com, $int5, 16777215)", $component1);
+    if_setonmouseleave("cc_colour_swapper(event_com, $int5, 16750623)", $component1);
+}
+if_setonop("opsound(event_op, 6)", $component1);
