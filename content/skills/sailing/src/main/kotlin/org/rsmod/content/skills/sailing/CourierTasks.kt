@@ -1,7 +1,7 @@
 package org.rsmod.content.skills.sailing
 
 import dev.openrune.types.ItemServerType
-import org.rsmod.api.enums.NamedEnums.friendscape_courier_task_xp
+import org.rsmod.api.enums.FriendscapeEnums.friendscape_courier_task_xp
 import org.rsmod.api.enums.NamedEnums.friendscape_port_bag_tier_xp
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.PortTaskRow

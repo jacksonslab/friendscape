@@ -63,8 +63,9 @@ constructor(
                     "Review my tasks (${active.size}/$capacity)",
                     "Cancel a task",
                     "Commission a boat",
+                    "Sea charting log",
                 ),
-                listOf(BoardAction.Take, BoardAction.Review, BoardAction.Cancel, BoardAction.Shipwright),
+                listOf(BoardAction.Take, BoardAction.Review, BoardAction.Cancel, BoardAction.Shipwright, BoardAction.Charting),
                 title = "${port.name} notice board",
             ) ?: return
         when (action) {
@@ -72,6 +73,7 @@ constructor(
             BoardAction.Review -> reviewTasks()
             BoardAction.Cancel -> cancelTask()
             BoardAction.Shipwright -> shipbuilding.commission(this)
+            BoardAction.Charting -> CaptainLog.open(this)
         }
     }
 
@@ -317,6 +319,7 @@ constructor(
         Review,
         Cancel,
         Shipwright,
+        Charting,
     }
 
     private enum class TakeMode {
