@@ -99,7 +99,147 @@ contentGroup = "content.opened_single_door"
 [object.params]
 "param.next_loc_stage" = "loc.fai_varrock_door"
 
+[[object]]
+id = "loc.fai_varrock_door_taller"
+inherit = "loc.fai_varrock_door_taller"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_door_open_taller"
+
+[[object]]
+id = "loc.fai_varrock_door_open_taller"
+inherit = "loc.fai_varrock_door_open_taller"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_door_taller"
+
+[[object]]
+id = "loc.fai_varrock_poor_door"
+inherit = "loc.fai_varrock_poor_door"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_poor_door_open"
+
+[[object]]
+id = "loc.fai_varrock_poor_door_open"
+inherit = "loc.fai_varrock_poor_door_open"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_poor_door"
+
+[[object]]
+id = "loc.fai_varrock_poor_door_flipped"
+inherit = "loc.fai_varrock_poor_door_flipped"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_poor_door_open_flipped"
+
+[[object]]
+id = "loc.fai_varrock_poor_door_open_flipped"
+inherit = "loc.fai_varrock_poor_door_open_flipped"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_poor_door_flipped"
+
+[[object]]
+id = "loc.fai_varrock_shanty_door"
+inherit = "loc.fai_varrock_shanty_door"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_shanty_door_open"
+
+[[object]]
+id = "loc.fai_varrock_shanty_door_open"
+inherit = "loc.fai_varrock_shanty_door_open"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_shanty_door"
+
 ## Doors end
+
+## Gates
+
+[[object]]
+id = "loc.fai_varrock_gate_l"
+inherit = "loc.fai_varrock_gate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_gate_lc"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.fai_varrock_gate_r"
+inherit = "loc.fai_varrock_gate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_gate_rc"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.fai_varrock_gate_lc"
+inherit = "loc.fai_varrock_gate_lc"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_gate_l"
+"param.closesound" = "synth.picketgate_close"
+
+[[object]]
+id = "loc.fai_varrock_gate_rc"
+inherit = "loc.fai_varrock_gate_rc"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_varrock_gate_r"
+"param.closesound" = "synth.picketgate_close"
+
+[[object]]
+id = "loc.ii_fencegate_l"
+inherit = "loc.ii_fencegate_l"
+contentGroup = "content.closed_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.ii_fencegate_lc"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.ii_fencegate_r"
+inherit = "loc.ii_fencegate_r"
+contentGroup = "content.closed_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.ii_fencegate_rc"
+"param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.ii_fencegate_lc"
+inherit = "loc.ii_fencegate_lc"
+contentGroup = "content.opened_left_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.ii_fencegate_l"
+"param.closesound" = "synth.picketgate_close"
+
+[[object]]
+id = "loc.ii_fencegate_rc"
+inherit = "loc.ii_fencegate_rc"
+contentGroup = "content.opened_right_picketgate"
+
+[object.params]
+"param.next_loc_stage" = "loc.ii_fencegate_r"
+"param.closesound" = "synth.picketgate_close"
+
+## Gates end
 
 
 # Bookcases & Shelves
