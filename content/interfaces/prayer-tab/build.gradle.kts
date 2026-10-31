@@ -1,5 +1,7 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
+    id("game-cache-test-conventions")
 }
 
 dependencies {

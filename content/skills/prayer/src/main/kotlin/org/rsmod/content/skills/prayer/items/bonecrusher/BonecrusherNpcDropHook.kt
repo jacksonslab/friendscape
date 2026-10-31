@@ -6,16 +6,17 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.death.NpcDeathDropContext
+import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.player.events.prayer.PrayerSkillAction
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
-import org.rsmod.api.player.vars.boolVarBit
-import org.rsmod.api.player.vars.intVarBit
-import org.rsmod.api.death.NpcDeathDropContext
-import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statBoost
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.table.prayer.SkillPrayerRow
+import org.rsmod.content.skills.prayer.baseXp
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -52,7 +53,7 @@ constructor(
             return false
         }
 
-        val prayerXp = row.exp.toDouble() / 2
+        val prayerXp = row.baseXp / 2
         player.statAdvance("stat.prayer", prayerXp)
 
         eventBus.publish(SkillingActionCompleteEvent(player = player, context =

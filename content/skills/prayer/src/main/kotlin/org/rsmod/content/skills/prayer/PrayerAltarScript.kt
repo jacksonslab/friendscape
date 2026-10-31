@@ -1,5 +1,7 @@
 package org.rsmod.content.skills.prayer
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.player.stat.prayerLvl
@@ -9,7 +11,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class PrayerAltarScript : PluginScript() {
     override fun ScriptContext.startup() {
-        for (altar in ALTARS) {
+        val houseAltars = PrayerAltars.ALL.keys.map { RSCM.getReverseMapping(RSCMType.LOC, it) }
+        for (altar in ALTARS + houseAltars) {
             onOpLoc1(altar) { prayAt() }
         }
     }

@@ -3,6 +3,8 @@ package org.rsmod.content.skills.prayer.ecto
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.table.prayer.PrayerEctofuntusBonemealRow
+import org.rsmod.api.table.prayer.SkillPrayerRow
+import org.rsmod.content.skills.prayer.baseXp
 
 internal data class EctoRecipe(
     val id: Int,
@@ -18,9 +20,9 @@ internal val ECTO_RECIPES: List<EctoRecipe> by lazy { PrayerEctofuntusBonemealRo
         id = index + 1, bones = row.input.internalName,
         bonemeal = row.output.internalName,
         bonesName = row.input.name,
-        xp = row.xp.toDouble(),
+        xp = SkillPrayerRow.all().firstOrNull { it.item.id == row.input.id }?.baseXp?.times(4.0) ?: row.xp.toDouble(),
         prayerLevel = row.statReq.first().t1
-    )}
+    ) }
 }
 
 internal fun findEctoRecipe(id: Int): EctoRecipe? = ECTO_RECIPES.firstOrNull { it.id == id }

@@ -53,6 +53,7 @@ import dev.openrune.tables.skills.Slayer
 import dev.openrune.tables.skills.SlayerRequirements
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
+import dev.openrune.tables.skills.prayer.PrayerAltarsTable
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.toml.rsconfig.rsconfig
@@ -216,6 +217,7 @@ private fun tablesToPack(
     Firemaking.firelighters(),
     Firemaking.sources(),
     PrayerTable.skillTable(),
+    PrayerAltarsTable.altars(),
     PrayerBlessedBone.table(),
     EctofuntusBonemeal.table(),
     StatComponents.statsComponents(),

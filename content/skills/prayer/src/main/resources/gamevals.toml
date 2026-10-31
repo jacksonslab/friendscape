@@ -1,4 +1,5 @@
 [gamevals.dbtable]
+friendscape_prayer_altars = 61300
 skill_prayer=65535
 prayer_blessed_bone=65534
 prayer_ectofuntus_bonemeal=65533
@@ -29,6 +30,13 @@ ecto_tokens=65499
 ecto_grinder_recipe=65498
 
 [gamevals.dbrow]
+friendscape_prayer_altar_1 = 61300
+friendscape_prayer_altar_2 = 61301
+friendscape_prayer_altar_3 = 61302
+friendscape_prayer_altar_4 = 61303
+friendscape_prayer_altar_5 = 61304
+friendscape_prayer_altar_6 = 61305
+friendscape_prayer_altar_7 = 61306
 infernalashes=65535
 abyssalashes=65529
 maliciousashes=65528
