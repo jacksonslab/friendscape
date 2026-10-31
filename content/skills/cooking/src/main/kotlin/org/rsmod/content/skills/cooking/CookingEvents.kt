@@ -53,7 +53,7 @@ class CookingEvents @Inject constructor(
         foods.forEach { food ->
             fireAndCamp.forEach { loc ->
                 onOpLocU(loc, food.raw.internalName) {
-                    cookFood(food, CookingSurface.Fire(loc))
+                    cookUsedFood(food, CookingSurface.Fire(loc))
                 }
             }
         }
@@ -61,7 +61,7 @@ class CookingEvents @Inject constructor(
             foods.forEach { food ->
                 onOpContentMixedLocU(content, food.raw.internalName) {
                     val surface = CookingSurface.Range(rangeType, it.type.internalName)
-                    if (canUseRange(surface)) cookFood(food, surface)
+                    if (canUseRange(surface)) cookUsedFood(food, surface)
                 }
             }
         }
@@ -169,6 +169,21 @@ class CookingEvents @Inject constructor(
             val food = cookable.firstOrNull {
                 it.cooked.internalName == selection.entry.internal
             } ?: return@openSkillMulti
+            cookFood(food, surface, selection.amount)
+        }
+    }
+
+    private suspend fun ProtectedAccess.cookUsedFood(food: CookingFoodsRow, surface: CookingSurface) {
+        if (player.cookingLvl < food.level || inv.count(food.raw.internalName) <= 1) {
+            cookFood(food, surface)
+            return
+        }
+        openSkillMulti(SkillMultiConfig(
+            verb = "cook",
+            entries = listOf(SkillMultiEntry(food.cooked.internalName, listOf(
+                Material(food.raw.internalName),
+            ))),
+        )) { selection ->
             cookFood(food, surface, selection.amount)
         }
     }
