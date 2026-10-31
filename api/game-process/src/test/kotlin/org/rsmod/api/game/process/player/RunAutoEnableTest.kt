@@ -15,14 +15,29 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.autoEnableRunOnMove
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
+import org.rsmod.api.realm.Realm
+import org.rsmod.api.realm.RealmConfig
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.movement.MoveSpeed
+import org.rsmod.map.CoordGrid
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class RunAutoEnableTest {
-    private val processor = PlayerRunUpdateProcessor()
+    private val processor = PlayerRunUpdateProcessor(realm(infiniteRunEnergy = false))
+
+    @Test
+    fun `realm infinite run energy keeps every player's energy full`() {
+        val player = player(threshold = 0)
+        player.runEnergy = 1
+        player.pendingStepCount = 2
+        player.setActiveMoveSpeed(MoveSpeed.Run)
+        val infinite = PlayerRunUpdateProcessor(realm(infiniteRunEnergy = true))
+        repeat(3) { infinite.process(player) }
+        assertEquals(10_000, player.runEnergy)
+        assertEquals(MoveSpeed.Run, player.varMoveSpeed)
+    }
 
     @Test
     fun `admin infinite stamina refills energy and prevents running drain`() {
@@ -156,6 +171,25 @@ class RunAutoEnableTest {
         Player().apply {
             worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
             VarPlayerIntMapSetter.set(this, "varbit.runenergy_autoenable", threshold)
+        }
+
+    private fun realm(infiniteRunEnergy: Boolean): Realm =
+        Realm("test").apply {
+            updateConfig(
+                RealmConfig(
+                    id = 0,
+                    loginMessage = null,
+                    loginBroadcast = null,
+                    baseXpRate = 1.0,
+                    globalXpRate = 1.0,
+                    spawnCoord = CoordGrid(0, 50, 50, 0, 0),
+                    respawnCoord = CoordGrid(0, 50, 50, 0, 0),
+                    devMode = false,
+                    requireRegistration = false,
+                    autoAssignDisplayNames = true,
+                    infiniteRunEnergy = infiniteRunEnergy,
+                )
+            )
         }
 
     companion object {

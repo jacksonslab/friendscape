@@ -51,6 +51,7 @@ constructor(
                         devMode = devMode,
                         requireRegistration = requireRegistration,
                         autoAssignDisplayNames = autoAssignDisplayNames,
+                        infiniteRunEnergy = loadInfiniteRunEnergy(connection, id),
                     )
                 }
             }
@@ -59,8 +60,29 @@ constructor(
         return null
     }
 
+    /**
+     * The shared central schema has no column for this, so it lives in a Friendscape-only column
+     * that is created on first load.
+     */
+    private fun loadInfiniteRunEnergy(connection: DatabaseConnection, realmId: Int): Boolean {
+        connection.prepareStatement(ADD_INFINITE_RUN_COLUMN).use { it.executeUpdate() }
+        connection.prepareStatement(SELECT_INFINITE_RUN).use {
+            it.setInt(1, realmId)
+            it.executeQuery().use { resultSet ->
+                return resultSet.next() && resultSet.getBoolean("infinite_run_energy")
+            }
+        }
+    }
+
     private fun String.toCoordGrid(): CoordGrid {
         val withQuotes = "\"$this\"" // Object mapper expects quotes.
         return objectMapper.readValue(withQuotes, CoordGrid::class.java)
+    }
+
+    private companion object {
+        private const val ADD_INFINITE_RUN_COLUMN =
+            "ALTER TABLE realms ADD COLUMN IF NOT EXISTS infinite_run_energy BOOLEAN NOT NULL DEFAULT FALSE"
+        private const val SELECT_INFINITE_RUN =
+            "SELECT infinite_run_energy FROM realms WHERE realm_id = ?"
     }
 }

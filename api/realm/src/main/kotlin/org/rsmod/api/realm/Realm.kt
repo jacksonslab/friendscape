@@ -45,6 +45,7 @@ public class Realm(public val name: String) {
  *   to log in. If `false`, new accounts will be automatically created on first login.
  * @param autoAssignDisplayNames If `true`, player display names will be automatically assigned
  *   based on their login name.
+ * @param infiniteRunEnergy If `true`, every player's run energy stays full.
  */
 public data class RealmConfig(
     val id: Int,
@@ -57,4 +58,5 @@ public data class RealmConfig(
     val devMode: Boolean,
     val requireRegistration: Boolean,
     val autoAssignDisplayNames: Boolean,
+    val infiniteRunEnergy: Boolean = false,
 )
