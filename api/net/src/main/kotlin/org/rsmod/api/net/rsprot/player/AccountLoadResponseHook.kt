@@ -309,6 +309,7 @@ class AccountLoadResponseHook(
      * rather than wherever it last stood in another mode.
      */
     private fun Player.applyConfigTransforms(config: RealmConfig, firstVisitToWorldType: Boolean) {
+        globalXpRate = config.globalXpRate
         // Before the early return: a dev realm grants admin on every login, not just the first.
         if (config.devMode) {
             modLevel = Rights.ADMINISTRATOR
