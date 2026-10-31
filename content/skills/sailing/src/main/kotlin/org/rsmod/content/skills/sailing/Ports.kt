@@ -40,6 +40,8 @@ object Ports {
     private val byLedger by lazy { ALL.filter { it.ledger != null }.associateBy { it.ledger!! } }
     private val byDock by lazy { ALL.associateBy { it.dockRowId } }
 
+    val PANDEMONIUM: Port by lazy { byDock.getValue(SailingDockRow.getRow("dbrow.sailing_dock_the_pandemonium").rowId) }
+
     fun byGangplank(loc: Int): Port? = byGangplank[loc]
 
     fun byNoticeBoard(loc: Int): Port? = byBoard[loc]

@@ -276,6 +276,7 @@ constructor(
             return
         }
         quest.setQuestStage(access, DELIVERING)
+        player.sailingBoatDock = Ports.PANDEMONIUM.dockRowId + 1
         chatNpc(happy, "Your raft's moored and ready at any gangplank. Board it, take the helm, and set the sails.")
         mesbox(CourierTasks.PANDEMONIUM.flavour)
     }

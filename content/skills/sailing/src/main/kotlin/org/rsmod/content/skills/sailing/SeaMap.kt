@@ -51,8 +51,11 @@ class SeaMap {
         if (bridged) {
             return false
         }
-        val overlay = terrain.overlays[MapSquareGrid(x, z, 0)]?.id ?: return false
-        return waterOverlays.getOrPut(overlay) { overlayTexture(overlay) in SEA_TEXTURES }
+        val overlay = terrain.overlays[MapSquareGrid(x, z, 0)] ?: return false
+        if (overlay.shape != FULL_TILE_SHAPE) {
+            return false
+        }
+        return waterOverlays.getOrPut(overlay.id) { overlayTexture(overlay.id) in SEA_TEXTURES }
     }
 
     private fun overlayTexture(overlay: Int): Int {
@@ -65,6 +68,9 @@ class SeaMap {
         private const val TERRAIN_FILE = 0
         private const val CONFIGS = 2
         private const val OVERLAY_GROUP = 4
+
+        /** Any other shape is a shoreline tile, only partly covered by its water overlay. */
+        private const val FULL_TILE_SHAPE = 0
 
         /** Water textures, as found under every open-sea shipwreck in the cache. */
         private val SEA_TEXTURES = setOf(1) + (130..138) + (160..164) + (170..176) + (182..189)

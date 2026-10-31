@@ -19,10 +19,21 @@ class SeaMapTest {
     }
 
     @Test
-    fun `every port has a raft mooring on open water`() {
+    fun `shoreline tiles only partly covered by water are not sailable`() {
+        assertFalse(sea.isWater(3057, 3062))
+        assertFalse(sea.isWater(3065, 3062))
+        assertTrue(sea.isWater(3060, 3062))
+    }
+
+    @Test
+    fun `every port has a mooring on open water for every boat`() {
         for (port in Ports.ALL) {
             val plank = port.gangplankCoord
-            assertNotNull(Navigation.findMooring({ x, z -> sea.isWater(x, z) }, plank.x, plank.z, 1, 3)) { "No mooring at ${port.name}" }
+            for (type in BoatTypes.ALL) {
+                assertNotNull(Navigation.findMooring({ x, z -> sea.isWater(x, z) }, plank.x, plank.z, type.hullWidth, type.hullLength)) {
+                    "No ${type.key} mooring at ${port.name}"
+                }
+            }
         }
     }
 
