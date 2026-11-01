@@ -35,6 +35,7 @@ class DoughMakingEvents : PluginScript() {
                 SkillMultiEntry("obj.bread_dough", materials),
                 SkillMultiEntry("obj.pastry_dough", materials),
                 SkillMultiEntry("obj.pizza_base", materials),
+                SkillMultiEntry("obj.uncooked_pitta_bread", materials),
             ),
         )) { selection ->
             val dough = selection.entry.internal

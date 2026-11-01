@@ -224,6 +224,8 @@ private fun tablesToPack(
     Motherlode.payDirt(),
     Cooking.foods(),
     Cooking.ales(),
+    Cooking.combinations(),
+    Cooking.churning(),
     Herblore.unfinishedPotions(),
     Herblore.finishedPotions(),
     Herblore.cleaningHerbs(),

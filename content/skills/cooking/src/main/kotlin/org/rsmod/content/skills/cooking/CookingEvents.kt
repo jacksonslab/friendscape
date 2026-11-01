@@ -1,6 +1,9 @@
 package org.rsmod.content.skills.cooking
 
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.cookingLvl
 import org.rsmod.api.script.onOpContentLoc1
@@ -30,10 +33,11 @@ class CookingEvents @Inject constructor(
     private val fires = listOf("loc.fire") + coloredLogRows.map { it.fireObject.internalName }
     private val campfires = listOf("loc.forestry_fire") + coloredLogRows.map { it.campfireObject.internalName }
 
-    enum class RangeType(val burnReduction: Int) {
+    /** Bonus added to both ends of a food's range burn curve, as on the OSRS wiki burn charts. */
+    enum class RangeType(val curveBonus: Int) {
         STANDARD(0),
-        LUMBRIDGE(5),
-        HOSIDIUS(5),
+        LUMBRIDGE(10),
+        HOSIDIUS(12),
     }
 
     private val rangeTypeByContent = mapOf(
@@ -88,30 +92,46 @@ class CookingEvents @Inject constructor(
         return false
     }
 
-    private fun ProtectedAccess.burnReduction(surface: CookingSurface, food: CookingFoodsRow): Int {
-        var reduction =
-            when (surface) {
-                is CookingSurface.Range -> surface.rangeType.burnReduction
-                is CookingSurface.Fire -> 0
-            }
-
-        if (food.supportsGauntlet == true && "obj.gauntlets_of_cooking" in player.worn) {
-            reduction += 6
+    private fun ProtectedAccess.burnCurve(food: CookingFoodsRow, surface: CookingSurface): Pair<Int, Int> {
+        val gauntletLow = food.lowGauntlet
+        val gauntletHigh = food.highGauntlet
+        if (gauntletLow != null && gauntletHigh != null && "obj.gauntlets_of_cooking" in player.worn) {
+            return gauntletLow + rangeBonus(food, surface) to gauntletHigh + rangeBonus(food, surface)
         }
+        if (surface is CookingSurface.Fire) {
+            return food.low to food.high
+        }
+        val low = (food.lowRange ?: food.low) + rangeBonus(food, surface)
+        val high = (food.highRange ?: food.high) + rangeBonus(food, surface)
+        return low to high
+    }
 
-        return reduction
+    private fun rangeBonus(food: CookingFoodsRow, surface: CookingSurface): Int {
+        if (surface !is CookingSurface.Range) return 0
+        // The Lumbridge range only helps the low-level foods (below level 30) on OSRS.
+        if (surface.rangeType == RangeType.LUMBRIDGE && food.level >= 30) return 0
+        return surface.rangeType.curveBonus
     }
 
     private fun ProtectedAccess.isBurned(food: CookingFoodsRow, surface: CookingSurface): Boolean {
         if (hasCookingCape()) return false
-
-        val isRange = surface is CookingSurface.Range
-        val baseStop = if (isRange) food.stopBurnRange else food.stopBurnFire
-        val stopBurn = baseStop - burnReduction(surface, food)
-
-        if (player.cookingLvl >= stopBurn) return false
-        val (low, high) = food.low to food.high
+        val (low, high) = burnCurve(food, surface)
         return !skillSuccess(low, high, player.cookingLvl)
+    }
+
+    private fun CookingFoodsRow.canCookOn(surface: CookingSurface): Boolean =
+        when (this.surface) {
+            SURFACE_FIRE_ONLY -> surface is CookingSurface.Fire
+            SURFACE_RANGE_ONLY -> surface is CookingSurface.Range
+            else -> true
+        }
+
+    private fun ProtectedAccess.mesWrongSurface(food: CookingFoodsRow) {
+        if (food.surface == SURFACE_FIRE_ONLY) {
+            mes("You need to roast that over a fire.")
+        } else {
+            mes("You need a range to cook that.")
+        }
     }
 
     private fun ProtectedAccess.hasCookingCape(): Boolean {
@@ -128,7 +148,7 @@ class CookingEvents @Inject constructor(
     private suspend fun ProtectedAccess.openCookingMenu(surface: CookingSurface) {
         val cookable =
             foods.filter {
-                inv.contains(it.raw.internalName) && player.cookingLvl >= it.level
+                inv.contains(it.raw.internalName) && player.cookingLvl >= it.level && it.canCookOn(surface)
             }
 
         if (cookable.isEmpty()) {
@@ -174,6 +194,10 @@ class CookingEvents @Inject constructor(
     }
 
     private suspend fun ProtectedAccess.cookUsedFood(food: CookingFoodsRow, surface: CookingSurface) {
+        if (!food.canCookOn(surface)) {
+            mesWrongSurface(food)
+            return
+        }
         if (player.cookingLvl < food.level || inv.count(food.raw.internalName) <= 1) {
             cookFood(food, surface)
             return
@@ -212,7 +236,7 @@ class CookingEvents @Inject constructor(
             return
         }
 
-        applyCook(food, task.surface)
+        if (!applyCook(food, task.surface)) return
 
         val cooked = task.cooked + 1
         if (cooked < task.amount && inv.contains(food.raw.internalName)) {
@@ -222,20 +246,35 @@ class CookingEvents @Inject constructor(
         }
     }
 
-    private fun ProtectedAccess.applyCook(food: CookingFoodsRow, surface: CookingSurface) {
+    private fun ProtectedAccess.applyCook(food: CookingFoodsRow, surface: CookingSurface): Boolean {
         val burned = isBurned(food, surface)
-        invDel(inv, food.raw.internalName, 1)
+        val result = if (burned) food.burnt else food.cooked
+        val swapped =
+            player.invTransaction(inv) {
+                val inventory = select(inv)
+                delete { from = inventory; obj = food.raw.id; strictCount = 1 }
+                insert { into = inventory; obj = result.id; strictCount = 1 }
+                if (food.returnsSpit) {
+                    insert { into = inventory; obj = "obj.spit_iron".asRSCM(); strictCount = 1 }
+                }
+            }.success
+        if (!swapped) {
+            mes("You don't have enough inventory space to cook that.")
+            return false
+        }
 
         if (burned) {
-            invAdd(inv, food.burnt.internalName, 1)
             spam("You accidentally burn the ${food.cooked.name.lowercase()}.")
         } else {
-            invAdd(inv, food.cooked.internalName, 1)
             val xpModifier = xpMods.get(player, "stat.cooking")
-            statAdvance("stat.cooking", food.xp.toDouble() * xpModifier)
+            statAdvance("stat.cooking", food.xp / 10.0 * xpModifier)
             spam("You successfully cook the ${food.cooked.name.lowercase()}.")
         }
+        return true
     }
+
+    private val CookingFoodsRow.returnsSpit: Boolean
+        get() = raw.internalName.startsWith("obj.spit_skewered_")
 
     private data class CookTask(
         val food: CookingFoodsRow,
