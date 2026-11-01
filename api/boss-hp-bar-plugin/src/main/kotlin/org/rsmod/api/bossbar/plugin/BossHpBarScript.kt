@@ -97,7 +97,6 @@ public class BossHpBarScript @Inject constructor(
         player.setColour("component.hpbar_hud:inner", ORIGINAL_COLORS[0])
         applyColours(player, npc)
 
-        player.runClientScript(2287, commonComponents, 0)
         openScripts(player)
     }
 
@@ -122,7 +121,7 @@ public class BossHpBarScript @Inject constructor(
             player.ifSetHide("component.hpbar_hud:hp", true)
             return
         }
-        player.runClientScript(2889, commonComponents, 0)
+        player.runClientScript(2889, *commonArgs, 0)
         val generation = player.bossHudOpenGeneration
         worldQueues.add(CLOSE_FADE_TICKS) {
             if (player.isSlotAssigned && player.bossHudOpenGeneration == generation) {
@@ -132,7 +131,7 @@ public class BossHpBarScript @Inject constructor(
     }
 
     public fun fadeOut(player: Player) {
-        player.runClientScript(2889, commonComponents, 0)
+        player.runClientScript(2889, *commonArgs, 0)
     }
 
     public fun onDeathClose(player: Player) {
@@ -172,8 +171,8 @@ public class BossHpBarScript @Inject constructor(
     }
 
     private fun openScripts(player: Player) {
-        player.runClientScript(2887, commonComponents, 255)
-        player.runClientScript(2102, commonComponents, 1)
+        player.runClientScript(2887, *commonArgs, 255)
+        player.runClientScript(2102, *updateArgs, 1)
 
         player.runClientScript(
             2376,
@@ -215,6 +214,23 @@ public class BossHpBarScript @Inject constructor(
         "component.hpbar_hud:hp_bar_1".asRSCM(),
         "component.hpbar_hud:hp_bar_2".asRSCM(),
     )
+
+    private val commonArgs: Array<Any> = Array(commonComponents.size) { commonComponents[it] }
+
+    private val updateArgs: Array<Any> =
+        arrayOf<Any>(
+            "component.hpbar_hud:hp".asRSCM(),
+            "component.hpbar_hud:hp_bar_text".asRSCM(),
+            "component.hpbar_hud:health_bar_back".asRSCM(),
+            "component.hpbar_hud:health_bar_sliding".asRSCM(),
+            "component.hpbar_hud:health_bar_remaining".asRSCM(),
+            "component.hpbar_hud:name_area".asRSCM(),
+            "component.hpbar_hud:creature_name".asRSCM(),
+            "component.hpbar_hud:health_bar_lower_threshold".asRSCM(),
+            "component.hpbar_hud:health_bar_upper_threshold".asRSCM(),
+            "component.hpbar_hud:hp_bar_1".asRSCM(),
+            "component.hpbar_hud:hp_bar_2".asRSCM(),
+        )
 
     public companion object {
         public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
