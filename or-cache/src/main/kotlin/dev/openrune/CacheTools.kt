@@ -58,11 +58,13 @@ import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.toml.rsconfig.rsconfig
 import dev.openrune.toml.tomlMapper
+import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
+import dev.openrune.tools.SeqDumper
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -88,6 +90,26 @@ fun main(args: Array<String>) {
 
     if (command == "CLEAN_CS2") {
         DirectoryConstants.cleanCs2()
+        return
+    }
+
+    if (command == "DUMP_SEQS") {
+        GameValProvider.load("../")
+        SeqDumper.dump(
+            Cache.load(File(getServerCacheLocation()).toPath()),
+            args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
+        )
+        return
+    }
+
+    if (command == "DUMP_LOCS") {
+        GameValProvider.load("../")
+        LocSpawnDumper.dump(
+            Cache.load(File(getCacheLocation()).toPath()),
+            Cache.load(File(getServerCacheLocation()).toPath()),
+            revision.first,
+            args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
+        )
         return
     }
 
