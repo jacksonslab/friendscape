@@ -1,5 +1,10 @@
 package org.rsmod.content.skills.prayer.blessed
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.player.stat.prayerLvl
@@ -86,17 +91,19 @@ class LibationBowlEvents : PluginScript() {
         val wineXpPerShard = if (libationSunfire == 1) 6.0 else 5.0
         val availableShards = inv.count("obj.blessed_bone_shard")
         val wineCharges = libationWineCharges
-        val prayerShardCapacity = player.prayerLvl / 2
-        val count = minOf(100, availableShards, wineCharges, prayerShardCapacity)
+        val count = minOf(100, availableShards, wineCharges)
         if (count <= 0) {
             return
         }
-        val consumedCount = player.countConsumed(count)
+        val consumedCount = player.countConsumed(random, count)
 
-        player.anim("seq.human_pray_blessed_bone_shards_01")
         if (consumedCount > 0) {
-            invDel(inv, "obj.blessed_bone_shard", consumedCount)
+            val result = player.invTransaction(inv) {
+                delete(select(inv), "obj.blessed_bone_shard".asRSCM(RSCMType.OBJ), consumedCount)
+            }
+            if (!result.success) return
         }
+        player.anim("seq.human_pray_blessed_bone_shards_01")
         libationWineCharges = (wineCharges - count).coerceAtLeast(0)
         statSub("stat.prayer", constant = 2, percent = 0)
         statAdvance("stat.prayer", count * wineXpPerShard)
@@ -148,5 +155,4 @@ class LibationBowlEvents : PluginScript() {
 
     private var ProtectedAccess.libationWineCharges by intVarBit("varbit.varlamore_prayer_winequant")
     private var ProtectedAccess.libationSunfire by intVarBit("varbit.varlamore_prayer_winetype")
-
 }

@@ -3,6 +3,7 @@ package org.rsmod.content.interfaces.prayer.tab.scripts
 import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import org.rsmod.api.config.constants
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.output.mes
@@ -34,9 +35,8 @@ constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses
     private fun Player.drainPrayer() {
         val enabledPrayers = vars["varbit.prayer_allactive"]
         if (enabledPrayers == 0) {
-            // We favor explicitness and enforce prayer drain timer to be manually cleared instead
-            // of implicitly doing so when all prayers are disabled.
-            throw IllegalStateException("Prayer drain timer should have been manually cleared.")
+            disablePrayers()
+            return
         }
 
         if (prayerLvl == 0) {
@@ -54,6 +54,7 @@ constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses
 
             val sub = min(prayerLvl, prayerPointCost)
             statSub("stat.prayer", constant = sub, percent = 0)
+            if (prayerLvl == 0) triggerPrayerDepletion()
         }
     }
 
@@ -71,6 +72,8 @@ constructor(private val repo: PrayerRepository, private val bonuses: WornBonuses
     }
 
     private fun Player.triggerPrayerDepletion() {
+        if (vars["varbit.prayer_rapidheal"] != 0) softTimer("timer.health_regen", constants.health_regen_interval)
+        if (vars["varbit.prayer_preserve"] != 0) softTimer("timer.stat_boost_restore", constants.stat_boost_restore_interval)
         rebuildAppearance()
         mes("You have run out of prayer points, you can recharge at an altar.")
         soundSynth("synth.prayer_drain")

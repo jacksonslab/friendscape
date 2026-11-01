@@ -1,5 +1,11 @@
 package org.rsmod.content.skills.prayer.blessed
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueue
@@ -9,8 +15,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 class SunfireWineEvents : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpHeldU("obj.jug_wine","obj.sunfiresplinter") { startMakeSunfireWine() }
-        onOpHeldU("obj.jug_wine_blessed","obj.sunfiresplinter") { rejectBlessedWineMix() }
+        onOpHeldU("obj.jug_wine", "obj.sunfiresplinter") { startMakeSunfireWine() }
+        onOpHeldU("obj.jug_wine_blessed", "obj.sunfiresplinter") { rejectBlessedWineMix() }
         onPlayerQueue("queue.prayer_make_sunfire_wine") { processMakeSunfireWine() }
     }
 
@@ -27,19 +33,15 @@ class SunfireWineEvents : PluginScript() {
         }
 
         val splinter = "obj.sunfiresplinter"
-        val del = invDel(
-            inv = inv,
-            type1 = splinter,
-            count1 = 2,
-            type2 = "obj.jug_wine",
-            count2 = 1,
-        )
-        if (del.failure) {
-            return
+        val result = player.invTransaction(inv) {
+            val target = select(inv)
+            delete(target, splinter.asRSCM(RSCMType.OBJ), 2)
+            delete(target, "obj.jug_wine".asRSCM(RSCMType.OBJ), 1)
+            add(target, "obj.jug_sunfire_wine".asRSCM(RSCMType.OBJ), 1)
         }
+        if (!result.success) return
 
         player.anim("seq.human_herbing_grind")
-        invAdd(inv = inv, type = "obj.jug_sunfire_wine", count = 1)
         mes("You crush the sunfire splinters into the wine, making a jug of sunfire wine.")
 
         if (canMakeSunfireWine()) {
@@ -67,5 +69,4 @@ class SunfireWineEvents : PluginScript() {
     private fun ProtectedAccess.rejectBlessedWineMix() {
         mes("You can only add sunfire splinters to an unblessed jug of wine.")
     }
-
 }

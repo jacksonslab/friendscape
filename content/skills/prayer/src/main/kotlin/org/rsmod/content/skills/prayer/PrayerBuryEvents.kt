@@ -27,6 +27,11 @@ class PrayerBuryEvents : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.bury(row: SkillPrayerRow, slot: Int) {
+        if (statBase("stat.prayer") < row.requiredLevel) {
+            mes("You need a Prayer level of ${row.requiredLevel} to use these remains.")
+            return
+        }
+        if ("queue.prayer_bury" in player.queueList) return
         if (!row.ashes && inArea("area.chaos_temple", player.coords)) {
             val confirmed = choice2(
                 "Bury the Bone",
@@ -48,6 +53,7 @@ class PrayerBuryEvents : PluginScript() {
 
     private fun ProtectedAccess.processBuryTick(task: BuryTask) {
         stopAction()
+        if (statBase("stat.prayer") < task.row.requiredLevel) return
 
         if (!task.row.ashes) {
             mes("You dig a hole in the ground...")
@@ -57,19 +63,19 @@ class PrayerBuryEvents : PluginScript() {
             return
         }
         val applyZealotSave = !isDemonicAsh(task.row.item.internalName)
-        val shouldConsume = if (applyZealotSave) player.shouldConsume() else true
+        val shouldConsume = if (applyZealotSave) player.shouldConsume(random) else true
         if (shouldConsume && invDel(inv = inv, type = task.row.item.internalName, count = 1, slot = task.slot).failure) {
             return
         }
 
         val message = if (task.row.ashes) "You scatter the ashes." else "You bury the bones."
         mes(message)
-        statAdvance("stat.prayer", task.row.exp.toDouble())
+        statAdvance("stat.prayer", task.row.baseXp)
         publish(SkillingActionCompleteEvent(player = player, context =
             SkillingActionContext.Prayer(PrayerSkillAction.BuryComplete(
                 itemInternal = task.row.item.internalName,
                 ashes = task.row.ashes,
-                experienceGranted = task.row.exp.toDouble(),
+                experienceGranted = task.row.baseXp,
                 catacombsBonePrayerRestore = task.row.prayerRestore
             ))),
         )

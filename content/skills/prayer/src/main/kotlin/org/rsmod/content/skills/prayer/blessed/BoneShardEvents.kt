@@ -1,5 +1,11 @@
 package org.rsmod.content.skills.prayer.blessed
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -95,14 +101,17 @@ class BoneShardEvents : PluginScript() {
 
         player.anim("seq.human_cutting")
 
-        if (invDel(inv, row.output.internalName, 1).success && invAdd(inv, "obj.blessed_bone_shard", row.shardCount,).success) {
-            statAdvance("stat.crafting", 5.0)
+        val result = player.invTransaction(inv) {
+            val target = select(inv)
+            delete(target, row.output.id, 1)
+            add(target, "obj.blessed_bone_shard".asRSCM(RSCMType.OBJ), row.shardCount)
         }
+        if (!result.success) return
+        statAdvance("stat.crafting", 5.0)
 
         if (inv.contains(row.output.internalName)) {
             weakQueue("queue.prayer_break_down_bone", 4, row.output)
         }
-
     }
 
     private fun ProtectedAccess.blessBones(row: PrayerBlessedBoneRow, amount: Int = inv.count(row.input.internalName)) {
@@ -121,7 +130,7 @@ class BoneShardEvents : PluginScript() {
         mes("You bless $toConvert bone${if (toConvert == 1) "" else "s"} on the altar.")
     }
 
-    private fun ProtectedAccess.blessWine(wine: String, blessedWine: String, amount: Int = inv.count(wine), ) {
+    private fun ProtectedAccess.blessWine(wine: String, blessedWine: String, amount: Int = inv.count(wine),) {
 
         player.anim("seq.human_openchest")
         player.soundSynth(2738)
@@ -134,5 +143,4 @@ class BoneShardEvents : PluginScript() {
 
         mes("You bless $toConvert jug${if (toConvert == 1) "" else "s"} of wine on the altar.")
     }
-
 }

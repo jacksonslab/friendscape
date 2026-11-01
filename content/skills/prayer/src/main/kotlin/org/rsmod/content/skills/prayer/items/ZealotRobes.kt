@@ -4,9 +4,9 @@ import org.rsmod.api.player.feet
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
 import org.rsmod.api.player.torso
+import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
-import kotlin.random.Random
 
 internal object ZealotRobes {
     private const val PIECE_SAVE_CHANCE = 0.0125
@@ -26,22 +26,22 @@ internal object ZealotRobes {
         return chance.coerceAtMost(MAX_SAVE_CHANCE)
     }
 
-    fun Player.shouldConsume(baseConsumeChance: Double = 1.0): Boolean {
+    fun Player.shouldConsume(random: GameRandom, baseConsumeChance: Double = 1.0): Boolean {
         val cappedConsumeChance = baseConsumeChance.coerceIn(0.0, 1.0)
         if (cappedConsumeChance <= 0.0) {
             return false
         }
         val finalConsumeChance = cappedConsumeChance * (1.0 - saveChance())
-        return Random.nextDouble() < finalConsumeChance
+        return random.randomDouble() < finalConsumeChance
     }
 
-    fun Player.countConsumed(total: Int, baseConsumeChance: Double = 1.0): Int {
+    fun Player.countConsumed(random: GameRandom, total: Int, baseConsumeChance: Double = 1.0): Int {
         if (total <= 0) {
             return 0
         }
         var consumed = 0
         repeat(total) {
-            if (shouldConsume(baseConsumeChance)) {
+            if (shouldConsume(random, baseConsumeChance)) {
                 consumed++
             }
         }

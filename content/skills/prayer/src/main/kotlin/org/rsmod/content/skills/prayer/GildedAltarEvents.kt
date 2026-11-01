@@ -1,8 +1,11 @@
 package org.rsmod.content.skills.prayer
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.LocUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -14,6 +17,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GildedAltarEvents @Inject constructor(
     private val worldRepo: WorldRepository,
+    private val locRepo: LocRepository,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -21,7 +25,7 @@ class GildedAltarEvents @Inject constructor(
 
         bones.forEach { row ->
             registerAltar("loc.chaosaltar", row, chaos = true)
-            GILDED_ALTARS.forEach { altar ->
+            PrayerAltars.ALL.keys.map { RSCM.getReverseMapping(RSCMType.LOC, it) }.forEach { altar ->
                 registerAltar(altar, row, chaos = false)
             }
         }
@@ -57,12 +61,13 @@ class GildedAltarEvents @Inject constructor(
             return
         }
 
-        performSacrifice(task)
-
-        weakQueue("queue.prayer_altar_sacrifice", 4, task)
+        if (performSacrifice(task)) weakQueue("queue.prayer_altar_sacrifice", 4, task)
     }
 
-    private fun ProtectedAccess.performSacrifice(task: SacrificeTask) {
+    private fun ProtectedAccess.performSacrifice(task: SacrificeTask): Boolean {
+        val multiplier = if (task.chaos) 3.5 else PrayerAltars.multiplier(task.altar.id, PrayerIncenseScript.litCount(locRepo, task.altar))
+        val consume = shouldConsumeBone(task)
+        if (consume && invDel(inv, task.row.item.internalName, 1).failure) return false
         anim("seq.human_bone_sacrifice")
 
         spotanimMap(
@@ -71,18 +76,10 @@ class GildedAltarEvents @Inject constructor(
             task.altar.coords,
         )
 
-        statAdvance("stat.prayer", task.row.exp * 3.5)
+        statAdvance("stat.prayer", task.row.baseXp * multiplier)
 
-        if (shouldConsumeBone(task).not()) {
-            mes("The Dark Lord spares your sacrifice, but rewards you for your efforts.")
-            return
-        }
-
-        val result = invDel(inv = inv, type = task.row.item.internalName)
-
-        if (result.failure) {
-            return
-        }
+        if (!consume && task.chaos) mes("The Dark Lord spares your sacrifice, but rewards you for your efforts.")
+        return true
     }
 
     private fun ProtectedAccess.canSacrifice(task: SacrificeTask): Boolean {
@@ -90,7 +87,9 @@ class GildedAltarEvents @Inject constructor(
 
         return when {
             inv.count(bone) <= 0 -> false
+            statBase("stat.prayer") < task.row.requiredLevel -> false
             !isWithinDistance(task.altar, 1) -> false
+            locRepo.findExact(task.altar.coords, task.altar.shape)?.id != task.altar.id -> false
             task.chaos && !inArea("area.chaos_temple", player.coords) -> false
             else -> true
         }
@@ -98,7 +97,7 @@ class GildedAltarEvents @Inject constructor(
 
     private fun ProtectedAccess.shouldConsumeBone(task: SacrificeTask): Boolean {
         val baseConsumeChance = if (task.chaos) 0.5 else 1.0
-        return player.shouldConsume(baseConsumeChance)
+        return player.shouldConsume(random, baseConsumeChance)
     }
 
     private data class SacrificeTask(
@@ -107,12 +106,4 @@ class GildedAltarEvents @Inject constructor(
         val altar: BoundLocInfo,
         val chaos: Boolean,
     )
-
-    private companion object {
-        val GILDED_ALTARS = listOf(
-            "loc.poh_altar_saradomin_7",
-            "loc.poh_altar_zamorak_7",
-            "loc.poh_altar_gnomechild_7",
-        )
-    }
 }

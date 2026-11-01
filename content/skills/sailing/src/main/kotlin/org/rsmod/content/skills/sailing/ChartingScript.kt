@@ -21,12 +21,17 @@ class ChartingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
 
     private fun ProtectedAccess.chart(loc: Int) {
         val name = ServerCacheManager.getObject(loc)?.name?.lowercase() ?: "landmark"
+        val core = SeaCharting.GENERIC[loc]
         if (Charts.isCharted(player, loc)) {
+            if (core != null) SeaCharting.complete(player, core)
             mes("You've already charted this $name.")
             return
         }
+        val xp = (core?.let(SeaCharting::xp) ?: GENERIC_XP) * xpMods.get(player, STAT_SAILING)
         Charts.markCharted(player, loc)
-        statAdvance(STAT_SAILING, GENERIC_XP * xpMods.get(player, STAT_SAILING))
+        if (core == null || SeaCharting.complete(player, core)) {
+            statAdvance(STAT_SAILING, xp)
+        }
         mes("You chart the $name in your captain's log. (${Charts.chartedCount(player)}/${Charts.GENERIC.size})")
     }
 

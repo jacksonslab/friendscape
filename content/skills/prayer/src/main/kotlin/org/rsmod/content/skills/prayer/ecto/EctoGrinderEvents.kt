@@ -95,6 +95,7 @@ class EctoGrinderEvents : PluginScript() {
                 if (!forcePathToExactTile(COORD_GRINDER_LOADER)) {
                     return
                 }
+                if (ectoGrinderStatus != 0 || ectoGrinderRecipe != 0) return
                 if (invDel(inv, recipe.bones, 1).failure) {
                     return
                 }
@@ -113,7 +114,7 @@ class EctoGrinderEvents : PluginScript() {
                 if (!forcePathToExactTile(COORD_GRINDER_WHEEL)) {
                     return
                 }
-                if (ectoGrinderStatus != 1) {
+                if (ectoGrinderStatus != 1 || ectoGrinderRecipe != recipe.id) {
                     return
                 }
                 faceSquare(coords.translateZ(1))
@@ -130,6 +131,7 @@ class EctoGrinderEvents : PluginScript() {
                 if (!forcePathToExactTile(COORD_GRINDER_BIN)) {
                     return
                 }
+                if (ectoGrinderStatus != 0 || ectoGrinderRecipe != recipe.id) return
                 if (invDel(inv, "obj.pot_empty", 1).failure) {
                     return
                 }

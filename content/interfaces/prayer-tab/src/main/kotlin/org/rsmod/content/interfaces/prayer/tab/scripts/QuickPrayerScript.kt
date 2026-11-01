@@ -99,7 +99,18 @@ constructor(
             return
         }
 
-        val quickPrayers = repo.toPrayerList(quickPrayerVars)
+        val selectedPrayers = repo.toPrayerList(quickPrayerVars)
+        val quickPrayers = mutableListOf<Prayer>()
+        for (prayer in selectedPrayers) {
+            if (!prayer.hasAllRequirements(player)) continue
+            quickPrayers.removeAll(repo[prayer].toSet())
+            quickPrayers += prayer
+        }
+        if (quickPrayers.isEmpty()) {
+            mes("You don't meet the requirements for any of your selected quick-prayers.")
+            player.resyncVar("varbit.quickprayer_active")
+            return
+        }
         val lockedProtection =
             player.overheadsLocked &&
                 quickPrayers.any { it.enabled in overheadProtectionPrayerVarbits }
@@ -172,10 +183,7 @@ constructor(
     }
 
     private fun Player.toggleQuickPrayer(comsub: Int) {
-        val prayer = repo.prayerList.getOrNull(comsub)
-        if (prayer == null) {
-            throw IllegalArgumentException("Invalid quick prayer comsub: $comsub")
-        }
+        val prayer = repo.prayerList.firstOrNull { it.id == comsub } ?: return
         val enabled = selectedQuickPrayers and (1 shl prayer.id) != 0
         if (enabled) {
             disableQuickPrayer(prayer)
@@ -207,7 +215,7 @@ constructor(
     private fun Player.disableCollisions(prayer: Prayer) = disableCollisions(repo[prayer])
 
     private fun Player.onOpenQuickPrayerSetUp() {
-        ifSetEvents("component.quickprayer:buttons", repo.prayerList.indices, IfEvent.Op1)
+        ifSetEvents("component.quickprayer:buttons", 0..repo.prayerList.maxOf { it.id }, IfEvent.Op1)
     }
 
     private fun Player.closeQuickPrayerSetUp() {

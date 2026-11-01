@@ -32,7 +32,7 @@ class PrayerRepository() {
 
         this.prayerComponents = components
         this.prayerCollisions = collisions
-        this.prayerList = components.values.toList()
+        this.prayerList = components.values.sortedBy { it.id }
     }
 
     private fun loadMappedComponents(): Map<ComponentType, Prayer> {
@@ -46,7 +46,7 @@ class PrayerRepository() {
             val name = obj.param(prayer_params.name)
             val level = obj.param(prayer_params.level)
             val sound = obj.param(prayer_params.sound).id
-            val enabled = RSCM.getReverseMapping(RSCMType.VARBIT,obj.param(prayer_params.varbit).id)
+            val enabled = RSCM.getReverseMapping(RSCMType.VARBIT, obj.param(prayer_params.varbit).id)
             val drain = obj.param(prayer_params.drain_effect)
             val overhead = obj.paramOrNull(prayer_params.overhead)
             val unlockVar = obj.paramOrNull(prayer_params.unlock_varbit)
@@ -110,7 +110,7 @@ class PrayerRepository() {
         val ids = hashSetOf<Int>()
         for ((item, flag) in enum) {
             if (flag) {
-                ids += item.id
+                ids += item.param(prayer_params.id)
             }
         }
         return prayers.filter { it.id in ids }
