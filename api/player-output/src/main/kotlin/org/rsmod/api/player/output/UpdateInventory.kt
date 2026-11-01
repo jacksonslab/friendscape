@@ -10,12 +10,24 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 
 public object UpdateInventory {
+    private const val OTHER_INV_FLAG = 0x8000
+
     /** @see [UpdateInvFull] */
     public fun updateInvFull(player: Player, inv: Inventory) {
         val highestSlot = inv.lastOccupiedSlot()
         val provider = RspObjProvider(inv.objs)
         val message = UpdateInvFull(-(1234 + inv.type.id), inv.type.id, highestSlot, provider)
         player.client.write(message)
+    }
+
+    /**
+     * Sends [inv] as the "other" copy of its type, which clientscripts read with `invother_*` (the
+     * trade partner's offer). The client tells the two copies apart by the high bit of the id.
+     */
+    public fun updateInvOther(player: Player, inv: Inventory) {
+        val provider = RspObjProvider(inv.objs)
+        val id = inv.type.id or OTHER_INV_FLAG
+        player.client.write(UpdateInvFull(-(1234 + inv.type.id), id, inv.size, provider))
     }
 
     /** @see [UpdateInvPartial] */
