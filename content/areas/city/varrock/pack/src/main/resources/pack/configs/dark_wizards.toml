@@ -1,0 +1,51 @@
+[[npc]]
+id = "npc.qip_ds_young_dark_wizard1"
+inherit = "npc.qip_ds_young_dark_wizard1"
+attackRange = 10
+respawnRate = 50
+[npc.params]
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.attack_sound" = "synth.waterstrike_cast_and_fire"
+"param.proj_type" = "projanim.magic_spell"
+"param.proj_travel" = "spotanim.waterstrike_travel"
+
+[[npc]]
+id = "npc.qip_ds_young_dark_wizard2"
+inherit = "npc.qip_ds_young_dark_wizard2"
+attackRange = 10
+respawnRate = 50
+[npc.params]
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.attack_sound" = "synth.waterstrike_cast_and_fire"
+"param.proj_type" = "projanim.magic_spell"
+"param.proj_travel" = "spotanim.waterstrike_travel"
+
+[[npc]]
+id = "npc.qip_ds_young_dark_wizard3"
+inherit = "npc.qip_ds_young_dark_wizard3"
+attackRange = 10
+respawnRate = 50
+[npc.params]
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.attack_sound" = "synth.earthstrike_cast_and_fire"
+"param.proj_type" = "projanim.magic_spell"
+"param.proj_travel" = "spotanim.earthstrike_travel"
+
+[[npc]]
+id = "npc.qip_ds_young_dark_wizard4"
+inherit = "npc.qip_ds_young_dark_wizard4"
+attackRange = 10
+respawnRate = 50
+[npc.params]
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.attack_sound" = "synth.earthstrike_cast_and_fire"
+"param.proj_type" = "projanim.magic_spell"
+"param.proj_travel" = "spotanim.earthstrike_travel"
