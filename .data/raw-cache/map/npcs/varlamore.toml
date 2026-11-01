@@ -2178,3 +2178,59 @@ coords = "0_26_148_32_14"
 
 ## Varlamore Temple Crypt End
 
+
+[[spawn]]
+npc = "npc.quetzal_fortis"
+coords = "0_26_49_32_5"
+
+[[spawn]]
+npc = "npc.quetzal_teomat"
+coords = "0_22_49_28_32"
+
+[[spawn]]
+npc = "npc.quetzal_sunsetcoast"
+coords = "0_24_46_11_52"
+
+[[spawn]]
+npc = "npc.quetzal_hunterguild"
+coords = "0_24_47_48_46"
+
+[[spawn]]
+npc = "npc.quetzal_camtorum"
+coords = "0_22_48_39_35"
+
+[[spawn]]
+npc = "npc.quetzal_colossalwyrm"
+coords = "0_26_45_7_52"
+
+[[spawn]]
+npc = "npc.quetzal_outerfortis"
+coords = "0_26_47_37_28"
+
+[[spawn]]
+npc = "npc.quetzal_colosseum"
+coords = "0_27_48_48_38"
+
+[[spawn]]
+npc = "npc.quetzal_aldarin"
+coords = "0_21_45_44_18"
+
+[[spawn]]
+npc = "npc.quetzal_quetzacalligorge"
+coords = "0_23_50_39_21"
+
+[[spawn]]
+npc = "npc.quetzal_salvageroverlook"
+coords = "0_25_51_12_37"
+
+[[spawn]]
+npc = "npc.quetzal_talteklan"
+coords = "0_19_48_9_16"
+
+[[spawn]]
+npc = "npc.quetzal_auburnvalley"
+coords = "0_22_52_2_34"
+
+[[spawn]]
+npc = "npc.quetzal_kastori"
+coords = "0_20_47_63_11"
