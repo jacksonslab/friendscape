@@ -1649,7 +1649,7 @@ npc = "npc.vmq2_citizen_vis"
 coords = "0_26_48_22_37"
 
 [[spawn]]
-npc = "npc.vmq2_metzli_vis"
+npc = "npc.vmq2_metzli_fortis"
 coords = "0_26_48_35_15"
 
 [[spawn]]

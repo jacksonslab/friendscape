@@ -1,0 +1,107 @@
+[[spawn]]
+npc = "npc.vmq2_quetzal_keeper_varrock"
+coords = "0_51_53_17_21"
+
+[[spawn]]
+npc = "npc.vmq2_quetzal_varrock"
+coords = "0_51_53_13_19"
+
+[[spawn]]
+npc = "npc.vmq2_quetzal_keeper_fortis"
+coords = "0_26_49_36_7"
+
+[[spawn]]
+npc = "npc.vmq2_quetzal_fortis"
+coords = "0_26_49_39_6"
+
+[[spawn]]
+npc = "npc.vmq2_ennius_outer_palace"
+coords = "0_26_49_23_5"
+
+[[spawn]]
+npc = "npc.vmq2_furia_outer_palace"
+coords = "0_26_49_22_6"
+
+[[spawn]]
+npc = "npc.vmq2_ennius_inner_palace"
+coords = "0_26_49_23_21"
+
+[[spawn]]
+npc = "npc.vmq2_furia_inner_palace"
+coords = "0_26_49_22_22"
+
+[[spawn]]
+npc = "npc.vmq2_itzla_fortis"
+coords = "0_26_148_33_28"
+
+[[spawn]]
+npc = "npc.vmq2_servius_fortis"
+coords = "0_26_148_35_28"
+
+[[spawn]]
+npc = "npc.vmq2_knight_1_bazaar"
+coords = "0_26_48_19_33"
+
+[[spawn]]
+npc = "npc.vmq2_knight_2_bazaar"
+coords = "0_26_48_18_32"
+
+[[spawn]]
+npc = "npc.vmq2_knight_3_cothon"
+coords = "0_27_48_19_47"
+
+[[spawn]]
+npc = "npc.vmq2_knight_4_pub"
+coords = "0_26_48_58_2"
+
+[[spawn]]
+npc = "npc.vmq2_knight_5_pub"
+coords = "0_26_48_57_3"
+
+[[spawn]]
+npc = "npc.vmq2_knight_5_fountain"
+coords = "0_27_47_27_62"
+
+[[spawn]]
+npc = "npc.vmq2_knight_6_colosseum"
+coords = "0_28_148_12_50"
+
+[[spawn]]
+npc = "npc.vmq2_knight_1_palace"
+coords = "0_26_49_19_14"
+
+[[spawn]]
+npc = "npc.vmq2_knight_2_palace"
+coords = "0_26_49_20_14"
+
+[[spawn]]
+npc = "npc.vmq2_knight_3_palace"
+coords = "0_26_49_21_14"
+
+[[spawn]]
+npc = "npc.vmq2_knight_4_palace"
+coords = "0_26_49_22_14"
+
+[[spawn]]
+npc = "npc.vmq2_knight_5_palace"
+coords = "0_26_49_23_14"
+
+[[spawn]]
+npc = "npc.vmq2_knight_6_palace"
+coords = "0_26_49_24_14"
+
+[[spawn]]
+npc = "npc.vmq2_itzla_teomat"
+coords = "0_22_49_40_38"
+
+[[spawn]]
+npc = "npc.vmq2_servius_teomat"
+coords = "0_22_49_43_37"
+
+[[spawn]]
+npc = "npc.vmq2_servius_teomat_injured"
+coords = "0_22_49_43_39"
+
+[[spawn]]
+npc = "npc.vmq2_metzli_teomat"
+coords = "0_22_49_41_56"

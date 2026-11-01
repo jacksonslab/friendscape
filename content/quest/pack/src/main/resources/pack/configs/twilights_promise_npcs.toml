@@ -1,0 +1,241 @@
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_quetzal_keeper_varrock"
+inherit = "npc.vmq2_quetzal_keeper_varrock"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_quetzal_varrock"
+inherit = "npc.vmq2_quetzal_varrock"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_quetzal_keeper_fortis"
+inherit = "npc.vmq2_quetzal_keeper_fortis"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_quetzal_fortis"
+inherit = "npc.vmq2_quetzal_fortis"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_ennius_outer_palace"
+inherit = "npc.vmq2_ennius_outer_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_furia_outer_palace"
+inherit = "npc.vmq2_furia_outer_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_ennius_inner_palace"
+inherit = "npc.vmq2_ennius_inner_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_furia_inner_palace"
+inherit = "npc.vmq2_furia_inner_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_itzla_fortis"
+inherit = "npc.vmq2_itzla_fortis"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_servius_fortis"
+inherit = "npc.vmq2_servius_fortis"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_metzli_fortis"
+inherit = "npc.vmq2_metzli_fortis"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_1_bazaar"
+inherit = "npc.vmq2_knight_1_bazaar"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_2_bazaar"
+inherit = "npc.vmq2_knight_2_bazaar"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_3_cothon"
+inherit = "npc.vmq2_knight_3_cothon"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_4_pub"
+inherit = "npc.vmq2_knight_4_pub"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_5_pub"
+inherit = "npc.vmq2_knight_5_pub"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_5_fountain"
+inherit = "npc.vmq2_knight_5_fountain"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_6_colosseum"
+inherit = "npc.vmq2_knight_6_colosseum"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_1_palace"
+inherit = "npc.vmq2_knight_1_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_2_palace"
+inherit = "npc.vmq2_knight_2_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_3_palace"
+inherit = "npc.vmq2_knight_3_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_4_palace"
+inherit = "npc.vmq2_knight_4_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_5_palace"
+inherit = "npc.vmq2_knight_5_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_6_palace"
+inherit = "npc.vmq2_knight_6_palace"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_itzla_teomat"
+inherit = "npc.vmq2_itzla_teomat"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_servius_teomat"
+inherit = "npc.vmq2_servius_teomat"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_servius_teomat_injured"
+inherit = "npc.vmq2_servius_teomat_injured"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_metzli_teomat"
+inherit = "npc.vmq2_metzli_teomat"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_5_follower"
+inherit = "npc.vmq2_knight_5_follower"
+wanderRange = 0
+defaultMode = "None"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vmq2_knight_6_combat"
+inherit = "npc.vmq2_knight_6_combat"
+wanderRange = 0
+[npc.params]
+"param.attack_anim" = "seq.human_sword_slash"
+"param.npc_attack_type" = "category.attacktype_slash"
+"param.defend_anim" = "seq.human_sword_block"
+"param.death_anim" = "seq.human_death"

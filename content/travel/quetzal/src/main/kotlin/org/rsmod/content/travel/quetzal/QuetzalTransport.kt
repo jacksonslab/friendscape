@@ -3,6 +3,7 @@ package org.rsmod.content.travel.quetzal
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -109,14 +110,26 @@ class QuetzalTransport : PluginScript() {
         if (player.hasLandingSite(site)) {
             return
         }
-        if (inv.count(LIMESTONE_BRICK) < BRICKS_NEEDED || inv.count(SOFT_CLAY) < CLAY_NEEDED) {
+        if (inv.count(LIMESTONE_BRICK) < BRICKS_NEEDED ||
+            inv.count(SOFT_CLAY) < CLAY_NEEDED ||
+            inv.count(QUETZAL_FEED) < FEED_NEEDED
+        ) {
             mes(
-                "You need $BRICKS_NEEDED limestone bricks and $CLAY_NEEDED soft clay to build a " +
-                    "landing site."
+                "You need $BRICKS_NEEDED limestone bricks, $CLAY_NEEDED soft clay and " +
+                    "$FEED_NEEDED quetzal feed to build a landing site."
             )
             return
         }
-        val taken = invDel(inv, LIMESTONE_BRICK, BRICKS_NEEDED, SOFT_CLAY, CLAY_NEEDED)
+        val taken =
+            invDel(
+                inv,
+                objType(LIMESTONE_BRICK),
+                BRICKS_NEEDED,
+                objType(SOFT_CLAY),
+                CLAY_NEEDED,
+                objType(QUETZAL_FEED),
+                FEED_NEEDED,
+            )
         if (taken.failure) {
             return
         }
@@ -125,6 +138,11 @@ class QuetzalTransport : PluginScript() {
         unlock(player, site)
         mes("You build a landing site at ${site.row.name}. Renu can now fly you here.")
     }
+
+    private fun objType(internal: String) =
+        checkNotNull(ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))) {
+            "Missing $internal"
+        }
 
     private fun Player.hasLandingSite(site: Site): Boolean =
         site.row.autoUnlocked || vars[UNLOCKED_SITES] and (1 shl site.row.id) != 0
@@ -188,6 +206,8 @@ class QuetzalTransport : PluginScript() {
         const val SOFT_CLAY = "obj.softclay"
         const val BRICKS_NEEDED = 3
         const val CLAY_NEEDED = 4
+        const val QUETZAL_FEED = "obj.vmq2_quetzal_feed"
+        const val FEED_NEEDED = 10
         const val BUILD_ANIM = "seq.human_poh_build"
         const val FADE_CLEAR = 255
         const val FADE_BLACK = 0

@@ -42,13 +42,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 class QuetzalBuildItemSafetyTest {
     @Test
-    fun `building a pad takes exactly 3 bricks and 4 clay and unlocks the site`() {
+    fun `building a pad takes exactly 3 bricks, 4 clay and 10 feed and unlocks the site`() {
         val f = Fixture()
         f.give(BRICK, 5)
         f.give(CLAY, 6)
+        f.give(FEED, 12)
         f.build()
         assertEquals(2, f.count(BRICK))
         assertEquals(2, f.count(CLAY))
+        assertEquals(2, f.count(FEED))
         assertNotEquals(0, f.player.vars[UNLOCKED] and (1 shl CAM_TORUM_ID))
         assertNotEquals(0, f.player.vars[CAM_TORUM_VARBIT])
     }
@@ -58,9 +60,11 @@ class QuetzalBuildItemSafetyTest {
         val f = Fixture()
         f.give(BRICK, 3)
         f.give(CLAY, 3)
+        f.give(FEED, 10)
         f.build()
         assertEquals(3, f.count(BRICK))
         assertEquals(3, f.count(CLAY))
+        assertEquals(10, f.count(FEED))
         assertEquals(0, f.player.vars[UNLOCKED])
     }
 
@@ -69,9 +73,24 @@ class QuetzalBuildItemSafetyTest {
         val f = Fixture()
         f.give(BRICK, 2)
         f.give(CLAY, 10)
+        f.give(FEED, 10)
         f.build()
         assertEquals(2, f.count(BRICK))
         assertEquals(10, f.count(CLAY))
+        assertEquals(10, f.count(FEED))
+        assertEquals(0, f.player.vars[UNLOCKED])
+    }
+
+    @Test
+    fun `building without enough feed takes nothing`() {
+        val f = Fixture()
+        f.give(BRICK, 3)
+        f.give(CLAY, 4)
+        f.give(FEED, 9)
+        f.build()
+        assertEquals(3, f.count(BRICK))
+        assertEquals(4, f.count(CLAY))
+        assertEquals(9, f.count(FEED))
         assertEquals(0, f.player.vars[UNLOCKED])
     }
 
@@ -80,10 +99,12 @@ class QuetzalBuildItemSafetyTest {
         val f = Fixture()
         f.give(BRICK, 6)
         f.give(CLAY, 8)
+        f.give(FEED, 14)
         f.build()
         f.build()
         assertEquals(3, f.count(BRICK))
         assertEquals(4, f.count(CLAY))
+        assertEquals(4, f.count(FEED))
     }
 
     private class Fixture {
@@ -180,6 +201,7 @@ class QuetzalBuildItemSafetyTest {
     companion object {
         private const val BRICK = "obj.limestonebrick"
         private const val CLAY = "obj.softclay"
+        private const val FEED = "obj.vmq2_quetzal_feed"
         private const val PAD = "loc.quetzal_landing_site_camtorum"
         private const val UNBUILT = "loc.quetzal_landing_site_unbuilt"
         private const val UNLOCKED = "varp.quetzals_unlocked"
