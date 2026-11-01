@@ -1,0 +1,14 @@
+[gamevals.obj]
+friendscape_bank_key = 63470
+
+[gamevals.npc]
+friendscape_key_banker = 63490
+
+[gamevals.content]
+friendscape_key_banker = 63490
+
+[gamevals.varp]
+friendscape_bank_key_granted = 62930
+
+[gamevals.models]
+friendscape_bank_key = 63470

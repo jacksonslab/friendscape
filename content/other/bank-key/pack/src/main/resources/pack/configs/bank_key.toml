@@ -1,0 +1,31 @@
+[[item]]
+id = "obj.friendscape_bank_key"
+name = "Bank Key"
+inventoryModel = "models.friendscape_bank_key"
+zoom2d = 700
+xan2d = 256
+yan2d = 128
+tradeable = false
+cost = 0
+examine = "Summons your personal banker. Unlimited uses."
+ioption1 = "Summon"
+
+[[npc]]
+id = "npc.friendscape_key_banker"
+inherit = "npc.misc_banker"
+name = "Personal Banker"
+contentGroup = "content.friendscape_key_banker"
+moveRestrict = "NoMove"
+defaultMode = "None"
+examine = "Your Bank Key's personal banker."
+option1 = "Bank"
+option2 = "Hidden"
+option3 = "Hidden"
+option4 = "Hidden"
+option5 = "Hidden"
+
+[[varp]]
+id = "varp.friendscape_bank_key_granted"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
