@@ -4,7 +4,7 @@
 [[npc]]
 id = "npc.swamp_gemstone_crab"
 inherit = "npc.gemstone_crab"
-name = "Swamp Crab"
+name = "Jeffrey Epstein"
 examine = "A gemstone crab that has made its home in Lumbridge Swamp."
 moveRestrict = "NoMove"
 wanderRange = 0

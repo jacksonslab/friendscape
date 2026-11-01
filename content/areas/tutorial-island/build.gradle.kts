@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    integrationImplementation(projects.api.areaChecker)
     implementation(libs.rsprot.api)
     testImplementation(projects.api.invStorage)
     implementation(projects.api.pluginCommons)

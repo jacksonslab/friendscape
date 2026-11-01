@@ -13,7 +13,7 @@ ioption1 = "Summon"
 [[npc]]
 id = "npc.friendscape_key_banker"
 inherit = "npc.misc_banker"
-name = "Personal Banker"
+name = "Jew"
 contentGroup = "content.friendscape_key_banker"
 moveRestrict = "NoMove"
 defaultMode = "None"

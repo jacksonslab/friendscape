@@ -8,7 +8,6 @@ import org.rsmod.api.player.hook.PlayerPostTickHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onApNpc1
-import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
@@ -38,7 +37,6 @@ class BankKeyScript @Inject constructor(private val bankers: KeyBankers) : Plugi
             if (isWithinApRange(it.npc, distance = 2)) openBanker(it.npc)
         }
         onOpNpc1(BANKER) { openBanker(it.npc) }
-        onIfOpen("interface.bankside") { bankers.dismiss(player) }
     }
 
     override fun onPostTick(player: Player) {

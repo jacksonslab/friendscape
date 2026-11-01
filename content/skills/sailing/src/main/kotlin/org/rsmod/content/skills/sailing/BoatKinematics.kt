@@ -7,6 +7,7 @@ import org.rsmod.api.player.output.mes
 @Singleton
 class BoatKinematics @Inject constructor(private val boats: BoatManager) {
     fun tick() {
+        boats.releaseStranded()
         for (boat in boats.all) {
             step(boat)
         }

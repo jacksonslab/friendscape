@@ -221,6 +221,31 @@ constructor(
 
     fun releaseHelm(player: Player) {
         val boat = boatOf(player) ?: return
+        releaseHelm(boat, player)
+    }
+
+    /**
+     * Teleporting off a boat (spell, tablet, command) skips the gangplank, so nothing undoes what
+     * boarding and the helm set: the main world stays in heading mode and every click steers instead
+     * of walking. Runs each cycle to put such players back to normal.
+     */
+    fun releaseStranded() {
+        for (boat in boats.values.toList()) {
+            val helmsman = boat.helmsman ?: continue
+            if (!boat.entity.contains(helmsman.coords)) {
+                releaseHelm(boat, helmsman)
+            }
+        }
+        for (player in playerList) {
+            if (player.aboardPlayerBoat != 0 && boatOf(player) == null) {
+                player.aboardPlayerBoat = 0
+                player.helmLockedIn = 0
+                player.sailingShore = 0
+            }
+        }
+    }
+
+    private fun releaseHelm(boat: Boat, player: Player) {
         if (boat.helmsman != player) {
             return
         }

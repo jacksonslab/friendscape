@@ -50,7 +50,8 @@ class KeyBankers @Inject constructor(
     fun maintain(player: Player) {
         val summon = active[player] ?: return
         val coords = summon.npc.coords
-        if (player.loggingOut || clock.cycle >= summon.expires || !summon.npc.isSlotAssigned ||
+        if (player.loggingOut || player.ui.containsModal("interface.bankmain") ||
+            clock.cycle >= summon.expires || !summon.npc.isSlotAssigned ||
             coords.level != player.coords.level || coords.chebyshevDistance(player.coords) > MAX_DISTANCE) {
             dismiss(player)
         }
