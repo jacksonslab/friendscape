@@ -16,15 +16,21 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DoorScript @Inject constructor(private val locRepo: LocRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpContentLoc1("content.closed_single_door") { openDoor(it.loc, it.type) }
-        onOpContentLoc1("content.opened_single_door") { closeDoor(it.loc, it.type) }
+        onOpContentLoc1("content.closed_single_door") {
+            openDoor(it.loc, it.type, it.type.param(params.next_loc_stage))
+        }
+        onOpContentLoc1("content.opened_single_door") {
+            closeDoor(it.loc, it.type, it.type.param(params.next_loc_stage))
+        }
     }
 
-    private suspend fun ProtectedAccess.openDoor(closed: BoundLocInfo, type: ObjectServerType) {
-        val sound = type.param(params.opensound)
-        soundSynth(sound)
+    internal suspend fun ProtectedAccess.openDoor(
+        closed: BoundLocInfo,
+        type: ObjectServerType,
+        openedLoc: ObjectServerType,
+    ) {
+        soundSynth(type.param(params.opensound))
 
-        val openedLoc = type.param(params.next_loc_stage)
         val openedAngle = closed.openAngle()
         val openedCoords = closed.openCoords()
 
@@ -55,11 +61,13 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
     }
 
-    private suspend fun ProtectedAccess.closeDoor(closed: BoundLocInfo, type: ObjectServerType) {
-        val sound = type.param(params.closesound)
-        soundSynth(sound)
+    internal suspend fun ProtectedAccess.closeDoor(
+        closed: BoundLocInfo,
+        type: ObjectServerType,
+        closedLoc: ObjectServerType,
+    ) {
+        soundSynth(type.param(params.closesound))
 
-        val closedLoc = type.param(params.next_loc_stage)
         val closedAngle = closed.closeAngle()
         val closedCoords = closed.closeCoords()
 
