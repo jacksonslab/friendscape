@@ -13,6 +13,12 @@ val MiningRocksRow.isInfinite: Boolean
 val MiningRocksRow.hasDepleteRange: Boolean
     get() = depleteMechanic == 2
 
+val MiningRocksRow.hasDepleteTimer: Boolean
+    get() = depleteMechanic == 4
+
+val MiningRocksRow.altMiningXp: Double
+    get() = (altXp ?: xp) / PlayerStatMap.XP_FINE_PRECISION.toDouble()
+
 val MiningRocksRow.hasBonusRolls: Boolean
     get() = clueBaseChance > 0
 

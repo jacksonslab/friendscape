@@ -34,9 +34,11 @@ import org.rsmod.content.skills.mining.MiningEquipment.miningGloveExtras
 import org.rsmod.content.skills.mining.MiningEquipment.wearingChargedGlory
 import org.rsmod.content.skills.mining.configs.MiningParams
 import org.rsmod.content.skills.mining.configs.MiningRocks
+import org.rsmod.content.skills.mining.configs.altMiningXp
 import org.rsmod.content.skills.mining.configs.depleteRange
 import org.rsmod.content.skills.mining.configs.hasBonusRolls
 import org.rsmod.content.skills.mining.configs.hasDepleteRange
+import org.rsmod.content.skills.mining.configs.hasDepleteTimer
 import org.rsmod.content.skills.mining.configs.isGemRock
 import org.rsmod.content.skills.mining.configs.isInfinite
 import org.rsmod.content.skills.mining.configs.miningXp
@@ -58,6 +60,8 @@ constructor(
     private val invisibleLvls: InvisibleLevels,
     private val mapClock: MapClock,
 ) : PluginScript() {
+    private val depleteTimers = mutableMapOf<CoordGrid, DepleteTimer>()
+
     override fun ScriptContext.startup() {
         onOpContentLoc1("content.rock") { attempt(it.loc, it.type) }
         onOpContentLoc2("content.rock") { prospect(it.type) }
@@ -81,7 +85,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (!hasRoomFor(data)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             return
@@ -116,11 +120,15 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (!hasRoomFor(data)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             resetAnim()
             return
+        }
+
+        if (data.hasDepleteTimer) {
+            tickDepleteTimer(rock, data.depleteTicks ?: 1)
         }
 
         if (skillAnimDelay <= mapClock) {
@@ -152,14 +160,14 @@ constructor(
         }
 
         if (minedOre) {
-            val item = resolveMineItem(data) ?: return
-            val xp = data.miningXp * xpMods.get(player, "stat.mining")
+            val mined = rollYield(data) ?: return
+            val xp = mined.xp * xpMods.get(player, "stat.mining")
             val product =
                 SkillingProduct(
                     player = player,
                     skill = "stat.mining",
-                    item = item,
-                    count = 1,
+                    item = mined.item,
+                    count = mined.count,
                     experience = xp,
                     grantsExperience = true,
                     source = SkillingProductSource.Mining(rock, data),
@@ -270,6 +278,9 @@ constructor(
         if (data.isInfinite) {
             return false
         }
+        if (data.hasDepleteTimer) {
+            return (depleteTimers[rock.coords]?.remaining ?: 0) <= 0
+        }
         val gloveExtras = player.miningGloveExtras(data)
         if (data.hasDepleteRange) {
             val range = data.depleteRange
@@ -305,17 +316,49 @@ constructor(
     }
 
     private fun ProtectedAccess.clearDepleteState(rock: BoundLocInfo) {
+        depleteTimers.remove(rock.coords)
         player.attr[MINED_ORE_COUNT_ATTR]?.remove(rock.coords)
         player.attr[DEPLETION_THRESHOLD_ATTR]?.remove(rock.coords)
         player.attr[DEPLETE_GLOVE_COUNT_ATTR]?.remove(rock.coords)
     }
 
-    private fun ProtectedAccess.resolveMineItem(data: MiningRocksRow): String? {
+    private fun ProtectedAccess.rollYield(data: MiningRocksRow): MinedYield? {
         if (data.isGemRock) {
-            return rollGemRock()
+            return MinedYield(rollGemRock(), 1, data.miningXp)
+        }
+        val alt = data.altItem
+        if (alt != null && random.of(100) < (data.altChance ?: 0)) {
+            return MinedYield(RSCM.getReverseMapping(RSCMType.OBJ, alt.id), 1, data.altMiningXp)
         }
         val oreType = data.oreItem ?: return null
-        return RSCM.getReverseMapping(RSCMType.OBJ, oreType.id)
+        val min = data.oreMin ?: 1
+        val count = random.of(min, maxOf(min, data.oreMax ?: min))
+        return MinedYield(RSCM.getReverseMapping(RSCMType.OBJ, oreType.id), count, data.miningXp)
+    }
+
+    private fun ProtectedAccess.hasRoomFor(data: MiningRocksRow): Boolean {
+        if (!inv.isFull()) {
+            return true
+        }
+        val ore = data.oreItem ?: return false
+        return data.altItem == null && ore.stackable && inv.contains(ore)
+    }
+
+    /**
+     * Rocks with a deplete timer share one countdown between everyone mining them. It runs down one
+     * tick per game tick while anyone is mining and recovers while the rock sits idle; the rock
+     * empties on the first ore mined after it reaches zero.
+     */
+    private fun tickDepleteTimer(rock: BoundLocInfo, ticks: Int) {
+        val now = mapClock.cycle
+        val timer = depleteTimers.getOrPut(rock.coords) { DepleteTimer(ticks, now) }
+        val elapsed = now - timer.lastTick
+        if (elapsed == 0) {
+            return
+        }
+        timer.remaining =
+            if (elapsed == 1) timer.remaining - 1 else minOf(ticks, timer.remaining + elapsed)
+        timer.lastTick = now
     }
 
     private fun ProtectedAccess.rollGemRock(): String {
@@ -379,6 +422,10 @@ constructor(
             else -> mes("You do not have a pickaxe which you have the Mining level to use.")
         }
     }
+
+    private class DepleteTimer(var remaining: Int, var lastTick: Int)
+
+    private data class MinedYield(val item: String, val count: Int, val xp: Double)
 
     private sealed interface GemPreRoll {
         data object KeepOre : GemPreRoll

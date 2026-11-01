@@ -1723,6 +1723,16 @@ inherit = "loc.runiterock2"
 contentGroup = "content.rock"
 
 [[object]]
+id = "loc.camdozaalrock1"
+inherit = "loc.camdozaalrock1"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.camdozaalrock2"
+inherit = "loc.camdozaalrock2"
+contentGroup = "content.rock"
+
+[[object]]
 id = "loc.amethystrock1"
 inherit = "loc.amethystrock1"
 contentGroup = "content.rock"

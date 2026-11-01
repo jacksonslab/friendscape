@@ -22,6 +22,12 @@ object Mining {
     const val COL_VARROCK_ARMOUR = 14
     const val COL_MINING_CAPE = 15
     const val COL_CELESTIAL_RING = 16
+    const val COL_ORE_MIN = 17
+    const val COL_ORE_MAX = 18
+    const val COL_ALT_ITEM = 19
+    const val COL_ALT_CHANCE = 20
+    const val COL_ALT_XP = 21
+    const val COL_DEPLETE_TICKS = 22
 
     fun rocks() =
         dbTable("dbtable.mining_rocks", serverOnly = true) {
@@ -42,6 +48,12 @@ object Mining {
             column("varrock_armour_level", COL_VARROCK_ARMOUR, VarType.INT)
             column("mining_cape", COL_MINING_CAPE, VarType.BOOLEAN)
             column("celestial_ring", COL_CELESTIAL_RING, VarType.BOOLEAN)
+            column("ore_min", COL_ORE_MIN, VarType.INT)
+            column("ore_max", COL_ORE_MAX, VarType.INT)
+            column("alt_item", COL_ALT_ITEM, VarType.OBJ)
+            column("alt_chance", COL_ALT_CHANCE, VarType.INT)
+            column("alt_xp", COL_ALT_XP, VarType.INT)
+            column("deplete_ticks", COL_DEPLETE_TICKS, VarType.INT)
 
             row("dbrow.mining_clayrock") {
                 columnRSCM(COL_ROCK_OBJECT, "loc.clayrock1", "loc.clayrock2")
@@ -712,6 +724,53 @@ object Mining {
                     column(COL_MINING_CAPE, false)
                     column(COL_CELESTIAL_RING, false)
                 }
+            }
+            row("dbrow.mining_barroniterock1") {
+                columnRSCM(COL_ROCK_OBJECT, "loc.camdozaalrock1")
+                column(COL_LEVEL, 14)
+                column(COL_XP, 160)
+                columnRSCM(COL_ORE_ITEM, "obj.camdozaal_barronite_shard")
+                column(COL_RESPAWN_CYCLES, 100)
+                column(COL_SUCCESS_RATE_LOW, 80)
+                column(COL_SUCCESS_RATE_HIGH, 100)
+                column(COL_DEPLETE_MECHANIC, 4)
+                columnRSCM(COL_EMPTY_ROCK, "loc.camdozaalrock1_empty")
+                column(COL_CLUE_BASE_CHANCE, 290640)
+                column(COL_MINING_WALL, false)
+                column(COL_MINING_GLOVES, 0)
+                column(COL_VARROCK_ARMOUR, 0)
+                column(COL_MINING_CAPE, false)
+                column(COL_CELESTIAL_RING, false)
+                column(COL_ORE_MIN, 4)
+                column(COL_ORE_MAX, 6)
+                columnRSCM(COL_ALT_ITEM, "obj.camdozaal_barronite_deposit")
+                column(COL_ALT_CHANCE, 24)
+                column(COL_ALT_XP, 320)
+                column(COL_DEPLETE_TICKS, 33)
+            }
+
+            row("dbrow.mining_barroniterock2") {
+                columnRSCM(COL_ROCK_OBJECT, "loc.camdozaalrock2")
+                column(COL_LEVEL, 14)
+                column(COL_XP, 160)
+                columnRSCM(COL_ORE_ITEM, "obj.camdozaal_barronite_shard")
+                column(COL_RESPAWN_CYCLES, 100)
+                column(COL_SUCCESS_RATE_LOW, 80)
+                column(COL_SUCCESS_RATE_HIGH, 100)
+                column(COL_DEPLETE_MECHANIC, 4)
+                columnRSCM(COL_EMPTY_ROCK, "loc.camdozaalrock2_empty")
+                column(COL_CLUE_BASE_CHANCE, 290640)
+                column(COL_MINING_WALL, false)
+                column(COL_MINING_GLOVES, 0)
+                column(COL_VARROCK_ARMOUR, 0)
+                column(COL_MINING_CAPE, false)
+                column(COL_CELESTIAL_RING, false)
+                column(COL_ORE_MIN, 4)
+                column(COL_ORE_MAX, 6)
+                columnRSCM(COL_ALT_ITEM, "obj.camdozaal_barronite_deposit")
+                column(COL_ALT_CHANCE, 24)
+                column(COL_ALT_XP, 320)
+                column(COL_DEPLETE_TICKS, 33)
             }
         }
 }
