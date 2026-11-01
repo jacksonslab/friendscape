@@ -14,8 +14,10 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
+import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.configs.bank_comsubs
 import org.rsmod.content.interfaces.bank.configs.bank_constants
@@ -40,6 +42,7 @@ constructor(
         get() = invMap.getOrPut("inv.bank")
 
     private var Player.withdrawCert by boolVarBit("varbit.bank_withdrawnotes")
+    private var Player.mainTabSize by intVarBit(BankTab.Main.sizeVarBit)
 
     override fun ScriptContext.startup() {
         // `onBankOpen` occurs on `bank_side` trigger for emulation purposes.
@@ -52,6 +55,7 @@ constructor(
             ifClose(eventBus)
             return
         }
+        reconcileMainTabSize()
         if (!disableIfEvents) {
             val capacityIncrease = bank_constants.purchasable_capacity
             withdrawCert = false
@@ -69,6 +73,19 @@ constructor(
         }
 
         startInvTransmit(bank)
+    }
+
+    /**
+     * Objs added to the bank outside the bank interface (tutorial coins, fish barrel, etc.) do not
+     * grow any tab, so their slots belong to no tab and withdrawing them throws. Grow the main tab
+     * to cover every occupied slot.
+     */
+    private fun Player.reconcileMainTabSize() {
+        val lastOccupied = bank.indexOfLast { it != null }
+        val tabsSize = BankTab.entries.sumOf { vars[it.sizeVarBit] }
+        if (lastOccupied >= tabsSize) {
+            mainTabSize += lastOccupied + 1 - tabsSize
+        }
     }
 
     private fun Player.onBankClose() {
