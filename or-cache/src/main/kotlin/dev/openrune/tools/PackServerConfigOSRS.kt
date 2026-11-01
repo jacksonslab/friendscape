@@ -301,6 +301,16 @@ class PackServerConfig(
 
     internal fun ensureManagers() = managers
 
+    private fun clientSequenceFingerprint(): String {
+        val live = Cache.load(Path.of(getCacheLocation()))
+        try {
+            val bytes = requireNotNull(live.sector(CONFIGS, 12)) { "Missing client sequence archive" }
+            return java.util.zip.CRC32().apply { update(bytes) }.value.toString()
+        } finally {
+            live.close()
+        }
+    }
+
     @OptIn(InternalAPI::class)
     override fun init(cache: Cache) {
         val parsedDefinitions = mutableMapOf<String, MutableList<Definition>>()
@@ -335,6 +345,10 @@ class PackServerConfig(
             // Merged types are rebuilt over the client archive they overlay, so its checksum is part of
             // the fingerprint: repacking an npc on the live side changes the server npc rows too.
             val baseArchive = library.index(CONFIGS).archives().firstOrNull { it.id == packType.archive }
+            val fingerprints = mutableMapOf("base-archive" to "${baseArchive?.crc}:${baseArchive?.revision}")
+            if (packType.table == "anims") {
+                fingerprints["client-sequences"] = clientSequenceFingerprint()
+            }
             incremental.run(
                 task = this,
                 scope = packType.table,
@@ -348,7 +362,7 @@ class PackServerConfig(
                     ),
                 ),
                 extraDeps = sharedInputs,
-                extraFingerprints = mapOf("base-archive" to "${baseArchive?.crc}:${baseArchive?.revision}"),
+                extraFingerprints = fingerprints,
             ) { packCache, _ ->
                 ensureManagers()
                 packType.pack(this, packCache, parsed, packType.table)

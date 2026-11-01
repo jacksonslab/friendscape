@@ -1,5 +1,8 @@
 package org.rsmod.content.bosses.gemstonecrab
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.*
@@ -38,6 +41,18 @@ abstract class CrabBossScript(
     private var holdCycles = 0
 
     override fun ScriptContext.startup() {
+        val animations = listOfNotNull(
+            crab.site.spawnAnimation,
+            crab.site.attackAnimation,
+            crab.site.kickAnimation,
+            crab.site.deathAnimation,
+            crab.site.disintegrateAnimation,
+        )
+        for (animation in animations) {
+            checkNotNull(ServerCacheManager.getAnim(animation.asRSCM(RSCMType.SEQ))) {
+                "Missing animation $animation for ${crab.site.crab}; rebuild the server cache"
+            }
+        }
         BossCombat.register(this, spec, deps, onCombatTick = { rotateTarget(it) })
         onEvent<GameLifecycle.LateCycle> { acquireTarget() }
     }
@@ -46,9 +61,10 @@ abstract class CrabBossScript(
         boss(crab.site.crab) {
             stats(attackRate = ATTACK_RATE)
 
-            val attack =
-                ability("attack") {
-                    anim("seq.crab_boss_attack")
+            val animations = listOfNotNull(crab.site.attackAnimation, crab.site.kickAnimation)
+            val attacks = animations.mapIndexed { index, animation ->
+                ability(if (index == 0) "attack" else "kick") {
+                    anim(animation)
                     hit {
                         target = FacingQuadrant(reach = REACH)
                         damage(
@@ -60,10 +76,13 @@ abstract class CrabBossScript(
                         type(Melee)
                     }
                 }
+            }
 
             phase("active", lockMovement = true) {
                 weightedSelectorRandom {
-                    +random(attack, weight = 1, requires = WithinMeleeRange)
+                    for (attack in attacks) {
+                        +random(attack, weight = 1, requires = WithinMeleeRange)
+                    }
                 }
             }
         }

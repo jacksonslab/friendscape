@@ -13,6 +13,7 @@ import dev.openrune.cache.tools.incremental.CacheVerification
 import dev.openrune.cache.tools.incremental.IncrementalSession
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
+import dev.openrune.cache.tools.tasks.impl.PackAnims
 import dev.openrune.cache.tools.tasks.impl.PackModels
 import dev.openrune.cache.tools.tasks.impl.PackSprites
 import dev.openrune.cache.tools.tasks.impl.PackWorldMap
@@ -31,6 +32,7 @@ import dev.openrune.gamevals.GamevalDumper
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
+import dev.openrune.pack.PackSkeleton
 import dev.openrune.pack.PluginPacks
 import dev.openrune.tables.CollectionLogCategoriesTable
 import dev.openrune.tables.DidYouKnow
@@ -61,10 +63,10 @@ import dev.openrune.toml.tomlMapper
 import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.tools.SeqDumper
 import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
-import dev.openrune.tools.SeqDumper
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -182,7 +184,8 @@ fun buildCache(type: TaskType, force: Boolean = false) {
 private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
     val serverTasks = packTasks.filterNot {
         it is PackCs2 || it is UnpackDefaultCs2 || it is PackIfType ||
-            it is PackModels || it is PackSprites || it is PackWorldMap
+            it is PackModels || it is PackSprites || it is PackWorldMap ||
+            it is PackAnims || it is PackSkeleton
     }
     val serverOnly = listOf(
         PackServerConfig(

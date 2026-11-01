@@ -7,3 +7,16 @@ gemstone_crab_swamp = 30004
 
 [gamevals.param]
 hpbar_name = 510
+
+[gamevals.models]
+devito_boss = 63471
+devito_boss_remains = 63472
+
+[gamevals.seq]
+devito_boss_idle = 63070
+devito_boss_walk = 63071
+devito_boss_attack = 63072
+devito_boss_death = 63073
+devito_boss_disintegrate = 63074
+devito_boss_remains_idle = 63075
+devito_boss_kick = 63076

@@ -95,7 +95,7 @@ public class GemstoneCrabManager(
             disintegrateRemains(remains)
             return
         }
-        if (mapClock.cycle >= remainsSpotCycle) {
+        if (site.crabEffects && mapClock.cycle >= remainsSpotCycle) {
             remains.spotanim("spotanim.crab_boss_remains_idle_spot")
             remainsSpotCycle = mapClock.cycle + REMAINS_SPOT_INTERVAL_CYCLES
         }
@@ -147,8 +147,10 @@ public class GemstoneCrabManager(
         val npc = Npc(resolveNpc(site.crab), spots[currentLocationIndex].crab)
         val lifetime = ACTIVE_DURATION_CYCLES.random()
         npcRepo.add(npc, Int.MAX_VALUE)
-        npc.anim("seq.crab_boss_spawn")
-        npc.spotanim("spotanim.vfx_crab_boss_spawn")
+        npc.anim(site.spawnAnimation)
+        if (site.crabEffects) {
+            npc.spotanim("spotanim.vfx_crab_boss_spawn")
+        }
         liveNpc = npc
         activeLifetime = lifetime
         burrowCycle = mapClock.cycle + lifetime
@@ -183,10 +185,15 @@ public class GemstoneCrabManager(
         for (player in barOpenPlayers) {
             updateBar(player, live)
         }
+        if (site.preserveDeathFacing) {
+            live.facingTarget(playerList)?.let { live.lockFacing(it.coords, it.size, it.size) }
+        }
         live.noneMode()
         live.hideAllOps()
-        live.anim("seq.crab_boss_death")
-        live.spotanim("spotanim.vfx_crab_boss_death")
+        live.anim(site.deathAnimation)
+        if (site.crabEffects) {
+            live.spotanim("spotanim.vfx_crab_boss_death")
+        }
     }
 
     private fun tickBurrow(live: Npc) {
@@ -220,6 +227,9 @@ public class GemstoneCrabManager(
         burrowStartCycle = -1
 
         val coords = live.coords
+        val facingSquare = live.faceLockSquare
+        val facingWidth = live.faceLockWidth
+        val facingLength = live.faceLockLength
         npcRepo.del(live, Int.MAX_VALUE)
         liveNpc = null
 
@@ -230,7 +240,12 @@ public class GemstoneCrabManager(
 
         val remains = Npc(resolveNpc(site.remains), coords)
         npcRepo.add(remains, Int.MAX_VALUE)
-        remains.spotanim("spotanim.crab_boss_remains_idle_spot")
+        if (site.preserveDeathFacing && facingSquare != CoordGrid.NULL) {
+            remains.lockFacing(facingSquare, facingWidth, facingLength)
+        }
+        if (site.crabEffects) {
+            remains.spotanim("spotanim.crab_boss_remains_idle_spot")
+        }
         remainsNpc = remains
         remainsSpotCycle = mapClock.cycle + REMAINS_FIRST_SPOT_DELAY_CYCLES
         remainsDisintegrating = false
@@ -240,8 +255,10 @@ public class GemstoneCrabManager(
     private fun disintegrateRemains(remains: Npc) {
         remainsDisintegrating = true
         remains.hideAllOps()
-        remains.anim("seq.crab_boss_remains_disintegrate")
-        remains.spotanim("spotanim.vfx_crab_boss_disintegrate")
+        remains.anim(site.disintegrateAnimation)
+        if (site.crabEffects) {
+            remains.spotanim("spotanim.vfx_crab_boss_disintegrate")
+        }
     }
 
     private fun expireRemains(remains: Npc) {
@@ -308,4 +325,11 @@ public data class CrabSite(
     val remains: String,
     val spots: List<Spot>,
     val areas: List<String>,
+    val spawnAnimation: String = "seq.crab_boss_spawn",
+    val attackAnimation: String = "seq.crab_boss_attack",
+    val kickAnimation: String? = null,
+    val deathAnimation: String = "seq.crab_boss_death",
+    val disintegrateAnimation: String = "seq.crab_boss_remains_disintegrate",
+    val crabEffects: Boolean = true,
+    val preserveDeathFacing: Boolean = false,
 )

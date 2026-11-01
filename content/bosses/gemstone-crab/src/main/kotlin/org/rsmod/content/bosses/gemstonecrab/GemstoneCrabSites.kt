@@ -65,6 +65,13 @@ constructor(
                 remains = "npc.swamp_gemstone_crab_remains",
                 spots = listOf(Spot(crab = CoordGrid(3196, 3188, 0))),
                 areas = listOf("area.gemstone_crab_swamp"),
+                spawnAnimation = "seq.devito_boss_idle",
+                attackAnimation = "seq.devito_boss_attack",
+                kickAnimation = "seq.devito_boss_kick",
+                deathAnimation = "seq.devito_boss_death",
+                disintegrateAnimation = "seq.devito_boss_disintegrate",
+                crabEffects = false,
+                preserveDeathFacing = true,
             )
     }
 }
