@@ -6,10 +6,10 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.loc.BoundLocInfo
 
 @Singleton
-public class GemstoneCrabCaveScript @Inject constructor(private val crab: GemstoneCrabManager) {
+public class GemstoneCrabCaveScript @Inject constructor(private val sites: GemstoneCrabSites) {
 
     public suspend fun ProtectedAccess.crawl(cave: BoundLocInfo) {
-        val exit = crab.caveExitFor(cave.coords)
+        val exit = sites.varlamore.caveExitFor(cave.coords)
         if (exit == null) {
             mes("The gemstone crab is already nearby.")
             return
@@ -26,7 +26,7 @@ public class GemstoneCrabCaveScript @Inject constructor(private val crab: Gemsto
             clientDuration = FADE_CLIENT_DURATION,
         )
         clearHealthHud()
-        crab.releaseBar(player)
+        sites.varlamore.releaseBar(player)
 
         delay(1)
         minimapHideMap()

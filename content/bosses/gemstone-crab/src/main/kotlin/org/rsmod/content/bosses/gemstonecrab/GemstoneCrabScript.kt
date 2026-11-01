@@ -16,41 +16,34 @@ import org.rsmod.plugin.scripts.ScriptContext
 class GemstoneCrabScript
 @Inject
 constructor(
-    private val crab: GemstoneCrabManager,
+    private val sites: GemstoneCrabSites,
     private val mining: GemstoneCrabMiningScript,
     private val cave: GemstoneCrabCaveScript,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onEvent<GameLifecycle.LateCycle> { crab.tick() }
+        onEvent<GameLifecycle.LateCycle> { sites.all.forEach(GemstoneCrabManager::tick) }
 
-        SPOT_AREAS.forEachIndexed { index, area ->
-            onArea(area) { crab.enterSpotArea(player, index) }
-            onAreaExit(area) { crab.exitSpotArea(player, index) }
+        for (crab in sites.all) {
+            crab.site.areas.forEachIndexed { index, area ->
+                onArea(area) { crab.enterSpotArea(player, index) }
+                onAreaExit(area) { crab.exitSpotArea(player, index) }
+            }
+            onOpNpc1(crab.site.remains) { with(mining) { attempt(it.npc) } }
         }
 
-        onOpNpc1("npc.gemstone_crab_remains") { with(mining) { attempt(it.npc) } }
         onOpLoc1("loc.cave_rock02_entrance01_gemstone") { with(cave) { crawl(it.loc) } }
 
         onCommand("gemstonecrab") {
-            desc = "Force the active gemstone crab to burrow immediately"
-            cheat { crab.forceBurrow() }
+            desc = "Force every active gemstone crab to burrow immediately"
+            cheat { forceBurrow() }
         }
 
-        crab.start()
+        sites.all.forEach(GemstoneCrabManager::start)
     }
 
     private fun Cheat.forceBurrow() {
-        crab.forceBurrow()
-        player.mes("Forced the gemstone crab to burrow.")
-    }
-
-    private companion object {
-        private val SPOT_AREAS =
-            listOf(
-                "area.gemstone_crab_spot_1",
-                "area.gemstone_crab_spot_2",
-                "area.gemstone_crab_spot_3",
-            )
+        sites.all.forEach(GemstoneCrabManager::forceBurrow)
+        player.mes("Forced the gemstone crabs to burrow.")
     }
 }

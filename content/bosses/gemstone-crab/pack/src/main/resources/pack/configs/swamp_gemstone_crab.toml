@@ -1,0 +1,29 @@
+# The Lumbridge Swamp crab. Change `name` (and the remains' name) to rename it,
+# then rebuild the cache; players see the new name after they next log in.
+
+[[npc]]
+id = "npc.swamp_gemstone_crab"
+inherit = "npc.gemstone_crab"
+name = "Swamp Crab"
+examine = "A gemstone crab that has made its home in Lumbridge Swamp."
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.headbar"="headbar.health_120"
+"param.hitpoints_locked"=true
+"param.npc_com_xp_multiplier"=875
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+
+[[npc]]
+id = "npc.swamp_gemstone_crab_remains"
+inherit = "npc.gemstone_crab_remains"
+name = "Swamp Crab remains"
+moveRestrict = "NoMove"
+wanderRange = 0
+defaultMode = "None"

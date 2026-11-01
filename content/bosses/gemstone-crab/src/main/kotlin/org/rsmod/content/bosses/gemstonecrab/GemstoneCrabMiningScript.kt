@@ -15,16 +15,17 @@ import org.rsmod.game.type.getInvObj
 @Singleton
 public class GemstoneCrabMiningScript
 @Inject
-constructor(private val crab: GemstoneCrabManager, private val objRepo: ObjRepository) {
+constructor(private val sites: GemstoneCrabSites, private val objRepo: ObjRepository) {
 
     public suspend fun ProtectedAccess.attempt(npc: Npc) {
         val uuid = player.uuid ?: return
-        if (crab.remainsNpc !== npc) {
+        val crab = sites.owning(npc)
+        if (crab == null) {
             mes("The crab shell has already crumbled away.")
             return
         }
         if (!crab.isEligibleMiner(uuid)) {
-            mes("Your understanding of the gemstone crab is not great enough to mine its shell.")
+            mes("Your understanding of the ${crab.crabName()} is not great enough to mine its shell.")
             return
         }
         if (crab.hasClaimedMining(uuid)) {

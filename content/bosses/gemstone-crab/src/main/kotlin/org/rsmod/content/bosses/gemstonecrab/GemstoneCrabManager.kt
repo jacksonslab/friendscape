@@ -3,8 +3,6 @@ package org.rsmod.content.bosses.gemstonecrab
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import jakarta.inject.Inject
-import jakarta.inject.Singleton
 import java.util.Collections
 import java.util.IdentityHashMap
 import kotlin.random.Random
@@ -19,15 +17,15 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.map.CoordGrid
 
-@Singleton
-public class GemstoneCrabManager
-@Inject
-constructor(
+public class GemstoneCrabManager(
     private val npcRepo: NpcRepository,
     private val mapClock: MapClock,
     private val playerList: PlayerList,
     private val hpBar: BossHpBarScript,
+    public val site: CrabSite,
 ) {
+    private val spots = site.spots
+
     public var liveNpc: Npc? = null
         private set
 
@@ -51,7 +49,7 @@ constructor(
     private val barOpenPlayers: MutableSet<Player> = Collections.newSetFromMap(IdentityHashMap())
     private val claimedMiners: MutableSet<Long> = mutableSetOf()
     private val playersInSpotArea: Array<MutableSet<Player>> =
-        Array(SPOTS.size) { Collections.newSetFromMap(IdentityHashMap()) }
+        Array(spots.size) { Collections.newSetFromMap(IdentityHashMap()) }
 
     public val isCrabActive: Boolean
         get() = liveNpc != null && burrowStartCycle == -1
@@ -105,8 +103,8 @@ constructor(
 
     public fun caveExitFor(cave: CoordGrid): CoordGrid? {
         val index = if (isCrabActive) currentLocationIndex else nextLocationIndex
-        val destination = SPOTS.getOrNull(index) ?: return null
-        return destination.caveExit.takeIf { destination.cave != cave }
+        val destination = spots.getOrNull(index) ?: return null
+        return destination.caveExit?.takeIf { destination.cave != cave }
     }
 
     public fun forceBurrow() {
@@ -146,7 +144,7 @@ constructor(
     private fun spawnNext() {
         currentLocationIndex = if (nextLocationIndex != -1) nextLocationIndex else pickNextLocation()
         nextLocationIndex = -1
-        val npc = Npc(resolveNpc("npc.gemstone_crab"), SPOTS[currentLocationIndex].crab)
+        val npc = Npc(resolveNpc(site.crab), spots[currentLocationIndex].crab)
         val lifetime = ACTIVE_DURATION_CYCLES.random()
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.anim("seq.crab_boss_spawn")
@@ -161,9 +159,12 @@ constructor(
     }
 
     private fun pickNextLocation(): Int {
+        if (spots.size == 1) {
+            return 0
+        }
         var next: Int
         do {
-            next = Random.nextInt(SPOTS.size)
+            next = Random.nextInt(spots.size)
         } while (next == currentLocationIndex)
         return next
     }
@@ -196,7 +197,7 @@ constructor(
     }
 
     private fun announceBurrow() {
-        broadcast("The gemstone crab burrows away, leaving a piece of its shell behind.")
+        broadcast("The ${crabName()} burrows away, leaving a piece of its shell behind.")
 
         val names = topDealers.take(3).mapNotNull { it.resolve(playerList)?.displayName }
         if (names.isNotEmpty()) {
@@ -227,7 +228,7 @@ constructor(
         }
         barOpenPlayers.clear()
 
-        val remains = Npc(resolveNpc("npc.gemstone_crab_remains"), coords)
+        val remains = Npc(resolveNpc(site.remains), coords)
         npcRepo.add(remains, Int.MAX_VALUE)
         remains.spotanim("spotanim.crab_boss_remains_idle_spot")
         remainsNpc = remains
@@ -275,28 +276,16 @@ constructor(
             else -> "${names.dropLast(1).joinToString(", ")}, & ${names.last()}"
         }
 
+    public fun crabName(): String {
+        val name = resolveNpc(site.crab).name
+        return if (name.equals(DEFAULT_NAME, ignoreCase = true)) name.lowercase() else name
+    }
+
     private fun resolveNpc(name: String) =
         ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC)) ?: error("Unknown npc: $name")
 
     private companion object {
-        private val SPOTS =
-            listOf(
-                Spot(
-                    crab = CoordGrid(1271, 3171, 0),
-                    cave = CoordGrid(1278, 3167, 0),
-                    caveExit = CoordGrid(1277, 3169, 0),
-                ),
-                Spot(
-                    crab = CoordGrid(1351, 3110, 0),
-                    cave = CoordGrid(1350, 3123, 0),
-                    caveExit = CoordGrid(1351, 3122, 0),
-                ),
-                Spot(
-                    crab = CoordGrid(1237, 3042, 0),
-                    cave = CoordGrid(1245, 3035, 0),
-                    caveExit = CoordGrid(1247, 3038, 0),
-                ),
-            )
+        private const val DEFAULT_NAME = "Gemstone crab"
         private val ACTIVE_DURATION_CYCLES = 918..967
         private const val REMAINS_CYCLES = 150
         private const val DISINTEGRATE_CYCLES = 4
@@ -308,4 +297,15 @@ constructor(
     }
 }
 
-private data class Spot(val crab: CoordGrid, val cave: CoordGrid, val caveExit: CoordGrid)
+public data class Spot(
+    val crab: CoordGrid,
+    val cave: CoordGrid? = null,
+    val caveExit: CoordGrid? = null,
+)
+
+public data class CrabSite(
+    val crab: String,
+    val remains: String,
+    val spots: List<Spot>,
+    val areas: List<String>,
+)

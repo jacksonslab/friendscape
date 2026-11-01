@@ -1,0 +1,6 @@
+[gamevals.npc]
+swamp_gemstone_crab = 65518
+swamp_gemstone_crab_remains = 65519
+
+[gamevals.area]
+gemstone_crab_swamp = 30004

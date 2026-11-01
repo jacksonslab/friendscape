@@ -36,3 +36,16 @@ vertices = [
     [1250, 3055],
     [1224, 3055],
 ]
+
+[[area]]
+name = "Gemstone Crab (Lumbridge Swamp)"
+area_id = "area.gemstone_crab_swamp"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3184, 3176],
+    [3210, 3176],
+    [3210, 3202],
+    [3184, 3202],
+]

@@ -19,7 +19,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GemstoneCrabBoss
 @Inject
-constructor(
+constructor(deps: BossDeps, interactions: AiPlayerInteractions, sites: GemstoneCrabSites) :
+    CrabBossScript(deps, interactions, sites.varlamore)
+
+class SwampGemstoneCrabBoss
+@Inject
+constructor(deps: BossDeps, interactions: AiPlayerInteractions, sites: GemstoneCrabSites) :
+    CrabBossScript(deps, interactions, sites.swamp)
+
+abstract class CrabBossScript(
     deps: BossDeps,
     private val interactions: AiPlayerInteractions,
     private val crab: GemstoneCrabManager,
@@ -35,7 +43,7 @@ constructor(
     }
 
     override val spec =
-        boss("npc.gemstone_crab") {
+        boss(crab.site.crab) {
             stats(attackRate = ATTACK_RATE)
 
             val attack =
