@@ -1,6 +1,10 @@
 package org.rsmod.content.skills.fletching
 
 import dev.openrune.types.StatType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.Tuple2
@@ -26,13 +30,13 @@ fun ScriptContext.registerFletchingQueue() {
  * dialog for each recipe the player doesn't yet qualify for.
  */
 private fun ProtectedAccess.hasStatReqs(reqs: List<Tuple2<StatType, Int>>): Boolean =
-    reqs.all { statBase(it.t0.internalName) >= it.t1 }
+    reqs.all { stat(it.t0.internalName) >= it.t1 }
 
 private suspend fun ProtectedAccess.meetsStatReqs(reqs: List<Tuple2<StatType, Int>>): Boolean {
     for (req in reqs) {
         val stat = req.t0
         val level = req.t1
-        if (statBase(stat.internalName) < level) {
+        if (stat(stat.internalName) < level) {
             val name = stat.displayName.ifEmpty { stat.internalName.removePrefix("stat.") }
             mesbox("You need a $name level of $level.")
             return false
@@ -50,6 +54,7 @@ private fun FletchingRecipe.fletchingLevel(): Int =
     statReq.firstOrNull { it.t0.internalName == "stat.fletching" }?.t1 ?: 0
 
 suspend fun ProtectedAccess.startFletching(recipe: FletchingRecipe, amount: Int) {
+    if (amount <= 0 || !hasFletchingUnlock(recipe)) return
     if (!meetsStatReqs(recipe.statReq)) return
     val tool = recipe.tool
     if (tool != null && !recipe.hasTool(inv)) {
@@ -118,10 +123,11 @@ private fun ProtectedAccess.knifeSpeedup(recipe: FletchingRecipe): Int {
     return if (owned) 1 else 0
 }
 
-private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
-    val recipe = task.recipe
+internal suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
+    val recipe = task.recipe.availableBatch(inv)
 
-    if (!meetsStatReqs(recipe.statReq) || !recipe.hasTool(inv) || !recipe.hasMaterials(inv)) {
+    if (!hasFletchingUnlock(recipe) || !meetsStatReqs(recipe.statReq) ||
+        !recipe.hasTool(inv) || !recipe.hasMaterials(inv)) {
         resetAnim()
         return
     }
@@ -137,20 +143,7 @@ private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
         anim(if (looping) FletchingAnims.GENERIC else FletchingAnims.GENERIC_SINGLE)
     }
 
-    val consumed = mutableListOf<Pair<String, Int>>()
-    for (material in recipe.inputs) {
-        val name = material.obj.internalName
-        if (invDel(inv, name, material.count).success) {
-            consumed += name to material.count
-        } else {
-            consumed.forEach { (restore, count) -> invAdd(inv, restore, count) }
-            resetAnim()
-            return
-        }
-    }
-
-    if (invAdd(inv, recipe.output.internalName, recipe.outputAmount).failure) {
-        consumed.forEach { (restore, count) -> invAdd(inv, restore, count) }
+    if (!produceFletching(recipe)) {
         mes("You don't have enough inventory space to make that.")
         resetAnim()
         return
@@ -165,10 +158,22 @@ private suspend fun ProtectedAccess.processFletchTick(task: FletchingTask) {
         weakQueue(
             FLETCH_QUEUE,
             if (recipe.ticks > 0) recipe.ticks + 1 - knifeSpeedup(recipe) else 1,
-            FletchingTask(recipe, task.amount, created),
+            FletchingTask(task.recipe, task.amount, created),
         )
     } else if (looping) {
         // Only the looping animation needs stopping; a one-shot would be cut short instead.
         resetAnim()
     }
+}
+
+internal fun ProtectedAccess.produceFletching(recipe: FletchingRecipe): Boolean {
+    if (!recipe.hasTool(inv) || !recipe.hasMaterials(inv)) return false
+    val batch = recipe.availableBatch(inv)
+    return player.invTransaction(inv) {
+        val inventory = select(inv)
+        for (material in batch.inputs) {
+            delete(inventory, material.obj.id, material.count)
+        }
+        add(inventory, batch.output.id, batch.outputAmount)
+    }.success
 }

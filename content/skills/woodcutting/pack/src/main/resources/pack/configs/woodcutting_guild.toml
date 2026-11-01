@@ -1,0 +1,10 @@
+[[enum]]
+id = "enum.woodcutting_guild_bounds"
+isServerOnly = true
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+0 = 1560
+1 = 3456
+2 = 1663
+3 = 3519

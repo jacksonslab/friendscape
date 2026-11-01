@@ -184,7 +184,8 @@ fun byToolAndPrimary(
  */
 fun FletchingRecipe.withHeldFeather(inv: Inventory, preferred: String? = null): FletchingRecipe {
     val feather = inputs.firstOrNull { it.obj.internalName == "obj.feather" } ?: return this
-    if (preferred != null && inv.count(preferred) >= feather.count) {
+    val needed = if (isAmmunitionBatch()) 1 else feather.count
+    if (preferred != null && inv.count(preferred) >= needed) {
         return copy(
             inputs =
                 inputs.map {
@@ -194,9 +195,9 @@ fun FletchingRecipe.withHeldFeather(inv: Inventory, preferred: String? = null): 
     }
     // Plain feathers take priority whenever the player holds enough of them; this is checked
     // explicitly rather than relying on "obj.feather" being iterated first in the set below.
-    if (inv.count("obj.feather") >= feather.count) return this
+    if (inv.count("obj.feather") >= needed) return this
     val held =
-        FletchingDefinitions.feathers.firstOrNull { inv.count(it) >= feather.count } ?: return this
+        FletchingDefinitions.feathers.firstOrNull { inv.count(it) >= needed } ?: return this
     return copy(
         inputs =
             inputs.map {

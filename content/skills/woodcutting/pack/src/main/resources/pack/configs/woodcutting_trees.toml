@@ -1,0 +1,517 @@
+[[object]]
+id = "loc.tree"
+inherit = "loc.tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.lighttree"
+inherit = "loc.lighttree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree2"
+inherit = "loc.tree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree3"
+inherit = "loc.tree3"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.lighttree2"
+inherit = "loc.lighttree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree1"
+inherit = "loc.deadtree1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree1_large"
+inherit = "loc.deadtree1_large"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree4"
+inherit = "loc.deadtree4"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.lightdeadtree1"
+inherit = "loc.lightdeadtree1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree2"
+inherit = "loc.deadtree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree2_dark"
+inherit = "loc.deadtree2_dark"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree3"
+inherit = "loc.deadtree3"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree2_snowy"
+inherit = "loc.deadtree2_snowy"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.evergreen_vsnowy_large"
+inherit = "loc.evergreen_vsnowy_large"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.evergreen_snowy_large"
+inherit = "loc.evergreen_snowy_large"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.snowtree1"
+inherit = "loc.snowtree1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.snowtree2"
+inherit = "loc.snowtree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.snowtree3"
+inherit = "loc.snowtree3"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree2_swamp"
+inherit = "loc.deadtree2_swamp"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree6"
+inherit = "loc.deadtree6"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadtree_burnt"
+inherit = "loc.deadtree_burnt"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.achey_tree"
+inherit = "loc.achey_tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.evergreen"
+inherit = "loc.evergreen"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.evergreen_large"
+inherit = "loc.evergreen_large"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.arctic_pine"
+inherit = "loc.arctic_pine"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.fai_varrock_dead_tree"
+inherit = "loc.fai_varrock_dead_tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.regicide_tree_large"
+inherit = "loc.regicide_tree_large"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.regicide_tree_large2"
+inherit = "loc.regicide_tree_large2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.regicide_tree_large3"
+inherit = "loc.regicide_tree_large3"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.regicide_tree_small"
+inherit = "loc.regicide_tree_small"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mm_bush_kharazi_jungle_tree1"
+inherit = "loc.mm_bush_kharazi_jungle_tree1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mm_bush_kharazi_jungle_tree2"
+inherit = "loc.mm_bush_kharazi_jungle_tree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mdaughter_passable_tree"
+inherit = "loc.mdaughter_passable_tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mahoganytree"
+inherit = "loc.mahoganytree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.teaktree"
+inherit = "loc.teaktree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.willowtree"
+inherit = "loc.willowtree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.oaktree"
+inherit = "loc.oaktree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.hollow_tree"
+inherit = "loc.hollow_tree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.yewtree"
+inherit = "loc.yewtree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.deadman_yewtree_insurancestall"
+inherit = "loc.deadman_yewtree_insurancestall"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.willow_tree2"
+inherit = "loc.willow_tree2"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.hollow_tree_big"
+inherit = "loc.hollow_tree_big"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.willow_tree3"
+inherit = "loc.willow_tree3"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mapletree"
+inherit = "loc.mapletree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.willow_tree4"
+inherit = "loc.willow_tree4"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.magictree"
+inherit = "loc.magictree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.pest_tree"
+inherit = "loc.pest_tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.pest_tree2"
+inherit = "loc.pest_tree2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mature_juniper_tree"
+inherit = "loc.mature_juniper_tree"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.redwoodtree_l"
+inherit = "loc.redwoodtree_l"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.redwoodtree_r"
+inherit = "loc.redwoodtree_r"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.fossil_deadtree_large1"
+inherit = "loc.fossil_deadtree_large1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.fossil_deadtree_small1"
+inherit = "loc.fossil_deadtree_small1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 0
+
+[[object]]
+id = "loc.prif_tree_normal_1"
+inherit = "loc.prif_tree_normal_1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_tree_normal_2"
+inherit = "loc.prif_tree_normal_2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_outside_tree_normal_1"
+inherit = "loc.prif_outside_tree_normal_1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_outside_tree_normal_2"
+inherit = "loc.prif_outside_tree_normal_2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_mapletree"
+inherit = "loc.prif_mapletree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_yewtree"
+inherit = "loc.prif_yewtree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_teaktree"
+inherit = "loc.prif_teaktree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.prif_mahoganytree"
+inherit = "loc.prif_mahoganytree"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree_update_1"
+inherit = "loc.tree_update_1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree_update_2"
+inherit = "loc.tree_update_2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mapletree_update"
+inherit = "loc.mapletree_update"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.yewtree_update"
+inherit = "loc.yewtree_update"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.teaktree_update"
+inherit = "loc.teaktree_update"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.mahoganytree_update"
+inherit = "loc.mahoganytree_update"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree_yew_default01"
+inherit = "loc.tree_yew_default01"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree_normal_default01"
+inherit = "loc.tree_normal_default01"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree_oak_default01"
+inherit = "loc.tree_oak_default01"
+[object.params]
+"param.woodcutting_social" = 1
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.avium_tree_1"
+inherit = "loc.avium_tree_1"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.avium_tree_2"
+inherit = "loc.avium_tree_2"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.tree4"
+inherit = "loc.tree4"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256
+
+[[object]]
+id = "loc.avium_tree_dark"
+inherit = "loc.avium_tree_dark"
+[object.params]
+"param.woodcutting_social" = 0
+"param.woodcutting_nest_chance" = 256

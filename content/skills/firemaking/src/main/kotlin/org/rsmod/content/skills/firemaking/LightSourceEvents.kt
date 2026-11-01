@@ -18,6 +18,7 @@ class LightSourceEvents : PluginScript() {
     }
 
     private fun ProtectedAccess.light(source: LightSourcesRow) {
+        if (!inv.contains("obj.tinderbox")) return
         if (player.firemakingLvl < source.level) {
             mes("You need a Firemaking level of ${source.level} to light this.")
             return

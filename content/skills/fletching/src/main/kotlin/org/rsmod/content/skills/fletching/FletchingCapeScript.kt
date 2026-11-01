@@ -1,5 +1,10 @@
 package org.rsmod.content.skills.fletching
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpHeld3
@@ -26,7 +31,7 @@ class FletchingCapeScript : PluginScript() {
         statBoost("stat.fletching", constant = 1, percent = 0)
     }
 
-    private fun ProtectedAccess.search() {
+    internal fun ProtectedAccess.search() {
         if (player.fletchingCapeDay != player.runeday) {
             player.fletchingCapeDay = player.runeday
             player.fletchingCapeUses = 0
@@ -39,7 +44,11 @@ class FletchingCapeScript : PluginScript() {
             mes("You need at least ${REWARDS.size} free inventory spaces to search the cape.")
             return
         }
-        REWARDS.forEach { invAdd(inv, it) }
+        val granted = player.invTransaction(inv) {
+            val inventory = select(inv)
+            REWARDS.forEach { add(inventory, it.asRSCM(RSCMType.OBJ), 1) }
+        }
+        if (granted.failure) return
         player.fletchingCapeUses++
         mes("You search the cape and find a mithril grapple and a bronze crossbow.")
     }

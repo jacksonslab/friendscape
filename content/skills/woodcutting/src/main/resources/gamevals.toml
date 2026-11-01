@@ -1,5 +1,28 @@
 [gamevals.param]
+woodcutting_outfit_bonus = 64290
+woodcutting_rate_axe = 64291
+woodcutting_charge_limit = 64292
+woodcutting_nest_contents = 64293
+woodcutting_nest_chance = 64294
+woodcutting_social = 64295
 woodcutting_fixed_yields = 65384
 
 [gamevals.enum]
 gauntlet_tree_axes = 65407
+
+woodcutting_seed_nest = 64290
+woodcutting_ring_nest = 64291
+woodcutting_red_egg_nest = 64292
+woodcutting_blue_egg_nest = 64293
+woodcutting_green_egg_nest = 64294
+woodcutting_nests = 64295
+woodcutting_nests_rabbit = 64296
+woodcutting_guild_bounds = 64297
+
+[gamevals.varobj]
+woodcutting_axe_charges = 64290
+
+[gamevals.varp]
+woodcutting_last_swing = 64290
+woodcutting_tree_coord = 64291
+woodcutting_tree_id = 64292

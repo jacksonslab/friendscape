@@ -1,0 +1,22 @@
+[[varobj]]
+id = "varobj.woodcutting_axe_charges"
+startBit = 0
+endBit = 14
+
+[[varp]]
+id = "varp.woodcutting_last_swing"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.woodcutting_tree_coord"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.woodcutting_tree_id"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"

@@ -6,6 +6,7 @@ import dev.openrune.tables.production.productionTable
 
 object Firemaking {
 
+    const val COL_XP_TENTHS = 10
     const val COL_FORESTER_INITIAL_TICKS = 7
     const val COL_FORESTER_LOG_TICKS = 8
     const val COL_FORESTER_ANIMATION = 9
@@ -16,6 +17,7 @@ object Firemaking {
         defaultCategory = "Burn",
         requireOutput = false,
         extraColumns = {
+            column("xp_tenths", COL_XP_TENTHS, VarType.INT)
             column("forester_initial_ticks", COL_FORESTER_INITIAL_TICKS, VarType.INT)
             column("forester_log_ticks", COL_FORESTER_LOG_TICKS, VarType.INT)
             column("forester_animation", COL_FORESTER_ANIMATION, VarType.SEQ)
@@ -27,6 +29,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(40)
             }
+            column(COL_XP_TENTHS, 400)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_logs")
@@ -37,6 +40,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(40)
             }
+            column(COL_XP_TENTHS, 400)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_achey_tree_logs")
@@ -47,6 +51,7 @@ object Firemaking {
                 statReq("stat.firemaking", 15)
                 xp(60)
             }
+            column(COL_XP_TENTHS, 600)
             column(COL_FORESTER_INITIAL_TICKS, 109)
             column(COL_FORESTER_LOG_TICKS, 10)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_oak_logs")
@@ -57,6 +62,7 @@ object Firemaking {
                 statReq("stat.firemaking", 30)
                 xp(90)
             }
+            column(COL_XP_TENTHS, 900)
             column(COL_FORESTER_INITIAL_TICKS, 116)
             column(COL_FORESTER_LOG_TICKS, 17)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_willow_logs")
@@ -67,6 +73,7 @@ object Firemaking {
                 statReq("stat.firemaking", 35)
                 xp(105)
             }
+            column(COL_XP_TENTHS, 1050)
             column(COL_FORESTER_INITIAL_TICKS, 118)
             column(COL_FORESTER_LOG_TICKS, 19)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_teak_logs")
@@ -77,6 +84,7 @@ object Firemaking {
                 statReq("stat.firemaking", 42)
                 xp(125)
             }
+            column(COL_XP_TENTHS, 1250)
             column(COL_FORESTER_INITIAL_TICKS, 121)
             column(COL_FORESTER_LOG_TICKS, 22)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_arctic_pine_log")
@@ -87,6 +95,7 @@ object Firemaking {
                 statReq("stat.firemaking", 45)
                 xp(135)
             }
+            column(COL_XP_TENTHS, 1350)
             column(COL_FORESTER_INITIAL_TICKS, 123)
             column(COL_FORESTER_LOG_TICKS, 24)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_maple_logs")
@@ -97,6 +106,7 @@ object Firemaking {
                 statReq("stat.firemaking", 50)
                 xp(157)
             }
+            column(COL_XP_TENTHS, 1575)
             column(COL_FORESTER_INITIAL_TICKS, 125)
             column(COL_FORESTER_LOG_TICKS, 26)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_mahogany_logs")
@@ -107,6 +117,7 @@ object Firemaking {
                 statReq("stat.firemaking", 60)
                 xp(202)
             }
+            column(COL_XP_TENTHS, 2025)
             column(COL_FORESTER_INITIAL_TICKS, 130)
             column(COL_FORESTER_LOG_TICKS, 31)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_yew_logs")
@@ -117,16 +128,28 @@ object Firemaking {
                 statReq("stat.firemaking", 62)
                 xp(96)
             }
+            column(COL_XP_TENTHS, 960)
             column(COL_FORESTER_INITIAL_TICKS, 131)
             column(COL_FORESTER_LOG_TICKS, 32)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_blisterwood_logs")
+        }
+        row("dbrow.firemaking_camphor_logs") {
+            production {
+                input("obj.camphor_logs")
+                statReq("stat.firemaking", 66)
+                xp(180)
+            }
+            column(COL_XP_TENTHS, 1800)
+            column(COL_FORESTER_INITIAL_TICKS, 133)
+            column(COL_FORESTER_LOG_TICKS, 34)
         }
         row("dbrow.firemaking_magic_logs") {
             production {
                 input("obj.magic_logs")
                 statReq("stat.firemaking", 75)
-                xp(305)
+                xp(303)
             }
+            column(COL_XP_TENTHS, 3038)
             column(COL_FORESTER_INITIAL_TICKS, 137)
             column(COL_FORESTER_LOG_TICKS, 38)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_magic_logs")
@@ -137,6 +160,7 @@ object Firemaking {
                 statReq("stat.firemaking", 80)
                 xp(220)
             }
+            column(COL_XP_TENTHS, 2200)
             column(COL_FORESTER_INITIAL_TICKS, 144)
             column(COL_FORESTER_LOG_TICKS, 45)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_ironwood_logs")
@@ -147,6 +171,7 @@ object Firemaking {
                 statReq("stat.firemaking", 90)
                 xp(350)
             }
+            column(COL_XP_TENTHS, 3500)
             column(COL_FORESTER_INITIAL_TICKS, 144)
             column(COL_FORESTER_LOG_TICKS, 45)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_redwood_logs")
@@ -157,6 +182,7 @@ object Firemaking {
                 statReq("stat.firemaking", 92)
                 xp(268)
             }
+            column(COL_XP_TENTHS, 2680)
             column(COL_FORESTER_INITIAL_TICKS, 144)
             column(COL_FORESTER_LOG_TICKS, 45)
             columnRSCM(COL_FORESTER_ANIMATION, "seq.forestry_campfire_burning_rosewood_logs")
@@ -167,6 +193,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(50)
             }
+            column(COL_XP_TENTHS, 500)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
         }
@@ -176,6 +203,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(50)
             }
+            column(COL_XP_TENTHS, 500)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
         }
@@ -185,6 +213,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(50)
             }
+            column(COL_XP_TENTHS, 500)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
         }
@@ -194,6 +223,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(50)
             }
+            column(COL_XP_TENTHS, 500)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
         }
@@ -203,6 +233,7 @@ object Firemaking {
                 statReq("stat.firemaking", 1)
                 xp(50)
             }
+            column(COL_XP_TENTHS, 500)
             column(COL_FORESTER_INITIAL_TICKS, 102)
             column(COL_FORESTER_LOG_TICKS, 3)
         }

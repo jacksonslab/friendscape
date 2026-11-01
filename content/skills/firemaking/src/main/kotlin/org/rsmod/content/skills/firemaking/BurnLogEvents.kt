@@ -1,6 +1,5 @@
 package org.rsmod.content.skills.firemaking
 
-import dev.openrune.map.MapSingletons.collision
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -17,26 +16,29 @@ import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.FiremakingColoredLogsRow
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.game.MapClock
-import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
+import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.game.map.collision.firstStepDestination
 import org.rsmod.game.obj.Obj
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 import skillSuccess
 
 
 public class BurnLogEvents @Inject constructor(
-    private val objRepo: ObjRegistry,
     private val objRegistry: ObjRegistry,
     private val locRepo: LocRepository,
     private val worldClock: MapClock,
     private val xpMods: XpModifiers,
+    private val fires: FiremakingFires,
+    private val collision: CollisionFlagMap,
 ) : PluginScript() {
 
-    private val walkDirections = listOf(
+    private val WALK_DIRECTIONS = listOf(
         Direction.West,
         Direction.East,
         Direction.South,
@@ -58,7 +60,7 @@ public class BurnLogEvents @Inject constructor(
                 if (animName.isBlank()) {
                     return@onOpHeldU
                 }
-                startBurn(log, method = BurnMethod.Bow, burnAnim = animName)
+                startBurn(log, method = BurnMethod.Bow, burnAnim = animName, bow = it.second.internalName)
             }
             onOpObj4(log.input) { startBurn(log, it.obj, BurnMethod.Tinderbox) }
         }
@@ -71,19 +73,14 @@ public class BurnLogEvents @Inject constructor(
         groundObj: Obj? = null,
         method: BurnMethod,
         burnAnim: String = "seq.human_createfire",
+        bow: String? = null,
     ) {
-        if (!canBurn(log, groundObj, method)) {
+        if (!canBurn(log, groundObj, method, bow)) {
             resetAnim()
             return
         }
 
-        var obj = groundObj
-
-        if (obj == null) {
-            invDel(player.inv, log.input.internalName)
-            obj = Obj.fromServer(worldClock, coords, log.input.internalName, 1)
-            objRegistry.add(obj)
-        }
+        val obj = groundObj ?: dropFiremakingLog(log.input.internalName, objRegistry, worldClock) ?: return
 
         stopAction()
         anim(burnAnim)
@@ -94,20 +91,26 @@ public class BurnLogEvents @Inject constructor(
             },
         )
 
-        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method))
+        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method, bow))
     }
 
     private fun ProtectedAccess.canBurn(
         log: FiremakingLogsRow,
         obj: Obj?,
         method: BurnMethod,
+        bow: String?,
     ): Boolean {
-        if (obj != null && !objRepo.isValid(player, obj)) {
+        if (obj != null && (obj.coords != coords || !fires.contains(player, obj))) {
             return false
         }
 
         if (method == BurnMethod.Tinderbox && !inv.contains("obj.tinderbox")) {
             player.mes("You do not have any fire source to light this.")
+            return false
+        }
+
+        if (method == BurnMethod.Bow && (bow == null || !inv.contains(bow))) {
+            player.mes("You need your bow to light these logs.")
             return false
         }
 
@@ -121,7 +124,7 @@ public class BurnLogEvents @Inject constructor(
         }
 
         val fireTile = obj?.coords ?: coords
-        if (tileHasCentrepieceLoc(fireTile)) {
+        if (!collision.isZoneValid(fireTile) || collision.isWalkBlocked(fireTile) || tileHasCentrepieceLoc(fireTile)) {
             player.mes("You can't light a fire here.")
             return false
         }
@@ -134,7 +137,7 @@ public class BurnLogEvents @Inject constructor(
             locRepo.findExact(tile, LocShape.CentrepieceDiagonal) != null
 
     private fun ProtectedAccess.processBurnTick(task: BurnTask) {
-        if (!canBurn(task.log, task.obj, task.method)) {
+        if (!canBurn(task.log, task.obj, task.method, task.bow)) {
             resetAnim()
             return
         }
@@ -151,26 +154,16 @@ public class BurnLogEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.completeBurn(task: BurnTask) {
-        objRepo.del(task.obj)
-
         val fireCoords = task.obj.coords
         val fireId = coloredFire[task.log.input.internalName] ?: "loc.fire"
-
-        locRepo.add(
-            fireCoords,
-            fireId,
-            (100..200).random(),
-            LocAngle.West,
-            LocShape.CentrepieceStraight,
-            onDespawn = {
-                val ashes = Obj.fromServer(worldClock, fireCoords, "obj.ashes", 1)
-                objRegistry.add(ashes)
-            },
-        )
+        if (!fires.light(player, task.obj, fireId, (100..200).random())) {
+            resetAnim()
+            return
+        }
 
         resetAnim()
         val xpModifier = xpMods.get(player, "stat.firemaking")
-        val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
+        val xp = (task.log.xpTenths / 10.0) * xpModifier
         statAdvance("stat.firemaking", xp)
         mes("The fire catches and the logs begin to burn.")
 
@@ -179,7 +172,7 @@ public class BurnLogEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.moveAwayFromFire(coords: CoordGrid) {
-        val dest = collision.firstStepDestination(coords, walkDirections) ?: return
+        val dest = collision.firstStepDestination(coords, WALK_DIRECTIONS) ?: return
         walk(dest)
     }
 
@@ -187,23 +180,11 @@ public class BurnLogEvents @Inject constructor(
         val log: FiremakingLogsRow,
         val obj: Obj,
         val method: BurnMethod,
+        val bow: String?,
     )
 
     enum class BurnMethod {
         Tinderbox,
         Bow,
-        ;
-
-        fun xpMultiplier(logInternalName: String): Double {
-            if (this != Bow) {
-                return 1.0
-            }
-            return when (logInternalName) {
-                "obj.camphor_logs" -> 1.361
-                "obj.ironwood_logs" -> 1.451
-                "obj.rosewood_logs" -> 1.567
-                else -> 1.0
-            }
-        }
     }
 }

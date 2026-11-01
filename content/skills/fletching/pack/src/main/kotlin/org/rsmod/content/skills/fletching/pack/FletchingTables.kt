@@ -22,13 +22,16 @@ import dev.openrune.tables.production.productionTable
  * secondary_resource. Stringing and attaching are plain item pairs and declare no tool column at
  * all; assembly pairs stock with limbs and holds a hammer.
  *
- * Recipe accounting: 411 raw wiki rows for uses_skill=Fletching reduce to the 204 below.
+ * Recipe accounting: 411 raw wiki rows for uses_skill=Fletching reduce to 204 original rows; 11 core rows are now added (215 total).
  * - 33 need a facility Forestry doesn't implement: 32 Vale-totem offerings, 1 repair bench.
  * - 1 has no output; 1 is an exact duplicate; 154 are coloured-feather duplicates that collapse
  *   into these obj.feather rows (any feather fletches bolts, darts and headless arrows).
- * - 18 are deferred one-offs, each a multi-stage assembly or a boss/quest/Forestry-gated build: the
- *   4-stage ballista chain, 6 Greenman mask variants, mith grapple + (unf), lyre, scorching bow,
- *   webweaver bow (u), bone shortbow.
+ * - Of the 18 formerly deferred rows, 11 are ordinary item recipes: all six light/heavy
+ *   ballista stages, both grapple stages, lyre stringing, webweaver bow (u), and bone shortbow.
+ *   Six Greenman styles still need persistent unlocks and a change-style interface; scorching
+ *   bow is already owned by TormentedDemonCraftingScript and must not be registered here.
+ * - Facility routes remain excluded: Vale totems, repair bench, Historian Aldo and Derse Venator.
+ *   Ballista/lyre timings are not documented by the wiki; their one-tick cadence is provisional.
  * - 9 pair a finished arrow with a Seeking headless arrow (e.g. Adamant arrow x150 + Seeking
  *   headless arrow x150). These are included, not dropped: it's the documented bulk-conversion
  *   route that turns 150 finished arrows into their seeking variant in one action.
@@ -100,8 +103,8 @@ object FletchingTables {
     fun gemTips() =
         productionRows("dbtable.fletching_gem_tips", "Cut", GEM_TIPS.withTool("obj.chisel"))
 
-    // Assembly is mixed: every crossbow and brutal-arrow row needs a hammer, but attaching
-    // wolfbone arrowtips to flighted ogre arrows needs none, so the hammer is stated per row.
+    // Assembly uses item pairs even when a separate tool is held: crossbows/brutals need a
+    // hammer, bone shortbow needs a knife, and ogre arrows need neither.
     fun assembly() = productionRows("dbtable.fletching_assembly", "Make", ASSEMBLY)
 
     private val CUTTING =
@@ -633,6 +636,42 @@ object FletchingTables {
     private val STRINGING =
         listOf(
             Recipe(
+                "dbrow.fletching_lyre_from_golden_wool",
+                listOf("obj.viking_unstrung_lyre" to 1, "obj.viking_golden_wool" to 1),
+                "obj.viking_strung_lyre",
+                1,
+                level = 25,
+                xp = 1.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_mith_grapple_from_rope",
+                listOf("obj.xbows_grapple_tip_bolt_mithril" to 1, "obj.rope" to 1),
+                "obj.xbows_grapple_tip_bolt_mithril_rope",
+                1,
+                level = 59,
+                xp = 0.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_heavy_ballista_from_monkey_tail",
+                listOf("obj.ballista_unstrung_heavy" to 1, "obj.ballista_rope" to 1),
+                "obj.heavy_ballista",
+                1,
+                level = 72,
+                xp = 600.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_light_ballista_from_monkey_tail",
+                listOf("obj.ballista_unstrung_light" to 1, "obj.ballista_rope" to 1),
+                "obj.light_ballista",
+                1,
+                level = 47,
+                xp = 300.0,
+                ticks = 1,
+            ),
+            Recipe(
                 "dbrow.fletching_shortbow_from_bow_string",
                 listOf("obj.bow_string" to 1, "obj.unstrung_shortbow" to 1),
                 "obj.shortbow",
@@ -843,6 +882,60 @@ object FletchingTables {
 
     private val ATTACHING =
         listOf(
+            Recipe(
+                "dbrow.fletching_webweaver_bow_from_craws_bow",
+                listOf("obj.wild_cave_bow_uncharged" to 1, "obj.wbr_venenatis_fang" to 1),
+                "obj.wild_cave_webweaver_uncharged",
+                1,
+                level = 85,
+                xp = 0.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_mith_grapple_unf_from_mithril_bolts",
+                listOf("obj.xbows_crossbow_bolts_mithril" to 1, "obj.xbows_grapple_tip_mithril" to 1),
+                "obj.xbows_grapple_tip_bolt_mithril",
+                1,
+                level = 59,
+                xp = 11.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_ballista_unstrung_heavy_from_incomplete",
+                listOf("obj.ballista_incomplete_heavy" to 1, "obj.ballista_spring" to 1),
+                "obj.ballista_unstrung_heavy",
+                1,
+                level = 72,
+                xp = 30.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_ballista_incomplete_heavy_from_frame",
+                listOf("obj.ballista_frame_heavy" to 1, "obj.ballista_limbs" to 1),
+                "obj.ballista_incomplete_heavy",
+                1,
+                level = 72,
+                xp = 30.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_ballista_unstrung_light_from_incomplete",
+                listOf("obj.ballista_incomplete_light" to 1, "obj.ballista_spring" to 1),
+                "obj.ballista_unstrung_light",
+                1,
+                level = 47,
+                xp = 15.0,
+                ticks = 1,
+            ),
+            Recipe(
+                "dbrow.fletching_ballista_incomplete_light_from_frame",
+                listOf("obj.ballista_frame_light" to 1, "obj.ballista_limbs" to 1),
+                "obj.ballista_incomplete_light",
+                1,
+                level = 47,
+                xp = 15.0,
+                ticks = 1,
+            ),
             Recipe(
                 "dbrow.fletching_bronze_arrow_from_bronze_arrowheads",
                 listOf("obj.bronze_arrowheads" to 15, "obj.headless_arrow" to 15),
@@ -1869,6 +1962,16 @@ object FletchingTables {
 
     private val ASSEMBLY =
         listOf(
+            Recipe(
+                "dbrow.fletching_bone_shortbow_from_yew_shortbow",
+                listOf("obj.yew_shortbow" to 1, "obj.rat_boss_spine" to 1),
+                "obj.rat_bone_bow",
+                1,
+                level = 35,
+                xp = 300.0,
+                ticks = 0,
+                tool = "obj.knife",
+            ),
             Recipe(
                 "dbrow.fletching_ogre_arrow_from_ogre_headless_arrow",
                 listOf("obj.ogre_headless_arrow" to 6, "obj.wolfbone_arrowheads" to 6),

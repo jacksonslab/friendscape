@@ -1,0 +1,35 @@
+[[params]]
+id = "param.woodcutting_outfit_bonus"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+
+[[params]]
+id = "param.woodcutting_rate_axe"
+isServerOnly = true
+type = "OBJ"
+defaultInt = 0
+
+[[params]]
+id = "param.woodcutting_charge_limit"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+
+[[params]]
+id = "param.woodcutting_nest_contents"
+isServerOnly = true
+type = "ENUM"
+defaultInt = 0
+
+[[params]]
+id = "param.woodcutting_nest_chance"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+
+[[params]]
+id = "param.woodcutting_social"
+isServerOnly = true
+type = "INT"
+defaultInt = 0

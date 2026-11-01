@@ -25,10 +25,30 @@ data class FletchingRecipe(
 )
 
 fun FletchingRecipe.hasMaterials(inv: Inventory): Boolean =
-    inputs.all { inv.count(it.obj.internalName) >= it.count }
+    inputs.all { inv.count(it.obj.internalName) >= if (isAmmunitionBatch()) 1 else it.count }
 
-fun FletchingRecipe.maxProducible(inv: Inventory): Int =
-    inputs.minOfOrNull { inv.count(it.obj.internalName) / it.count } ?: 0
+fun FletchingRecipe.maxProducible(inv: Inventory): Int {
+    if (isAmmunitionBatch()) {
+        val available = inputs.minOf { inv.count(it.obj.internalName) }
+        return if (available <= 0) 0 else (available - 1) / outputAmount + 1
+    }
+    return inputs.minOfOrNull { inv.count(it.obj.internalName) / it.count } ?: 0
+}
+
+internal fun FletchingRecipe.isAmmunitionBatch(): Boolean =
+    outputAmount in 10..15 && output.stackable && inputs.size == 2 &&
+        inputs.all { it.count == outputAmount && it.obj.stackable }
+
+internal fun FletchingRecipe.availableBatch(inv: Inventory): FletchingRecipe {
+    if (!isAmmunitionBatch()) return this
+    val amount = minOf(outputAmount, inputs.minOf { inv.count(it.obj.internalName) })
+    if (amount <= 0 || amount == outputAmount) return this
+    return copy(
+        inputs = inputs.map { Material(it.internal, amount) },
+        outputAmount = amount,
+        xp = xp * amount / outputAmount,
+    )
+}
 
 /**
  * The tool is held rather than consumed, so it is a presence check and never limits how many can be

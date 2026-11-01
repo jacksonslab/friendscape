@@ -1,0 +1,125 @@
+[[item]]
+id = "obj.ramble_lumberjack_hat"
+inherit = "obj.ramble_lumberjack_hat"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 4
+
+[[item]]
+id = "obj.ramble_lumberjack_top"
+inherit = "obj.ramble_lumberjack_top"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 8
+
+[[item]]
+id = "obj.ramble_lumberjack_legs"
+inherit = "obj.ramble_lumberjack_legs"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 6
+
+[[item]]
+id = "obj.ramble_lumberjack_boots"
+inherit = "obj.ramble_lumberjack_boots"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 2
+
+[[item]]
+id = "obj.forestry_lumberjack_hat"
+inherit = "obj.forestry_lumberjack_hat"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 4
+
+[[item]]
+id = "obj.forestry_lumberjack_top"
+inherit = "obj.forestry_lumberjack_top"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 8
+
+[[item]]
+id = "obj.forestry_lumberjack_legs"
+inherit = "obj.forestry_lumberjack_legs"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 6
+
+[[item]]
+id = "obj.forestry_lumberjack_boots"
+inherit = "obj.forestry_lumberjack_boots"
+[item.params]
+"param.xpmod_percent" = 0
+"param.woodcutting_outfit_bonus" = 2
+
+[[item]]
+id = "obj.infernal_axe"
+inherit = "obj.infernal_axe"
+contentGroup = "content.woodcutting_axe"
+[item.params]
+"param.levelrequire" = 61
+"param.skill_anim" = "seq.human_woodcutting_infernal_axe"
+"param.woodcutting_charge_limit" = 5000
+"param.woodcutting_rate_axe" = "obj.infernal_axe"
+
+[[item]]
+id = "obj.infernal_axe_empty"
+inherit = "obj.infernal_axe_empty"
+contentGroup = "content.woodcutting_axe"
+[item.params]
+"param.levelrequire" = 61
+"param.skill_anim" = "seq.human_woodcutting_infernal_axe"
+"param.woodcutting_charge_limit" = 0
+"param.woodcutting_rate_axe" = "obj.dragon_axe"
+
+[[item]]
+id = "obj.crystal_axe"
+inherit = "obj.crystal_axe"
+contentGroup = "content.woodcutting_axe"
+[item.params]
+"param.levelrequire" = 71
+"param.skill_anim" = "seq.human_woodcutting_crystal_axe"
+"param.woodcutting_charge_limit" = 20000
+"param.woodcutting_rate_axe" = "obj.crystal_axe"
+
+[[item]]
+id = "obj.crystal_axe_inactive"
+inherit = "obj.crystal_axe_inactive"
+contentGroup = "content.woodcutting_axe"
+[item.params]
+"param.levelrequire" = 71
+"param.skill_anim" = "seq.human_woodcutting_crystal_axe"
+"param.woodcutting_charge_limit" = 0
+"param.woodcutting_rate_axe" = "obj.dragon_axe"
+
+[[item]]
+id = "obj.bird_nest_seeds_jan2019"
+inherit = "obj.bird_nest_seeds_jan2019"
+[item.params]
+"param.woodcutting_nest_contents" = "enum.woodcutting_seed_nest"
+
+[[item]]
+id = "obj.bird_nest_ring"
+inherit = "obj.bird_nest_ring"
+[item.params]
+"param.woodcutting_nest_contents" = "enum.woodcutting_ring_nest"
+
+[[item]]
+id = "obj.bird_nest_egg_red"
+inherit = "obj.bird_nest_egg_red"
+[item.params]
+"param.woodcutting_nest_contents" = "enum.woodcutting_red_egg_nest"
+
+[[item]]
+id = "obj.bird_nest_egg_blue"
+inherit = "obj.bird_nest_egg_blue"
+[item.params]
+"param.woodcutting_nest_contents" = "enum.woodcutting_blue_egg_nest"
+
+[[item]]
+id = "obj.bird_nest_egg_green"
+inherit = "obj.bird_nest_egg_green"
+[item.params]
+"param.woodcutting_nest_contents" = "enum.woodcutting_green_egg_nest"

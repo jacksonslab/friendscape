@@ -33,6 +33,9 @@ prism([(4, 23), (16, 23), (16, 30), (4, 30)], GOLD)
 prism([(4, 36), (13, 36), (13, 43), (4, 43)], GOLD)
 prism([(-5, -43), (5, -43), (5, -37), (-5, -37)], TEAL, 6)
 
+ground_y = max(y for _, y, _ in vertices)
+vertices = [(x, y - ground_y, z) for x, y, z in vertices]
+
 
 def smart(value):
     return bytes([value + 64]) if -64 <= value < 64 else struct.pack('>H', value + 49152)
