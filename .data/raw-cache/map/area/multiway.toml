@@ -5299,3 +5299,16 @@ vertices = [
     [3392, 4480],
     [3136, 4480],
 ]
+
+[[area]]
+name = "Gemstone Crab (Lumbridge Swamp)"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3188, 3180],
+    [3204, 3180],
+    [3204, 3196],
+    [3188, 3196],
+]

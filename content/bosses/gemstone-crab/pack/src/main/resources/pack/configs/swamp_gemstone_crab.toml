@@ -1,5 +1,6 @@
-# The Lumbridge Swamp crab. Change `name` (and the remains' name) to rename it,
-# then rebuild the cache; players see the new name after they next log in.
+# The Lumbridge Swamp crab. Change `name` and `param.hpbar_name` (the boss bar title),
+# and the remains' name, to rename it, then rebuild the cache; players see the new name
+# after they restart their client.
 
 [[npc]]
 id = "npc.swamp_gemstone_crab"
@@ -9,6 +10,7 @@ examine = "A gemstone crab that has made its home in Lumbridge Swamp."
 moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
+"param.hpbar_name"="Jeffrey Epstein"
 "param.headbar"="headbar.health_120"
 "param.hitpoints_locked"=true
 "param.npc_com_xp_multiplier"=875
