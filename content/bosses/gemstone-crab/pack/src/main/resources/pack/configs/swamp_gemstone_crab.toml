@@ -6,7 +6,7 @@
 id = "npc.swamp_gemstone_crab"
 inherit = "npc.gemstone_crab"
 name = "Danny DeVito"
-examine = "Fill me up with cream. Turn me into cannoli."
+examine = "Fill me up with cream. Turn me into a cannoli."
 moveRestrict = "NoMove"
 wanderRange = 0
 models = ["models.devito_boss"]
