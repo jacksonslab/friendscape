@@ -1,0 +1,12 @@
+[[area]]
+name = "Ardougne (thieving diary bonus)"
+area_id = "area.thieving_ardougne"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2432, 3264],
+    [2688, 3264],
+    [2688, 3352],
+    [2432, 3352],
+]
