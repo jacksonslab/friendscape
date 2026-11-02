@@ -395,6 +395,10 @@ npc = "npc.speedrunning_shop"
 coords = "0_50_53_20_32"
 
 [[spawn]]
+npc = "npc.events_shop"
+coords = "0_50_53_6_44"
+
+[[spawn]]
 npc = "npc.star_timer_npc"
 coords = "0_51_52_15_32"
 
