@@ -14,8 +14,19 @@ class IdleLogoutTest {
     fun GameTestState.`idle logout closes the client as kicked`() =
         runInjectedGameTest(IdleHandler::class) { idle ->
             advanceUntil({ !player.isLogoutBlocked() })
+            player.lastInputMapClock = player.currentMapClock - THIRTY_MINUTES
             client.queue(idle, Idle)
             assertEquals(listOf(KICKED), logoutReasons())
+        }
+
+    @Test
+    fun GameTestState.`idle report within thirty minutes of input keeps the player in`() =
+        runInjectedGameTest(IdleHandler::class) { idle ->
+            advanceUntil({ !player.isLogoutBlocked() })
+            player.lastInputMapClock = player.currentMapClock - THIRTY_MINUTES + 1
+            client.queue(idle, Idle)
+            advance(2)
+            assertFalse(player.loggingOut)
         }
 
     @Test
@@ -30,6 +41,7 @@ class IdleLogoutTest {
         runInjectedGameTest(IdleHandler::class) { idle ->
             advanceUntil({ !player.isLogoutBlocked() })
             player.preventLogoutUntil = Int.MAX_VALUE
+            player.lastInputMapClock = player.currentMapClock - THIRTY_MINUTES
             client.queue(idle, Idle)
             advance(2)
             assertFalse(player.loggingOut)
@@ -47,5 +59,6 @@ class IdleLogoutTest {
     private companion object {
         const val REQUESTED = 0
         const val KICKED = 1
+        const val THIRTY_MINUTES = 3000
     }
 }

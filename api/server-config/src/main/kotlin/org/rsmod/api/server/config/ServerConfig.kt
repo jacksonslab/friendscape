@@ -55,6 +55,8 @@ public data class GameplayConfig(
     val levelUpPopups: Boolean = false,
     @JsonProperty("idle-logout")
     val idleLogout: Boolean = true,
+    @JsonProperty("idle-logout-minutes")
+    val idleLogoutMinutes: Int = 30,
     @JsonProperty("home-teleport-cooldown")
     val homeTeleportCooldown: Int = 30,
 )

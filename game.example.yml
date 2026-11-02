@@ -31,6 +31,8 @@ gameplay:
   # Log players out when their client reports them idle (its AFK timer, as on live). false keeps
   # idle players logged in.
   idle-logout: true
+  # Minutes without a click, key or chat before an idle client is logged out.
+  idle-logout-minutes: 30
   # Minutes between home teleport casts (Lumbridge, Edgeville, Arceuus), shared by all of them. 30
   # as on live; 0 removes the cooldown.
   home-teleport-cooldown: 30

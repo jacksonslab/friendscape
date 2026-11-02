@@ -43,12 +43,14 @@ import net.rsprot.protocol.game.incoming.social.IgnoreListAdd
 import net.rsprot.protocol.game.incoming.social.IgnoreListDel
 import net.rsprot.protocol.message.codec.incoming.GameMessageConsumerRepositoryBuilder
 import net.rsprot.protocol.message.codec.incoming.provider.DefaultGameMessageConsumerRepositoryProvider
+import net.rsprot.protocol.message.IncomingGameMessage
 import org.rsmod.api.net.rsprot.handlers.ClickWorldMapHandler
 import org.rsmod.api.net.rsprot.handlers.ClientCheatHandler
 import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListAddHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListDeleteHandler
 import org.rsmod.api.net.rsprot.handlers.IdleHandler
+import org.rsmod.api.net.rsprot.handlers.MessageHandler
 import org.rsmod.api.net.rsprot.handlers.If1ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonDHandler
@@ -129,43 +131,49 @@ constructor(
     fun get(): DefaultGameMessageConsumerRepositoryProvider<Player> {
         val builder = GameMessageConsumerRepositoryBuilder<Player>()
         builder.addListener(WindowStatus::class.java, windowStatus)
-        builder.addListener(MoveGameClick::class.java, moveGameClick)
-        builder.addListener(MoveMinimapClick::class.java, moveMinimapClick)
-        builder.addListener(OpLocV2::class.java, opLoc)
-        builder.addListener(OpLocT::class.java, opLocT)
-        builder.addListener(OpLoc6::class.java, opLoc6)
-        builder.addListener(ClientCheat::class.java, clientCheat)
-        builder.addListener(ClickWorldMap::class.java, clickWorldMap)
-        builder.addListener(OpNpcV2::class.java, opNpc)
-        builder.addListener(OpNpcT::class.java, opNpcT)
-        builder.addListener(OpNpc6::class.java, opNpc6)
-        builder.addListener(OpPlayer::class.java, opPlayer)
-        builder.addListener(OpPlayerT::class.java, opPlayerT)
-        builder.addListener(MessagePublic::class.java, messagePublic)
-        builder.addListener(MessagePrivate::class.java, messagePrivate)
-        builder.addListener(FriendListAdd::class.java, friendListAdd)
-        builder.addListener(FriendListDel::class.java, friendListDelete)
-        builder.addListener(IgnoreListAdd::class.java, ignoreListAdd)
-        builder.addListener(IgnoreListDel::class.java, ignoreListDelete)
-        builder.addListener(SetChatFilterSettings::class.java, setChatFilterSettings)
-        builder.addListener(If1Button::class.java, if1Button)
-        builder.addListener(SetHeading::class.java, setHeading)
-        builder.addListener(If3Button::class.java, if3Button)
-        builder.addListener(CloseModal::class.java, closeModal)
+        builder.addListener(MoveGameClick::class.java, input(moveGameClick))
+        builder.addListener(MoveMinimapClick::class.java, input(moveMinimapClick))
+        builder.addListener(OpLocV2::class.java, input(opLoc))
+        builder.addListener(OpLocT::class.java, input(opLocT))
+        builder.addListener(OpLoc6::class.java, input(opLoc6))
+        builder.addListener(ClientCheat::class.java, input(clientCheat))
+        builder.addListener(ClickWorldMap::class.java, input(clickWorldMap))
+        builder.addListener(OpNpcV2::class.java, input(opNpc))
+        builder.addListener(OpNpcT::class.java, input(opNpcT))
+        builder.addListener(OpNpc6::class.java, input(opNpc6))
+        builder.addListener(OpPlayer::class.java, input(opPlayer))
+        builder.addListener(OpPlayerT::class.java, input(opPlayerT))
+        builder.addListener(MessagePublic::class.java, input(messagePublic))
+        builder.addListener(MessagePrivate::class.java, input(messagePrivate))
+        builder.addListener(FriendListAdd::class.java, input(friendListAdd))
+        builder.addListener(FriendListDel::class.java, input(friendListDelete))
+        builder.addListener(IgnoreListAdd::class.java, input(ignoreListAdd))
+        builder.addListener(IgnoreListDel::class.java, input(ignoreListDelete))
+        builder.addListener(SetChatFilterSettings::class.java, input(setChatFilterSettings))
+        builder.addListener(If1Button::class.java, input(if1Button))
+        builder.addListener(SetHeading::class.java, input(setHeading))
+        builder.addListener(If3Button::class.java, input(if3Button))
+        builder.addListener(CloseModal::class.java, input(closeModal))
         builder.addListener(Idle::class.java, idle)
-        builder.addListener(ResumePauseButton::class.java, resumePauseButton)
-        builder.addListener(OpObjV2::class.java, opObj)
-        builder.addListener(OpObj6::class.java, opObj6)
-        builder.addListener(OpObjT::class.java, opObjT)
-        builder.addListener(IfSubOp::class.java, ifSubOp)
-        builder.addListener(ResumePCountDialog::class.java, resumePCountDialog)
-        builder.addListener(ResumePNameDialog::class.java, resumePNameDialog)
-        builder.addListener(ResumePStringDialog::class.java, resumePStringDialog)
-        builder.addListener(ResumePObjDialog::class.java, resumePObjDialog)
-        builder.addListener(IfButtonD::class.java, ifButtonD)
-        builder.addListener(IfButtonT::class.java, ifButtonT)
+        builder.addListener(ResumePauseButton::class.java, input(resumePauseButton))
+        builder.addListener(OpObjV2::class.java, input(opObj))
+        builder.addListener(OpObj6::class.java, input(opObj6))
+        builder.addListener(OpObjT::class.java, input(opObjT))
+        builder.addListener(IfSubOp::class.java, input(ifSubOp))
+        builder.addListener(ResumePCountDialog::class.java, input(resumePCountDialog))
+        builder.addListener(ResumePNameDialog::class.java, input(resumePNameDialog))
+        builder.addListener(ResumePStringDialog::class.java, input(resumePStringDialog))
+        builder.addListener(ResumePObjDialog::class.java, input(resumePObjDialog))
+        builder.addListener(IfButtonD::class.java, input(ifButtonD))
+        builder.addListener(IfButtonT::class.java, input(ifButtonT))
         builder.addListener(MapBuildComplete::class.java, mapBuildComplete)
         builder.addListener(IfScriptTrigger::class.java, scriptTriggerHandler)
         return DefaultGameMessageConsumerRepositoryProvider(builder.build())
     }
+
+    private fun <T : IncomingGameMessage> input(handler: MessageHandler<T>): MessageHandler<T> =
+        MessageHandler { player, message ->
+            player.lastInputMapClock = player.currentMapClock
+            handler.handle(player, message)
+        }
 }
