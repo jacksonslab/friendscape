@@ -16,6 +16,7 @@ friendscape_sailing_charted_8 = 62968
 friendscape_sailing_charted_9 = 62969
 friendscape_sailing_charted_10 = 62970
 friendscape_sailing_charted_11 = 62971
+friendscape_sailing_task_board = 62972
 
 [gamevals.enum]
 friendscape_charting_first_xp = 5868
@@ -23,6 +24,7 @@ friendscape_courier_task_xp = 62700
 friendscape_port_bag_tier_xp = 62701
 friendscape_port_coin_bag_min = 62702
 friendscape_port_coin_bag_max = 62703
+friendscape_bounty_task_xp = 62704
 
 [gamevals.dbtable]
 friendscape_sailing_observations = 59400
@@ -199,3 +201,7 @@ friendscape_sailing_observation_237 = 58110
 friendscape_sailing_observation_238 = 58111
 friendscape_sailing_observation_239 = 58112
 friendscape_sailing_observation_240 = 58113
+
+[gamevals.clientscript]
+port_task_info_draw = 8900
+port_task_board_init = 8912

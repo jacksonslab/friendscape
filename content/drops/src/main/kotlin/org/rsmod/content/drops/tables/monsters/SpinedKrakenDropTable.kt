@@ -46,11 +46,6 @@ public val spinedKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         1 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 10 weight "obj.sailing_spined_kraken_ink_sac" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 2 weight "obj.sailing_spined_kraken_tentacle" count 1
     },
 )
 

@@ -53,11 +53,6 @@ public val vampyreKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTab
         1 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 10 weight "obj.sailing_vampyre_kraken_ink_sac" count 1 condition { player ->
-            // Drops Need Manual: Tentacles and ink sacks are only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 2 weight "obj.sailing_vampyre_kraken_tentacle" count 1
         1 outOf 142 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }

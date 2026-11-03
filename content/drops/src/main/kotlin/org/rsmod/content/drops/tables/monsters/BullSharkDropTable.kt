@@ -43,11 +43,6 @@ public val bullSharkDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         2 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 3 weight "obj.sailing_bull_shark_jaw" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_bull_shark_liver" count 1
         1 outOf 95 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
         }

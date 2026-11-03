@@ -44,11 +44,6 @@ public val butterflyRayDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         2695 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 10 weight "obj.sailing_butterfly_ray_skin" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 2 weight "obj.sailing_butterfly_ray_fin" count 1
         1 outOf 80 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
         }

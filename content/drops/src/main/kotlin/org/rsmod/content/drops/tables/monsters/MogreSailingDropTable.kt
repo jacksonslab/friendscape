@@ -41,10 +41,5 @@ public val mogreSailingDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         20 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 3 weight "obj.sailing_sea_mogre_mace" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_sea_mogre_head" count 1
     },
 )

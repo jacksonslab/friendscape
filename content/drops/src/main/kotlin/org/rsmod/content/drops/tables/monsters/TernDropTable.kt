@@ -43,11 +43,6 @@ public val ternDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         5 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 3 weight "obj.sailing_tern_feather" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_tern_beak" count 1
         1 outOf 118 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
         }

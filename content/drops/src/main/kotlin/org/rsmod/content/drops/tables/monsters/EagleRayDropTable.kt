@@ -41,11 +41,6 @@ public val eagleRayDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         692 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 10 weight "obj.sailing_eagle_ray_skin" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 2 weight "obj.sailing_eagle_ray_fin" count 1
         1 outOf 71 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
         }

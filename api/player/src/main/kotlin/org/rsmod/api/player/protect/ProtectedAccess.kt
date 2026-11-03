@@ -2968,6 +2968,20 @@ public class ProtectedAccess(
     }
 
     /**
+     * Suspends until the client resumes a count dialog that an open interface's own clientscripts
+     * raise through `resume_countdialog`, as Jagex's modal popups do for their buttons. Unlike
+     * [countDialog], nothing is opened in the chatbox.
+     *
+     * @throws ProtectedAccessLostException if the player could not retain protected access after
+     *   the coroutine suspension.
+     */
+    public suspend fun interfaceCountResume(): Int {
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
+        val input = coroutine.pause(ResumePCountDialogInput::class)
+        return resumeWithMainModalProtectedAccess(input.count, modal)
+    }
+
+    /**
      * Opens a list selection modal, suspending until the [player] selects one of the [choices].
      *
      * @param hotkeys If `true` the menu interface will allow number keys to be used to select a

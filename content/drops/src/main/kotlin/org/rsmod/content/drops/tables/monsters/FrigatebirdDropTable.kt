@@ -38,11 +38,6 @@ public val frigatebirdDropTable: RSDropTable<Player, DropRollItem> = RSDropTable
         410 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 3 weight "obj.sailing_frigatebird_feather" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_frigatebird_beak" count 1
         1 outOf 161 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }

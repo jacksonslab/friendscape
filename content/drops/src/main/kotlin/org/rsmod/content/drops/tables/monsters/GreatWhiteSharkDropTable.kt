@@ -49,11 +49,6 @@ public val greatWhiteSharkDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 2 weight "obj.sailing_great_white_shark_jaw" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_great_white_shark_liver" count 1
         1 outOf 190 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }

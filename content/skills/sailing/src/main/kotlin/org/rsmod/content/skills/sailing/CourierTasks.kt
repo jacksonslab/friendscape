@@ -7,17 +7,27 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.PortTaskRow
 import org.rsmod.game.entity.Player
 
-class CourierTask(row: PortTaskRow, val xp: Int) {
-    val id: Int = row.taskId
-    val name: String = row.name
-    val level: Int = row.levelRequired
-    val board: Int = row.startingPort?.rowId ?: row.endingPort.rowId
+sealed interface PortTask {
+    val id: Int
+    val rowId: Int
+    val name: String
+    val level: Int
+    val board: Int
+    val cancellable: Boolean
+}
+
+class CourierTask(row: PortTaskRow, val xp: Int) : PortTask {
+    override val id: Int = row.taskId
+    override val rowId: Int = row.rowId
+    override val name: String = row.name
+    override val level: Int = row.levelRequired
+    override val board: Int = row.startingPort?.rowId ?: row.endingPort.rowId
     val cargoPort: Int = row.cargoPort?.rowId ?: board
     val destination: Int = row.endingPort.rowId
     val crate: ItemServerType = row.cargo.first().t0
     val crates: Int = row.cargo.first().t1
     val flavour: String = row.flavourText
-    val cancellable: Boolean = row.cancellable != false
+    override val cancellable: Boolean = row.cancellable != false
 
     val coinBagTier: Int
         get() = (1..MAX_BAG_TIER).count { tier -> xp >= (friendscape_port_bag_tier_xp[tier] ?: Int.MAX_VALUE) }
@@ -53,6 +63,9 @@ object CourierTasks {
 data class TaskSlot(val index: Int, val taskId: Int, val taken: Int, val delivered: Int) {
     val task: CourierTask?
         get() = CourierTasks[taskId]
+
+    val bounty: BountyTask?
+        get() = BountyTasks[taskId]
 }
 
 /** Courier progress kept in Jagex's own `port_task_slot_*` varbits. */

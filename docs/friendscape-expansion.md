@@ -50,6 +50,9 @@ leaving the tutorial. Item metadata that cannot safely transfer is rejected.
 4. Coverage and release: cache-driven content catalog, Ironman/group behavior,
    exploit checks and complete client playthroughs.
 
+Current Sailing status, including the native port task board and bounty task plumbing, is kept
+in `docs/sailing-development.md`.
+
 Sailing is being developed separately in `openrune-sailing`, branch
 `sailing-stage-1`, from the same live baseline. OpenRune PR 182 supplied the
 initial world-entity protocol and helm implementation. It has been adapted to

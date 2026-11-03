@@ -1,8 +1,11 @@
 package org.rsmod.content.skills.sailing
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import org.rsmod.api.enums.FriendscapePortCoinBagEnums.friendscape_port_coin_bag_max
 import org.rsmod.api.enums.FriendscapePortCoinBagEnums.friendscape_port_coin_bag_min
@@ -12,10 +15,13 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
+import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -28,12 +34,17 @@ constructor(
     private val boats: BoatManager,
     private val objRepo: ObjRepository,
     private val xpMods: XpModifiers,
-    private val shipbuilding: Shipbuilding,
+    private val bounties: BountyRewards,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (port in Ports.ALL) {
-            port.noticeBoard?.let { board -> onOpLoc1(locName(board)) { noticeBoard(it.loc) } }
+            port.noticeBoard?.let { board -> onOpLoc1(locName(board)) { openBoard(it.loc) } }
+            port.portMaster?.let { master ->
+                onOpNpc3(npcName(master)) { claimBounties() }
+                onOpNpc4(npcName(master)) { cancelTask() }
+            }
         }
+        onIfModalButton("component.port_task_board:container") { selectNotice(it.comsub) }
         onOpLoc1("loc.dock_loading_bay_ledger_table_withdraw") { takeCargo(it.loc, TakeMode.First) }
         onOpLoc2("loc.dock_loading_bay_ledger_table_withdraw") { takeCargo(it.loc, TakeMode.Last) }
         onOpLoc3("loc.dock_loading_bay_ledger_table_withdraw") { takeCargo(it.loc, TakeMode.Any) }
@@ -51,88 +62,117 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.noticeBoard(loc: BoundLocInfo) {
+    private fun ProtectedAccess.openBoard(loc: BoundLocInfo) {
         val port = Ports.byNoticeBoard(loc.id) ?: return
-        val level = statBase(STAT_SAILING)
-        val active = TaskSlots.active(player)
-        val capacity = TaskSlots.capacity(level)
-        val action =
-            choose(
-                listOf(
-                    "Take a new courier task",
-                    "Review my tasks (${active.size}/$capacity)",
-                    "Cancel a task",
-                    "Commission a boat",
-                    "Sea charting log",
-                ),
-                listOf(BoardAction.Take, BoardAction.Review, BoardAction.Cancel, BoardAction.Shipwright, BoardAction.Charting),
-                title = "${port.name} notice board",
-            ) ?: return
-        when (action) {
-            BoardAction.Take -> takeTask(port, level)
-            BoardAction.Review -> reviewTasks()
-            BoardAction.Cancel -> cancelTask()
-            BoardAction.Shipwright -> shipbuilding.commission(this)
-            BoardAction.Charting -> CaptainLog.open(this)
-        }
+        player.taskBoardPort = port.dockRowId
+        ifOpenMainModal("interface.port_task_board")
+        ifSetEvents(
+            "component.port_task_board:container",
+            0 until PortTaskBoard.NOTICES * PortTaskBoard.COMPONENTS_PER_NOTICE,
+            IfEvent.Op1,
+        )
+        drawBoard(port)
     }
 
-    private suspend fun ProtectedAccess.takeTask(port: Port, level: Int) {
+    private fun ProtectedAccess.drawBoard(port: Port) {
+        val rows = notices(port).map { it.rowId }
+        val args = Array<Any>(PortTaskBoard.NOTICES) { rows.getOrElse(it) { -1 } }
+        runClientScript(BOARD_INIT.asRSCM(RSCMType.CLIENTSCRIPT), *args)
+    }
+
+    private fun ProtectedAccess.notices(port: Port): List<PortTask> =
+        PortTaskBoard.notices(port, statBase(STAT_SAILING), TaskSlots.active(player).map { it.taskId }.toSet())
+
+    private suspend fun ProtectedAccess.selectNotice(comsub: Int) {
+        val port = Ports.byDock(player.taskBoardPort) ?: return
+        val index = PortTaskBoard.noticeIndex(comsub) ?: return
+        val task = notices(port).getOrNull(index) ?: return
+        ifOpenSub("interface.port_task_info", BOARD_POPUP, IfSubType.Overlay)
+        ifSetEvents("component.port_task_info:select", -1..-1, IfEvent.Op1)
+        ifSetEvents("component.port_task_info:cancel", -1..-1, IfEvent.Op1)
+        runClientScript(INFO_DRAW.asRSCM(RSCMType.CLIENTSCRIPT), BOARD_POPUP.asRSCM(RSCMType.COMPONENT), task.rowId, -1, -1)
+        val confirmed = interfaceCountResume() == 1
+        ifCloseSub("interface.port_task_info")
+        if (!confirmed) {
+            return
+        }
+        val held = TaskSlots.active(player).firstOrNull { it.taskId == task.id }
+        if (held != null) {
+            cancel(held)
+        } else {
+            accept(task)
+        }
+        drawBoard(port)
+    }
+
+    private fun ProtectedAccess.accept(task: PortTask) {
+        val level = statBase(STAT_SAILING)
+        if (task.level > level) {
+            mes("You need a Sailing level of ${task.level} to take on the ${task.name}.")
+            return
+        }
         val slot = TaskSlots.freeSlot(player, level)
         if (slot == null) {
-            mesbox("You can't take on any more port tasks right now. Complete or cancel one first.")
-            return
-        }
-        val held = TaskSlots.active(player).map { it.taskId }.toSet()
-        val offers =
-            CourierTasks.offeredAt(port)
-                .filter { it.level <= level && it.id !in held }
-                .sortedByDescending { it.level }
-                .take(MAX_OFFERS)
-        if (offers.isEmpty()) {
-            mesbox("There are no courier tasks on this board you can take at your Sailing level.")
-            return
-        }
-        val task = choose(offers.map(::describe), offers, title = "Choose a courier task") ?: return
-        if (TaskSlots.get(player, slot).taskId != 0 || task.id in TaskSlots.active(player).map { it.taskId }) {
+            mes("You can't take on any more port tasks right now. Complete or cancel one first.")
             return
         }
         TaskSlots.set(player, TaskSlot(slot, task.id, taken = 0, delivered = 0))
-        mesbox(task.flavour)
-        mes("Collect ${crateWord(task.crates)} from the ledger table at ${portName(task.cargoPort)}.")
+        when (task) {
+            is CourierTask ->
+                mes("Collect ${crateWord(task.crates)} from the ledger table at ${portName(task.cargoPort)}.")
+            is BountyTask ->
+                mes(
+                    "Bring ${task.amount} x ${task.item.name.lowercase()} from " +
+                        "${ServerCacheManager.getNpc(task.target)?.name?.lowercase() ?: "sea creatures"} " +
+                        "to any port master.",
+                )
+        }
     }
 
-    private suspend fun ProtectedAccess.reviewTasks() {
-        val active = TaskSlots.active(player)
-        if (active.isEmpty()) {
-            mesbox("You don't have any port tasks.")
+    private fun ProtectedAccess.cancel(slot: TaskSlot) {
+        val task: PortTask = slot.task ?: slot.bounty ?: return
+        if (!task.cancellable) {
+            mes("You can't cancel the ${task.name}.")
             return
         }
-        for (slot in active) {
-            val task = slot.task ?: continue
-            mes(
-                "${task.name}: ${slot.delivered}/${task.crates} delivered, ${slot.taken - slot.delivered} in transit. " +
-                    "Collect at ${portName(task.cargoPort)}, deliver to ${portName(task.destination)}.",
-            )
+        if (TaskSlots.get(player, slot.index).taskId != task.id) {
+            return
+        }
+        if (task is CourierTask) {
+            removeCrates(task)
+        }
+        TaskSlots.clear(player, slot.index)
+        cargo.refreshCarrying(player)
+        mes("You cancel the ${task.name}.")
+    }
+
+    private fun ProtectedAccess.claimBounties() {
+        if (bounties.claim(this) > 0) {
+            return
+        }
+        val held = TaskSlots.active(player).mapNotNull { it.bounty }
+        if (held.isEmpty()) {
+            mes("You don't have any bounty tasks to hand in.")
+            return
+        }
+        for (bounty in held) {
+            mes("${bounty.name}: ${inv.count(bounty.item.internalName)}/${bounty.amount} ${bounty.item.name.lowercase()} collected.")
         }
     }
 
     private suspend fun ProtectedAccess.cancelTask() {
-        val active = TaskSlots.active(player).filter { it.task?.cancellable == true }
+        val active = TaskSlots.active(player).filter { (it.task ?: it.bounty)?.cancellable == true }
         if (active.isEmpty()) {
             mes("You don't have any port tasks you can cancel.")
             return
         }
-        val slot = choose(active.map { it.task!!.name }, active, title = "Cancel which task?") ?: return
-        val task = slot.task ?: return
-        val confirmed = choice2("Yes, cancel it.", true, "No, keep it.", false, title = "Cancel ${task.name}?")
-        if (!confirmed || TaskSlots.get(player, slot.index).taskId != task.id) {
-            return
+        val names = active.map { (it.task ?: it.bounty)!!.name }
+        val slot = choose(names, active, title = "Cancel which task?") ?: return
+        val name = (slot.task ?: slot.bounty)?.name ?: return
+        val confirmed = choice2("Yes, cancel it.", true, "No, keep it.", false, title = "Cancel $name?")
+        if (confirmed) {
+            cancel(slot)
         }
-        removeCrates(task)
-        TaskSlots.clear(player, slot.index)
-        cargo.refreshCarrying(player)
-        mes("You cancel the ${task.name}.")
     }
 
     private fun ProtectedAccess.removeCrates(task: CourierTask) {
@@ -300,9 +340,6 @@ constructor(
         mes("You open the coin bag and find $coins coins.")
     }
 
-    private fun describe(task: CourierTask): String =
-        "${task.name} (lvl ${task.level}, ${task.xp} xp): ${portName(task.cargoPort)} to ${portName(task.destination)}"
-
     private fun portName(dockRowId: Int): String = Ports.byDock(dockRowId)?.name ?: "another port"
 
     private fun crateWord(count: Int): String = if (count == 1) "a crate" else "$count crates"
@@ -314,14 +351,6 @@ constructor(
             .map { locName(it[0]) to locName(it[1]) }
             .distinct()
 
-    private enum class BoardAction {
-        Take,
-        Review,
-        Cancel,
-        Shipwright,
-        Charting,
-    }
-
     private enum class TakeMode {
         First,
         Last,
@@ -329,12 +358,17 @@ constructor(
     }
 
     private companion object {
-        private const val MAX_OFFERS = 12
         private const val MAX_BAG_TIER = 4
 
         private fun coinBag(tier: Int): String = "obj.port_task_lootsack_t${tier}_coins"
 
+        private const val BOARD_INIT = "clientscript.port_task_board_init"
+        private const val INFO_DRAW = "clientscript.port_task_info_draw"
+        private const val BOARD_POPUP = "component.port_task_board:popup"
+
         private fun locName(id: Int): String = RSCM.getReverseMapping(RSCMType.LOC, id)
+
+        private fun npcName(id: Int): String = RSCM.getReverseMapping(RSCMType.NPC, id)
 
         private fun objName(id: Int): String = RSCM.getReverseMapping(RSCMType.OBJ, id)
     }

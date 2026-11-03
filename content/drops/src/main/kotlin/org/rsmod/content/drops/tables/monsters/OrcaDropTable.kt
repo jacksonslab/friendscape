@@ -52,11 +52,6 @@ public val orcaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         3 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 2 weight "obj.sailing_orca_blubber" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_orca_teeth" count 1
         1 outOf 123 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }

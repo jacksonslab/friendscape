@@ -61,7 +61,29 @@ constructor(
             requiredRights = Rights.ADMINISTRATOR
             cheat(::exitBoat)
         }
+        onCommand("bountytask") {
+            desc = "Take a Sailing bounty task by task id, ignoring the board"
+            requiredRights = Rights.ADMINISTRATOR
+            invalidArgs = "Use as ::bountytask taskId (ex: ::bountytask 438)"
+            cheat(::bountyTask)
+        }
     }
+
+    private fun bountyTask(cheat: Cheat) =
+        with(cheat) {
+            val bounty = args.getOrNull(0)?.toIntOrNull()?.let { BountyTasks[it] }
+            if (bounty == null) {
+                player.mes("No bounty task with that id.")
+                return@with
+            }
+            val slot = (0 until TaskSlots.COUNT).firstOrNull { TaskSlots.get(player, it).taskId == 0 }
+            if (slot == null) {
+                player.mes("All five port task slots are full.")
+                return@with
+            }
+            TaskSlots.set(player, TaskSlot(slot, bounty.id, taken = 0, delivered = 0))
+            player.mes("Took the ${bounty.name}: ${bounty.amount} x ${bounty.item.name}, 1/${bounty.rarity} per kill.")
+        }
 
     private fun spawnBoat(cheat: Cheat) =
         with(cheat) {

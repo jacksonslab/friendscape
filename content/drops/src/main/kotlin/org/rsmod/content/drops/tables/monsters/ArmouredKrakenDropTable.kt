@@ -77,11 +77,6 @@ public val armouredKrakenDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
         1 outOf 2380 separate "obj.rosewood_seed" count 1
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 2 weight "obj.sailing_armoured_kraken_tentacle" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_armoured_kraken_ink_sac" count 1
         1 outOf 152 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }

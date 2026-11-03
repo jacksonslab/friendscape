@@ -11,6 +11,9 @@ object SailingPortsTable {
     const val NOTICE_BOARD = 2
     const val LEDGER = 3
     const val GANGPLANK_COORD = 4
+    const val PORT_MASTER = 5
+
+    private val PORT_MASTER_SLUGS = mapOf("port_piscarilius" to "port_piscarillius")
 
     fun ports() = dbTable("dbtable.friendscape_sailing_ports", serverOnly = true) {
         column("dock", DOCK, VarType.DBROW)
@@ -18,6 +21,7 @@ object SailingPortsTable {
         column("notice_board", NOTICE_BOARD, VarType.LOC)
         column("ledger", LEDGER, VarType.LOC)
         column("gangplank_coord", GANGPLANK_COORD, VarType.COORDGRID)
+        column("port_master", PORT_MASTER, VarType.NPC)
 
         fun port(slug: String, board: String?, ledger: String?, plankX: Int, plankZ: Int) {
             row("dbrow.friendscape_sailing_port_$slug") {
@@ -26,6 +30,7 @@ object SailingPortsTable {
                 board?.let { columnRSCM(NOTICE_BOARD, "loc.port_task_board_$it") }
                 ledger?.let { columnRSCM(LEDGER, "loc.dock_loading_bay_ledger_table_$it") }
                 columnCoord(GANGPLANK_COORD, CoordGrid(plankX, plankZ, 0))
+                ledger?.let { columnRSCM(PORT_MASTER, "npc.port_task_master_${PORT_MASTER_SLUGS[it] ?: it}") }
             }
         }
 

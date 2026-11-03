@@ -26,6 +26,9 @@ class Port(private val row: FriendscapeSailingPortsRow) {
     val ledger: Int?
         get() = row.ledger?.id
 
+    val portMaster: Int?
+        get() = row.portMaster?.id
+
     val gangplankCoord: CoordGrid
         get() = row.gangplankCoord
 

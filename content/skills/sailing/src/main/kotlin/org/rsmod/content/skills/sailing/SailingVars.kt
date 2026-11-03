@@ -24,6 +24,9 @@ var Player.carryingCargo by intVarBit("varbit.sailing_carrying_cargo")
 
 var Player.portTasksCompleted by intVarp("varp.port_tasks_completed")
 
+/** Dock row id of the notice board the player has open. */
+var Player.taskBoardPort by intVarp("varp.friendscape_sailing_task_board")
+
 fun Player.ownsBoat(type: BoatType): Boolean =
     type.typeId == RAFT_TYPE_ID || (sailingBoatsOwned and (1 shl type.typeId)) != 0
 

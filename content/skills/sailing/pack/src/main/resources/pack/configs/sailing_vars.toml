@@ -99,3 +99,9 @@ id = "varp.friendscape_sailing_charted_11"
 isServerOnly = true
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+id = "varp.friendscape_sailing_task_board"
+isServerOnly = true
+scope = "Temp"
+transmit = "Never"

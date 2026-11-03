@@ -49,11 +49,6 @@ public val narwhalDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         11 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 2 weight "obj.sailing_narwhal_blubber" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
-        1 outOf 10 weight "obj.sailing_narwhal_tusk" count 1
         1 outOf 142 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }

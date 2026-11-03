@@ -58,10 +58,6 @@ public val mantaRayMonsterDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 outOf 264 separate "obj.unidentified_torstol" count 2..3
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 10 weight "obj.sailing_manta_ray_skin" count 1 condition { player ->
-            // Drops Need Manual: Only dropped while on an applicable bounty task.
-             true
-        }
         1 outOf 114 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_clue_hard_map001")
         }
