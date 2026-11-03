@@ -69,4 +69,4 @@ cache-driven boat configuration are completed. No Sailing XP/training is shipped
 - Produce a tested release with database backup and rollback before deployment.
 
 Generated `.data/gamevals` changes are build output and should not be committed.
-All local builds use Java 21 at `C:/Users/jhowa/tools/jdk-21.0.12.1+1`.
+All local builds use Java 21.

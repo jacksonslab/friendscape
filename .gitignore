@@ -59,3 +59,22 @@ logs/
 .claude/settings.local.json
 .mcp.json
 /bench
+
+### Secrets and local config (never commit) ###
+.env
+.env.*
+*.env
+!*.example.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+local.properties
+.claude/
+*.sql.gz
+*.dump
+*.bak

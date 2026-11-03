@@ -3,12 +3,10 @@ name: Content progress
 permissions:
   contents: write
 
-# Runs on a 4-day schedule rather than on every push, so the report commit no
-# longer lands on top of each content change. The run is skipped entirely when
-# nothing touching the watched paths has landed since the last report.
+# Manual only, so the report commit never lands on top of each content change.
+# The run is skipped entirely when nothing touching the watched paths has landed
+# since the last report.
 on:
-  schedule:
-    - cron: "0 8 */4 * *"
   workflow_dispatch:
     inputs:
       fetch_wiki:

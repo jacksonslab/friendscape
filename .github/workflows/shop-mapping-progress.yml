@@ -4,15 +4,7 @@ permissions:
   issues: write
 
 on:
-  push:
-    paths:
-      - "tools/wiki-dumping/src/main/resources/shopmappings.csv"
-      - "tools/wiki-dumping/scripts/shop_progress_report.py"
-      - ".data/raw-cache/server/shops/**"
-      - ".github/workflows/shop-mapping-progress.yml"
   workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * 1"
 
 jobs:
   update-issue:

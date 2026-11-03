@@ -100,9 +100,8 @@ were also checked directly against the installed production package and cache.
 
 The combined release was deployed to production on November 1, 2026, after a
 successful local boot and database backup. Production reached ready and its
-installed package/cache checksums match the release manifest. Rollback snapshot:
-`/srv/osrs/releases/20261101-071641-devito`. Player saves, RSA keys and production
-configuration were preserved.
+installed package/cache checksums match the release manifest, and a rollback
+snapshot was taken.
 
 Gameplay verification in the live client remains pending. Restart the client,
 then verify idle, facing, punch/hit timing, death-to-remains continuity, lifecycle
