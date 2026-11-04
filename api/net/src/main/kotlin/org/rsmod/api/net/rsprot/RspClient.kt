@@ -13,7 +13,7 @@ import org.rsmod.game.entity.Player
 private typealias Service = NetworkService<Player>
 
 @OptIn(ExperimentalUnsignedTypes::class)
-class RspClient(private val session: Session<Player>, private val infos: Infos) :
+class RspClient(var session: Session<Player>, val infos: Infos) :
     Client<NetworkService<Player>, OutgoingGameMessage> {
     override fun close() {
         session.requestClose()

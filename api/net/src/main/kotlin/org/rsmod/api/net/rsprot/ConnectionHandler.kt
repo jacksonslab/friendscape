@@ -218,7 +218,6 @@ private constructor(
         responseHandler: GameLoginResponseHandler<Player>,
         block: LoginBlock<XteaKey>,
     ) {
-        // TODO: Reconnection.
-        responseHandler.writeFailedResponse(LoginResponse.ConnectFail)
+        ReconnectQueue.add(ReconnectQueue.Request(responseHandler, block))
     }
 }

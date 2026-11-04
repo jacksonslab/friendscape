@@ -49,7 +49,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 
 class RspCycle(
-    private val session: Session<Player>,
+    var session: Session<Player>,
     private val infos: Infos,
     private val regions: RegionRegistry,
     private val worldEntities: WorldEntityList,

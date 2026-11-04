@@ -2,9 +2,12 @@ package org.rsmod.api.net.rsprot
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
+import net.rsprot.crypto.xtea.XteaKey
 import net.rsprot.protocol.api.NetworkService
 import net.rsprot.protocol.common.RSProtConstants
 import net.rsprot.protocol.common.client.OldSchoolClientType
+import net.rsprot.protocol.loginprot.incoming.util.LoginBlock
+import net.rsprot.protocol.loginprot.outgoing.LoginResponse
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.db.jdbc.GameDatabase
 import org.rsmod.api.game.process.GameLifecycle
@@ -84,6 +87,7 @@ constructor(
             centralActivityLogWriter.logItemDestroy(player, type, obj)
         }
         onEvent<GameLifecycle.UpdateInfo> {
+            processReconnects()
             updateService()
             maybeHeartbeatCentralSessions()
         }
@@ -102,6 +106,59 @@ constructor(
 
     private fun initService() {
         service.setCommunicationThread(Thread.currentThread())
+    }
+
+    private fun processReconnects() {
+        while (true) {
+            val request = ReconnectQueue.poll() ?: return
+            try {
+                reconnect(request)
+            } catch (e: Exception) {
+                logger.error(e) { "Reconnect failed for '${request.block.username}'" }
+                request.responseHandler.writeFailedResponse(LoginResponse.ConnectFail)
+            }
+        }
+    }
+
+    /**
+     * Rebinds a player kept online through the disconnect grace period to the new connection.
+     * The client proves it owns the session by sending back the seed of its previous login.
+     */
+    private fun reconnect(request: ReconnectQueue.Request) {
+        val block = request.block
+        val player = findReconnectable(block)
+        val client = player?.client as? RspClient
+        val cycle = player?.clientCycle as? RspCycle
+        if (client == null || cycle == null) {
+            request.responseHandler.writeFailedResponse(LoginResponse.ConnectFail)
+            return
+        }
+        val infos = client.infos
+        infos.playerInfo.onReconnect()
+        infos.npcInfo.onReconnect()
+        infos.worldEntityInfo.onReconnect()
+        val response = LoginResponse.ReconnectOk(infos.playerInfo)
+        val session = request.responseHandler.writeSuccessfulResponse(response, block, client.session)
+        client.session = session
+        cycle.session = session
+        cycle.forceSceneRebuild()
+        player.clientDisconnected.set(false)
+        session.setDisconnectionHook(Runnable { player.clientDisconnected.set(true) })
+        logger.info { "Reconnected '${player.username}'" }
+    }
+
+    private fun findReconnectable(block: LoginBlock<XteaKey>): Player? {
+        val seed = block.authentication.key
+        for (player in playerRegistry.playerList) {
+            if (!player.clientDisconnected.get() || player.loggingOut || player.pendingLogout) {
+                continue
+            }
+            val previous = (player.client as? RspClient)?.session?.loginBlock ?: continue
+            if (previous.username.equals(block.username, ignoreCase = true) && previous.seed.contentEquals(seed)) {
+                return player
+            }
+        }
+        return null
     }
 
     private fun updateService() {

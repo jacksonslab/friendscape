@@ -178,7 +178,7 @@ constructor(
          * remain in the world before their logout is queued. This gives them a chance to reconnect
          * in time, based on this constant.
          */
-        private const val RECONNECT_GRACE_PERIOD: Int = 16
+        private const val RECONNECT_GRACE_PERIOD: Int = 100
 
         /**
          * A hard cap period (in server cycles) after which the logout block no longer applies. This
