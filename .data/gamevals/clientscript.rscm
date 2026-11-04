@@ -7926,3 +7926,5 @@ spawn_menu_search_stop=45530
 poh_furniture_creation_entry_old=7988
 quest_available_set=45550
 friendscape_admin_init=45600
+port_task_info_draw=8900
+port_task_board_init=8912
