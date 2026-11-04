@@ -13,6 +13,8 @@ import net.rsprot.protocol.api.AbstractNetworkServiceFactory
 import net.rsprot.protocol.api.GameConnectionHandler
 import net.rsprot.protocol.api.bootstrap.BootstrapBuilder
 import net.rsprot.protocol.api.handlers.ExceptionHandlers
+import net.rsprot.protocol.api.handlers.idlestate.DefaultIdleStateHandlerSupplier
+import net.rsprot.protocol.api.handlers.idlestate.IdleStateHandlerSuppliers
 import net.rsprot.protocol.api.js5.Js5GroupProvider
 import net.rsprot.protocol.api.suppliers.NpcInfoSupplier
 import net.rsprot.protocol.api.suppliers.WorldEntityInfoSupplier
@@ -75,6 +77,17 @@ constructor(
         return RsaProvider.from(Paths.get(".data", "game.key"))
     }
 
+    /**
+     * rsprot drops a logged-in connection after 15 s without a client packet, but the client sends
+     * nothing while it loads the map after login. On a first visit with the browser client those map
+     * files arrive over the same connection as the background cache download (and phones are busy
+     * decompressing it), which can take longer than 15 s, so players were dropped at "Connecting to
+     * server". Allow 60 s in game; the other stages keep rsprot's defaults.
+     */
+    override fun getIdleStateHandlerSuppliers(): IdleStateHandlerSuppliers {
+        return IdleStateHandlerSuppliers(gameSupplier = DefaultIdleStateHandlerSupplier(GAME_IDLE_SECONDS))
+    }
+
     override fun getWorldEntityInfoSupplier(): WorldEntityInfoSupplier {
         return WorldEntityProvider.provide()
     }
@@ -82,4 +95,8 @@ constructor(
     // start adv: disable netty backends to use rsprot off central
     override fun getBootstrapBuilder() = BootstrapBuilder().eventLoopGroupTypes(BootstrapBuilder.EventLoopGroupType.NIO)
     // end adv
+
+    private companion object {
+        const val GAME_IDLE_SECONDS: Long = 60
+    }
 }
